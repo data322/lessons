@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lesson 1 — The Dot Product | Physics Lessons</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;600;700&display=swap" />
+
+  <!-- MathJax for display equations -->
+  <script>
+    MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+
+  <style>
+    /* ─── Design Tokens ─────────────────────────────────── */
+    :root {
+      --color-bg:             #f9f9f7;
+      --color-surface:        #ffffff;
+      --color-primary:        #1a5276;
+      --color-primary-light:  #2471a3;
+      --color-accent:         #d4ac0d;
+      --color-text:           #2c2c2c;
+      --color-muted:          #6b7280;
+      --color-border:         #d1d5db;
+      --color-callout-tip-bg:     #eaf4fb;
+      --color-callout-tip-border: #2e86c1;
+      --color-callout-warn-bg:    #fef9e7;
+      --color-callout-warn-border:#d4ac0d;
+      --color-callout-insight-bg: #eafaf1;
+      --color-callout-insight-border: #1e8449;
+      --font-body:  'Playfair Display', Georgia, serif;
+      --font-ui:    'Source Sans 3', system-ui, sans-serif;
+      --font-mono:  'Fira Mono', 'Courier New', monospace;
+      --toc-width:  260px;
+      --content-max-width: 760px;
+      --border-radius: 6px;
+      --transition: 0.25s ease;
+    }
+
+    /* ─── Reset & Base ──────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--color-text);
+      background: var(--color-bg);
+    }
+
+    /* ─── Header ────────────────────────────────────────── */
+    .lesson-header {
+      background: var(--color-primary);
+      color: #fff;
+      padding: 1.25rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
+    .breadcrumb {
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      opacity: 0.75;
+      margin-bottom: 0.3rem;
+    }
+    .lesson-header h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+    .lesson-meta {
+      font-family: var(--font-ui);
+      font-size: 0.82rem;
+      opacity: 0.7;
+      margin-top: 0.2rem;
+    }
+
+    /* ─── Layout ────────────────────────────────────────── */
+    .lesson-layout {
+      display: flex;
+      align-items: flex-start;
+      min-height: calc(100vh - 80px);
+    }
+
+    /* ─── TOC Panel ─────────────────────────────────────── */
+    .toc-panel {
+      width: var(--toc-width);
+      flex-shrink: 0;
+      position: sticky;
+      top: 80px;        /* below fixed header */
+      height: calc(100vh - 80px);
+      overflow-y: auto;
+      background: var(--color-surface);
+      border-right: 1px solid var(--color-border);
+      padding: 1rem 0;
+      transition: width var(--transition), transform var(--transition);
+      z-index: 50;
+    }
+    .toc-panel.collapsed {
+      width: 44px;
+      overflow: hidden;
+    }
+    .toc-panel.collapsed .toc-inner { display: none; }
+
+    #toc-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.4rem 0.85rem;
+      font-family: var(--font-ui);
+      font-size: 0.85rem;
+      color: var(--color-primary);
+      width: 100%;
+    }
+    #toc-toggle:hover { background: var(--color-callout-tip-bg); }
+    .toc-icon { font-size: 1.1rem; flex-shrink: 0; }
+
+    .toc-inner { padding: 0.5rem 1rem 1rem; }
+    .toc-heading {
+      font-family: var(--font-ui);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-muted);
+      margin-bottom: 0.6rem;
+      font-weight: 600;
+    }
+    .toc-list {
+      list-style: none;
+      padding: 0;
+    }
+    .toc-list li { margin: 0; }
+    .toc-list a {
+      display: block;
+      font-family: var(--font-ui);
+      font-size: 0.82rem;
+      color: var(--color-text);
+      text-decoration: none;
+      padding: 0.3rem 0.5rem;
+      border-radius: 4px;
+      line-height: 1.35;
+      transition: background var(--transition), color var(--transition);
+    }
+    .toc-list a:hover,
+    .toc-list a.active {
+      background: var(--color-callout-tip-bg);
+      color: var(--color-primary);
+    }
+    .toc-list .toc-num {
+      font-size: 0.72rem;
+      color: var(--color-muted);
+      margin-right: 0.3em;
+    }
+
+    /* ─── Main Content ──────────────────────────────────── */
+    .lesson-content {
+      flex: 1;
+      max-width: var(--content-max-width);
+      padding: 2.5rem 2.5rem 3rem;
+      margin: 0 auto;
+    }
+
+    /* Sections */
+    .lesson-content section {
+      margin-bottom: 3.5rem;
+      scroll-margin-top: 100px;
+    }
+    .lesson-content h2 {
+      font-size: 1.55rem;
+      color: var(--color-primary);
+      border-bottom: 2px solid var(--color-border);
+      padding-bottom: 0.4rem;
+      margin-bottom: 1.1rem;
+    }
+    .lesson-content h3 {
+      font-size: 1.15rem;
+      color: var(--color-primary-light);
+      margin: 1.5rem 0 0.6rem;
+    }
+    .lesson-content p { margin-bottom: 1rem; }
+    .lesson-content ul, .lesson-content ol {
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .lesson-content li { margin-bottom: 0.35rem; }
+
+    /* ─── Key Term Links ────────────────────────────────── */
+    a.key-term {
+      color: var(--color-text);
+      text-decoration-line: underline;
+      text-decoration-style: dashed;
+      text-decoration-color: var(--color-accent);
+      text-underline-offset: 3px;
+      cursor: help;
+      position: relative;
+    }
+    a.key-term:hover { color: var(--color-primary); }
+
+    /* ─── Callout Boxes ─────────────────────────────────── */
+    .callout {
+      border-left: 4px solid;
+      border-radius: 0 var(--border-radius) var(--border-radius) 0;
+      padding: 0.85rem 1.1rem;
+      margin: 1.4rem 0;
+      font-size: 0.95rem;
+    }
+    .callout-tip {
+      background: var(--color-callout-tip-bg);
+      border-color: var(--color-callout-tip-border);
+    }
+    .callout-warning {
+      background: var(--color-callout-warn-bg);
+      border-color: var(--color-callout-warn-border);
+    }
+    .callout-insight {
+      background: var(--color-callout-insight-bg);
+      border-color: var(--color-callout-insight-border);
+    }
+    .callout strong { display: block; margin-bottom: 0.25rem; }
+
+    /* ─── Math Blocks ───────────────────────────────────── */
+    .math-block {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius);
+      padding: 1rem 1.5rem;
+      margin: 1.2rem 0;
+      overflow-x: auto;
+      font-size: 1.05rem;
+      text-align: center;
+    }
+    .math-label {
+      font-family: var(--font-ui);
+      font-size: 0.78rem;
+      color: var(--color-muted);
+      text-align: right;
+      margin-top: 0.3rem;
+    }
+
+    /* ─── Worked Examples ───────────────────────────────── */
+    .example-box {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius);
+      padding: 1.2rem 1.5rem;
+      margin: 1.4rem 0;
+    }
+    .example-box .example-title {
+      font-family: var(--font-ui);
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--color-primary);
+      margin-bottom: 0.7rem;
+    }
+    .example-box .step {
+      display: grid;
+      grid-template-columns: 2rem 1fr;
+      gap: 0 0.6rem;
+      margin-bottom: 0.4rem;
+      font-size: 0.95rem;
+    }
+    .step-num {
+      font-family: var(--font-ui);
+      font-weight: 700;
+      color: var(--color-primary);
+      padding-top: 2px;
+    }
+
+    /* ─── Table ─────────────────────────────────────────── */
+    .lesson-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.2rem 0;
+      font-size: 0.92rem;
+    }
+    .lesson-table th {
+      background: var(--color-primary);
+      color: #fff;
+      font-family: var(--font-ui);
+      font-weight: 600;
+      padding: 0.6rem 0.9rem;
+      text-align: left;
+    }
+    .lesson-table td {
+      padding: 0.55rem 0.9rem;
+      border-bottom: 1px solid var(--color-border);
+      vertical-align: top;
+    }
+    .lesson-table tr:nth-child(even) td { background: #f4f4f2; }
+
+    /* ─── Photo Figures ─────────────────────────────────── */
+    .lesson-figure {
+      margin: 1.6rem 0;
+    }
+    .lesson-figure figcaption {
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      color: var(--color-muted);
+      margin-top: 0.5rem;
+      text-align: center;
+    }
+    .lesson-figure figcaption a {
+      color: var(--color-primary);
+    }
+
+    /* ─── SVG Diagrams (inline) ─────────────────────────── */
+    .diagram-wrap {
+      text-align: center;
+      margin: 1.6rem 0;
+    }
+    .diagram-wrap svg {
+      max-width: 100%;
+      height: auto;
+    }
+    .diagram-caption {
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      color: var(--color-muted);
+      margin-top: 0.4rem;
+    }
+
+    /* ─── Glossary ──────────────────────────────────────── */
+    .glossary-section {
+      border-top: 3px solid var(--color-primary);
+      padding-top: 1.5rem;
+    }
+    .glossary-section dl { margin-top: 1rem; }
+    .glossary-section dt {
+      font-family: var(--font-ui);
+      font-weight: 700;
+      color: var(--color-primary);
+      font-size: 1rem;
+      margin-top: 1.1rem;
+    }
+    .glossary-section dt::before {
+      content: '';
+      display: block;
+      height: 80px;
+      margin-top: -80px;
+    }
+    .glossary-section dd {
+      margin-left: 0;
+      margin-top: 0.2rem;
+      font-size: 0.95rem;
+      color: var(--color-text);
+      padding-left: 1rem;
+      border-left: 3px solid var(--color-accent);
+    }
+
+    /* ─── Teaser Box ────────────────────────────────────── */
+    .teaser {
+      font-style: italic;
+    }
+    .teaser-link {
+      font-style: normal;
+      font-size: 0.82rem;
+      color: var(--color-muted);
+    }
+
+    /* ─── Footer ────────────────────────────────────────── */
+    .lesson-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.4rem 2.5rem;
+      border-top: 1px solid var(--color-border);
+      background: var(--color-surface);
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+    .lesson-footer a {
+      font-family: var(--font-ui);
+      font-size: 0.9rem;
+      font-weight: 600;
+      padding: 0.5rem 1.1rem;
+      border-radius: var(--border-radius);
+      text-decoration: none;
+      transition: background var(--transition);
+    }
+    .btn-prev {
+      border: 1px solid var(--color-border);
+      color: var(--color-text);
+    }
+    .btn-prev:hover { background: var(--color-border); }
+    .btn-exercises {
+      background: var(--color-primary);
+      color: #fff;
+    }
+    .btn-exercises:hover { background: var(--color-primary-light); }
+    .btn-next {
+      border: 1px solid var(--color-primary);
+      color: var(--color-primary);
+    }
+    .btn-next:hover { background: var(--color-callout-tip-bg); }
+
+    /* ─── Responsive ────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .toc-panel {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        transform: translateX(-100%);
+        box-shadow: 4px 0 16px rgba(0,0,0,0.15);
+      }
+      .toc-panel.mobile-open {
+        transform: translateX(0);
+        width: var(--toc-width);
+      }
+      .toc-panel.mobile-open .toc-inner { display: block; }
+      .lesson-content { padding: 1.5rem 1.25rem 2.5rem; }
+      .lesson-footer { padding: 1rem 1.25rem; }
+      .lesson-header { padding: 0.9rem 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ① HEADER -->
+<header class="lesson-header">
+  <nav class="breadcrumb">Physics Lessons &rsaquo; Lesson 1 &rsaquo; Vectors</nav>
+  <h1>Lesson 1 — The Dot Product</h1>
+  <p class="lesson-meta">Lesson 1 of the Physics Lessons series &bull; Estimated reading time: ~20 min</p>
+</header>
+
+<!-- ② LAYOUT WRAPPER -->
+<div class="lesson-layout">
+
+  <!-- ③ TOC PANEL -->
+  <aside id="toc-panel" class="toc-panel" aria-label="Table of contents">
+    <button id="toc-toggle" aria-expanded="true" aria-controls="toc-inner">
+      <span class="toc-icon">&#9776;</span>
+      <span class="toc-label">Contents</span>
+    </button>
+    <div class="toc-inner" id="toc-inner">
+      <p class="toc-heading">In this lesson</p>
+      <ol class="toc-list">
+        <li><a href="#section-overview"><span class="toc-num">1</span>Overview &amp; Motivation</a></li>
+        <li><a href="#section-vector-review"><span class="toc-num">2</span>Vector Review</a></li>
+        <li><a href="#section-definition"><span class="toc-num">3</span>Defining the Dot Product</a></li>
+        <li><a href="#section-calculation"><span class="toc-num">4</span>Calculating the Dot Product</a></li>
+        <li><a href="#section-intuition"><span class="toc-num">5</span>Geometric Intuition</a></li>
+        <li><a href="#section-angle"><span class="toc-num">6</span>Why the Angle Matters</a></li>
+        <li><a href="#section-work"><span class="toc-num">7</span>Work = Force · Displacement</a></li>
+        <li><a href="#section-properties"><span class="toc-num">8</span>Properties</a></li>
+        <li><a href="#section-cross-product-teaser"><span class="toc-num">9</span>Glimpse at the Cross Product</a></li>
+        <li><a href="#section-summary"><span class="toc-num">10</span>Summary</a></li>
+        <li><a href="#glossary"><span class="toc-num">G</span>Glossary</a></li>
+      </ol>
+    </div>
+  </aside>
+
+  <!-- ④ MAIN CONTENT -->
+  <main class="lesson-content">
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="section-overview">
+      <h2>1 &nbsp; Overview &amp; Motivation</h2>
+
+      <p>
+        Imagine pushing a heavy box across a warehouse floor. You lean into the handle and shove —
+        but notice that not all of your effort actually moves the box forward.
+        If you push straight ahead, every bit of your force goes into forward motion.
+        If you push at a downward angle, some of your force presses the box into the floor rather than
+        sliding it across it. And if you push sideways — perpendicular to the direction the box needs to travel —
+        you do absolutely no useful work at all.
+      </p>
+
+      <p>
+        The question "how much of this force is actually doing useful work?" is answered by a single
+        mathematical tool: the <a href="#term-dot-product" class="key-term">dot product</a>.
+      </p>
+
+      <div class="callout callout-tip">
+        <strong>What you will learn in this lesson:</strong>
+        How to calculate the dot product of two <a href="#term-vector" class="key-term">vectors</a>,
+        what it measures geometrically, why the angle between the vectors is the key ingredient,
+        and how it underlies the physics definition of work.
+        We also take a brief first look at the <a href="#term-cross-product" class="key-term">cross product</a>
+        — the dot product's sibling — to set the stage for Lesson 2.
+      </div>
+
+      <p>
+        Dot products appear far beyond physics classrooms.
+        Computer-graphics engines use them to calculate how brightly a surface is lit.
+        Recommendation algorithms use them to measure how "similar" two users' taste profiles are.
+        Machine-learning models use them inside every matrix multiplication.
+        Once you understand the dot product, you will see it everywhere.
+      </p>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="section-vector-review">
+      <h2>2 &nbsp; A Quick Vector Review</h2>
+
+      <p>
+        Before defining the dot product we need a shared vocabulary for
+        <a href="#term-vector" class="key-term">vectors</a>.
+        If you feel confident here, skim quickly; if anything is unfamiliar, read carefully.
+      </p>
+
+      <h3>Scalars vs. Vectors</h3>
+      <p>
+        A <a href="#term-scalar" class="key-term">scalar</a> is a plain number — it has a size (magnitude) but no direction.
+        Temperature, mass, and time are scalars.
+        A <a href="#term-vector" class="key-term">vector</a> has both a <a href="#term-magnitude" class="key-term">magnitude</a>
+        and a direction. Velocity, displacement, and force are vectors.
+      </p>
+
+      <h3>Notation</h3>
+      <p>
+        We write vectors in bold — <strong>a</strong> — or with an arrow over the letter:
+        \(\vec{a}\). In component form a 2-D vector lists its horizontal and vertical parts:
+      </p>
+      <div class="math-block">
+        \[\vec{a} = (a_1,\, a_2) \quad \text{or} \quad \vec{a} = a_1\,\hat{\imath} + a_2\,\hat{\jmath}\]
+      </div>
+      <p>
+        The symbols \(\hat{\imath}\) and \(\hat{\jmath}\) are <a href="#term-unit-vector" class="key-term">unit vectors</a>
+        pointing along the positive x-axis and y-axis respectively.
+        In three dimensions we add a third <a href="#term-component" class="key-term">component</a> \(a_3\) along the
+        \(\hat{k}\) (z) axis.
+      </p>
+
+      <h3>Magnitude</h3>
+      <p>
+        The <a href="#term-magnitude" class="key-term">magnitude</a> of a vector is its length,
+        written \(|\vec{a}|\). In 2-D it is the Pythagorean distance:
+      </p>
+      <div class="math-block">
+        \[|\vec{a}| = \sqrt{a_1^2 + a_2^2}\]
+      </div>
+      <p>
+        In 3-D: \(|\vec{a}| = \sqrt{a_1^2 + a_2^2 + a_3^2}\).
+        Magnitude is always a non-negative scalar.
+      </p>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="section-definition">
+      <h2>3 &nbsp; Defining the Dot Product</h2>
+
+      <p>
+        The <a href="#term-dot-product" class="key-term">dot product</a> of two vectors
+        \(\vec{a}\) and \(\vec{b}\) is written \(\vec{a} \cdot \vec{b}\) (read "a dot b").
+        There are two completely equivalent ways to define it.
+      </p>
+
+      <h3>Definition A — Algebraic (component) form</h3>
+      <p>
+        Multiply the matching <a href="#term-component" class="key-term">components</a> together, then add all the products:
+      </p>
+      <div class="math-block">
+        \[\vec{a} \cdot \vec{b} = a_1 b_1 + a_2 b_2 \qquad \text{(2-D)}\]
+      </div>
+      <div class="math-block">
+        \[\vec{a} \cdot \vec{b} = a_1 b_1 + a_2 b_2 + a_3 b_3 \qquad \text{(3-D)}\]
+      </div>
+      <p>
+        Notice the result is a single number — a <a href="#term-scalar" class="key-term">scalar</a>.
+        There is no direction attached to it. This is a crucial feature:
+        <em>the dot product turns two vectors into a scalar.</em>
+      </p>
+
+      <h3>Definition B — Geometric (angle) form</h3>
+      <p>
+        Place both vectors tail-to-tail and let \(\theta\) be the
+        <a href="#term-angle-between" class="key-term">angle between them</a>
+        (always between 0° and 180°):
+      </p>
+      <div class="math-block">
+        \[\vec{a} \cdot \vec{b} = |\vec{a}|\,|\vec{b}|\cos\theta\]
+      </div>
+      <p>
+        The result is again a scalar. The two definitions are different expressions of the same quantity —
+        they always give the same number. (The proof follows from the
+        <a href="https://en.wikipedia.org/wiki/Law_of_cosines" target="_blank" rel="noopener">law of cosines</a>
+        and makes a great exercise.)
+      </p>
+
+      <div class="callout callout-insight">
+        <strong>Key Insight:</strong>
+        The dot product is the <em>only standard vector operation that produces a scalar</em>.
+        Multiplying two vectors with \(\cdot\) collapses direction information down to a single number
+        that captures how much the two vectors "agree" in direction.
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="section-calculation">
+      <h2>4 &nbsp; Calculating the Dot Product</h2>
+
+      <p>Both definitions lead to the same answer. Here are three worked examples showing both routes.</p>
+
+      <!-- Example 1 -->
+      <div class="example-box">
+        <p class="example-title">Example 1 — Component method (2-D)</p>
+        <p>Let \(\vec{a} = (3, 4)\) and \(\vec{b} = (1, 2)\). Find \(\vec{a} \cdot \vec{b}\).</p>
+        <div class="step"><span class="step-num">1.</span>
+          <span>Multiply the first components: \(a_1 b_1 = 3 \times 1 = 3\)</span></div>
+        <div class="step"><span class="step-num">2.</span>
+          <span>Multiply the second components: \(a_2 b_2 = 4 \times 2 = 8\)</span></div>
+        <div class="step"><span class="step-num">3.</span>
+          <span>Add: \(\vec{a} \cdot \vec{b} = 3 + 8 = \mathbf{11}\)</span></div>
+        <p style="margin-top:0.6rem">The answer is the scalar 11. Notice that we never produced a new vector — just a number.</p>
+      </div>
+
+      <!-- Example 2 -->
+      <div class="example-box">
+        <p class="example-title">Example 2 — Angle method</p>
+        <p>
+          Two vectors have magnitudes \(|\vec{a}| = 5\) and \(|\vec{b}| = 6\),
+          and the angle between them is \(\theta = 60°\). Find \(\vec{a} \cdot \vec{b}\).
+        </p>
+        <div class="step"><span class="step-num">1.</span>
+          <span>Write the formula: \(\vec{a} \cdot \vec{b} = |\vec{a}|\,|\vec{b}|\cos\theta\)</span></div>
+        <div class="step"><span class="step-num">2.</span>
+          <span>Substitute: \(= 5 \times 6 \times \cos 60°\)</span></div>
+        <div class="step"><span class="step-num">3.</span>
+          <span>Evaluate \(\cos 60° = 0.5\): \(= 30 \times 0.5 = \mathbf{15}\)</span></div>
+      </div>
+
+      <!-- Example 3 -->
+      <div class="example-box">
+        <p class="example-title">Example 3 — Cross-check: perpendicular vectors</p>
+        <p>Let \(\vec{a} = (3, 0)\) and \(\vec{b} = (0, 4)\). These vectors point along the x- and y-axes respectively.</p>
+        <div class="step"><span class="step-num">1.</span>
+          <span><strong>Component method:</strong> \(3 \times 0 + 0 \times 4 = 0\)</span></div>
+        <div class="step"><span class="step-num">2.</span>
+          <span><strong>Angle method:</strong> The angle between the x-axis and y-axis is 90°.
+            \(\cos 90° = 0\), so \(\vec{a}\cdot\vec{b} = 3 \times 4 \times 0 = 0\) ✓</span></div>
+        <p style="margin-top:0.6rem">
+          Both methods agree: the dot product is zero whenever two vectors are
+          <a href="#term-perpendicular" class="key-term">perpendicular</a>.
+          This will be important very soon.
+        </p>
+      </div>
+
+      <div class="callout callout-warning">
+        <strong>Watch out:</strong>
+        The dot product is not the same as ordinary multiplication of two scalars.
+        You cannot write \(\vec{a} \cdot \vec{b} = |\vec{a}| \times |\vec{b}|\) —
+        that would ignore the angle entirely and be wrong (unless \(\theta = 0°\)).
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="section-intuition">
+      <h2>5 &nbsp; The Geometric Intuition</h2>
+
+      <p>
+        Numbers are only useful if we understand what they mean.
+        So what does a dot product of, say, 11 actually <em>represent</em>?
+      </p>
+
+      <h3>The Projection Interpretation</h3>
+      <p>
+        Imagine shining a spotlight straight down onto the line of \(\vec{a}\).
+        The <a href="#term-scalar-projection" class="key-term">scalar projection</a> of \(\vec{b}\) onto \(\vec{a}\)
+        is the length of the shadow that \(\vec{b}\) casts onto \(\vec{a}\)'s line.
+        That shadow length is \(|\vec{b}|\cos\theta\).
+      </p>
+      <p>Then:</p>
+      <div class="math-block">
+        \[\vec{a} \cdot \vec{b} = |\vec{a}| \times \underbrace{|\vec{b}|\cos\theta}_{\text{shadow of }\vec{b}\text{ onto }\vec{a}}\]
+      </div>
+      <p>
+        Equivalently, you can think of it as the shadow of \(\vec{a}\) onto \(\vec{b}\) times \(|\vec{b}|\) —
+        the formula is symmetric, so both interpretations give the same number.
+      </p>
+
+      <h3>Where does \(|\vec{b}|\cos\theta\) come from?</h3>
+      <p>
+        If \(\cos\theta\) appearing in the formula feels like it came out of nowhere, here is the
+        step-by-step derivation from the right-triangle definition of cosine you already know.
+        Drop a perpendicular from the tip of \(\vec{b}\) straight down to the line of \(\vec{a}\).
+        This creates a right triangle with three clearly named sides:
+      </p>
+      <ul>
+        <li><strong>Hypotenuse</strong> — the full length of \(\vec{b}\), which equals \(|\vec{b}|\)</li>
+        <li><strong>Adjacent side</strong> — the leg that runs along \(\vec{a}\) from the origin to the foot of the perpendicular</li>
+        <li><strong>Opposite side</strong> — the perpendicular drop from the tip of \(\vec{b}\) down to \(\vec{a}\)'s line</li>
+      </ul>
+      <p>The angle at the origin of this triangle is \(\theta\) — exactly the angle between the two vectors.</p>
+
+      <!-- SVG: right triangle / cosine build-up diagram -->
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 440 215" width="440" xmlns="http://www.w3.org/2000/svg"
+             role="img" aria-label="Right triangle formed by dropping a perpendicular from the tip of b to the line of a">
+          <defs>
+            <marker id="arA3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#1a5276"/>
+            </marker>
+            <marker id="arB3" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#1e8449"/>
+            </marker>
+          </defs>
+
+          <!-- Triangle interior shading -->
+          <polygon points="65,165 255,165 255,65" fill="#f0f4f8" stroke="none"/>
+
+          <!-- Adjacent side (gold, highlighted) -->
+          <line x1="65" y1="165" x2="255" y2="165" stroke="#d4ac0d" stroke-width="3.5"/>
+
+          <!-- Opposite side (gray, dashed perpendicular drop) -->
+          <line x1="255" y1="65" x2="255" y2="165" stroke="#6b7280" stroke-width="1.5" stroke-dasharray="5,4"/>
+
+          <!-- Vector a (full horizontal, blue) -->
+          <line x1="65" y1="165" x2="395" y2="165"
+                stroke="#1a5276" stroke-width="2.5" marker-end="url(#arA3)"/>
+
+          <!-- Vector b = hypotenuse (green) -->
+          <line x1="65" y1="165" x2="255" y2="65"
+                stroke="#1e8449" stroke-width="2.5" marker-end="url(#arB3)"/>
+
+          <!-- Right-angle mark at foot of perpendicular -->
+          <path d="M 245,165 L 245,155 L 255,155" fill="none" stroke="#6b7280" stroke-width="1.2"/>
+
+          <!-- θ arc: start on a at radius 40, end on b at radius 40, sweep=0 (counterclockwise = opens upward) -->
+          <!-- b unit vector ≈ (0.885, -0.466); end point: (65+40×0.885, 165+40×-0.466) = (100, 146) -->
+          <path d="M 105,165 A 40,40 0 0,0 100,146" fill="none" stroke="#2c2c2c" stroke-width="1.5"/>
+
+          <!-- a label -->
+          <text x="400" y="170" font-family="'Playfair Display',Georgia,serif"
+                font-size="16" fill="#1a5276" font-style="italic">a<tspan dx="-7" dy="-7" font-size="11" font-style="normal">&#x2192;</tspan></text>
+
+          <!-- b label with arrow (above-left of midpoint of hypotenuse, outside triangle) -->
+          <text x="135" y="105" font-family="'Playfair Display',Georgia,serif"
+                font-size="15" fill="#1e8449" font-style="italic">b<tspan dx="-6" dy="-7" font-size="11" font-style="normal">&#x2192;</tspan></text>
+          <text x="112" y="119" font-family="'Source Sans 3',sans-serif"
+                font-size="10.5" fill="#1e8449">(hypotenuse = |b|)</text>
+
+          <!-- Adjacent label below the gold line -->
+          <text x="160" y="188" font-family="'Source Sans 3',sans-serif"
+                font-size="12" fill="#d4ac0d" text-anchor="middle">adjacent = |b| cos &#x03B8;</text>
+
+          <!-- Opposite label to the right of the dashed drop line -->
+          <text x="262" y="112" font-family="'Source Sans 3',sans-serif"
+                font-size="11" fill="#6b7280">opposite</text>
+          <text x="262" y="126" font-family="'Source Sans 3',sans-serif"
+                font-size="11" fill="#6b7280">= |b| sin &#x03B8;</text>
+
+          <!-- θ label (on bisector of the angle, ~13.8° above horizontal, distance ~55 from origin) -->
+          <text x="120" y="152" font-family="'Playfair Display',Georgia,serif"
+                font-size="13" fill="#2c2c2c" font-style="italic">&#x03B8;</text>
+        </svg>
+        <p class="diagram-caption">
+          The right triangle formed by dropping a perpendicular from the tip of \(\vec{b}\) to the line of \(\vec{a}\).
+          The <span style="color:#1e8449;font-weight:600">hypotenuse is \(|\vec{b}|\)</span>;
+          the <span style="color:#d4ac0d;font-weight:600">adjacent side is \(|\vec{b}|\cos\theta\)</span> — the projection onto \(\vec{a}\).
+        </p>
+      </div>
+
+      <p>Now apply the definition of cosine to this triangle:</p>
+      <div class="math-block">
+        \[\cos\theta \;=\; \frac{\text{adjacent}}{\text{hypotenuse}} \;=\; \frac{\text{adjacent}}{|\vec{b}|}\]
+      </div>
+      <p>Rearrange for the adjacent side:</p>
+      <div class="math-block">
+        \[\text{adjacent} \;=\; |\vec{b}|\cos\theta\]
+      </div>
+      <p>
+        That adjacent side is the projection — how far along \(\vec{a}\)'s direction the vector \(\vec{b}\) reaches.
+        Multiply by the full length of \(\vec{a}\) and you have the dot product:
+      </p>
+      <div class="math-block">
+        \[\vec{a} \cdot \vec{b}
+          \;=\; |\vec{a}| \;\times\; \underbrace{|\vec{b}|\cos\theta}_{\substack{\text{adjacent side} \\ \text{(projection)}}}
+        \]
+      </div>
+
+      <div class="callout callout-insight">
+        <strong>Key Insight:</strong>
+        \(\cos\theta\) is doing one specific job: extracting the <em>adjacent side</em> of the right triangle,
+        which is the component of \(\vec{b}\) that runs parallel to \(\vec{a}\).
+        The opposite side — \(|\vec{b}|\sin\theta\) — is perpendicular to \(\vec{a}\) and contributes
+        nothing to the alignment, so it disappears from the formula entirely.
+        This is why the dot product uses \(\cos\theta\) and not \(\sin\theta\).
+      </div>
+
+      <!-- SVG Diagram: projection -->
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 420 200" width="420" xmlns="http://www.w3.org/2000/svg"
+             role="img" aria-label="Projection of vector b onto vector a">
+          <!-- a vector -->
+          <defs>
+            <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#1a5276"/>
+            </marker>
+            <marker id="arrow-gray" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#6b7280"/>
+            </marker>
+            <marker id="arrow-accent" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#d4ac0d"/>
+            </marker>
+          </defs>
+          <!-- origin -->
+          <!-- vector a (horizontal) -->
+          <line x1="40" y1="130" x2="360" y2="130"
+                stroke="#1a5276" stroke-width="2.5" marker-end="url(#arrow)"/>
+          <text x="365" y="135" font-family="'Playfair Display',Georgia,serif" font-size="16" fill="#1a5276" font-style="italic">a<tspan dx="-7" dy="-7" font-size="11" font-style="normal">&#x2192;</tspan></text>
+          <!-- vector b at angle -->
+          <line x1="40" y1="130" x2="240" y2="30"
+                stroke="#1e8449" stroke-width="2.5" marker-end="url(#arrow)"/>
+          <text x="140" y="60" font-family="'Playfair Display',Georgia,serif" font-size="16" fill="#1e8449" font-style="italic">b<tspan dx="-7" dy="-7" font-size="11" font-style="normal">&#x2192;</tspan></text>
+          <!-- projection (shadow) dashed line from tip of b down to a -->
+          <line x1="240" y1="30" x2="240" y2="130"
+                stroke="#6b7280" stroke-width="1.5" stroke-dasharray="5,4"/>
+          <!-- projection line on a -->
+          <line x1="40" y1="130" x2="240" y2="130"
+                stroke="#d4ac0d" stroke-width="3.5" marker-end="url(#arrow-accent)"/>
+          <text x="130" y="155" font-family="'Playfair Display',Georgia,serif" font-size="13" fill="#d4ac0d">|b| cos &#x03B8;  (shadow)</text>
+          <!-- angle arc -->
+          <path d="M 90,130 A 50,50 0 0,0 85,108" fill="none" stroke="#2c2c2c" stroke-width="1.5"/>
+          <text x="103" y="117" font-family="'Playfair Display',Georgia,serif" font-size="13" fill="#2c2c2c" font-style="italic">θ</text>
+          <!-- right-angle mark at foot of perpendicular -->
+          <rect x="230" y="120" width="10" height="10" fill="none" stroke="#6b7280" stroke-width="1.2"/>
+        </svg>
+        <p class="diagram-caption">
+          Figure 1 — The dot product equals the length of \(\vec{a}\) times the shadow (projection)
+          of \(\vec{b}\) onto \(\vec{a}\)'s direction.
+        </p>
+      </div>
+
+      <h3>The Three Key Angles</h3>
+
+      <p>
+        The cosine function is the key. Because \(\cos\theta\) ranges from \(-1\) to \(1\),
+        the dot product can be positive, zero, or negative depending entirely on \(\theta\).
+      </p>
+
+      <table class="lesson-table">
+        <thead>
+          <tr>
+            <th>Angle θ</th>
+            <th>cos θ</th>
+            <th>Dot product</th>
+            <th>What it means</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>0° (same direction)</td>
+            <td>1</td>
+            <td>\(|\vec{a}|\,|\vec{b}|\) (maximum)</td>
+            <td>Vectors pull in exactly the same direction — maximum agreement</td>
+          </tr>
+          <tr>
+            <td>0° &lt; θ &lt; 90°</td>
+            <td>positive</td>
+            <td>positive</td>
+            <td>Vectors lean the same way — partial agreement</td>
+          </tr>
+          <tr>
+            <td>90° (<a href="#term-perpendicular" class="key-term">perpendicular</a>)</td>
+            <td>0</td>
+            <td>0</td>
+            <td>Vectors share no component along each other — zero agreement</td>
+          </tr>
+          <tr>
+            <td>90° &lt; θ &lt; 180°</td>
+            <td>negative</td>
+            <td>negative</td>
+            <td>Vectors lean away from each other — opposition</td>
+          </tr>
+          <tr>
+            <td>180° (opposite directions)</td>
+            <td>−1</td>
+            <td>\(-|\vec{a}|\,|\vec{b}|\) (minimum)</td>
+            <td>Vectors point in exactly opposite directions — maximum opposition</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- SVG: Three cases diagram -->
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 420 120" width="420" xmlns="http://www.w3.org/2000/svg"
+             role="img" aria-label="Three landmark cases for the dot product">
+          <defs>
+            <marker id="ar2" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L7,3 z" fill="#1a5276"/>
+            </marker>
+            <marker id="ar3" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L7,3 z" fill="#1e8449"/>
+            </marker>
+          </defs>
+
+          <!-- Case 1: parallel (θ=0) -->
+          <text x="10" y="15" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#6b7280">θ = 0°  →  max positive</text>
+          <line x1="10" y1="40" x2="110" y2="40" stroke="#1a5276" stroke-width="2.5" marker-end="url(#ar2)"/>
+          <line x1="10" y1="50" x2="110" y2="50" stroke="#1e8449" stroke-width="2.5" marker-end="url(#ar3)"/>
+
+          <!-- Case 2: perpendicular (θ=90) -->
+          <text x="160" y="15" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#6b7280">θ = 90°  →  zero</text>
+          <line x1="210" y1="70" x2="310" y2="70" stroke="#1a5276" stroke-width="2.5" marker-end="url(#ar2)"/>
+          <line x1="210" y1="70" x2="210" y2="15" stroke="#1e8449" stroke-width="2.5" marker-end="url(#ar3)"/>
+          <rect x="210" y="60" width="10" height="10" fill="none" stroke="#6b7280" stroke-width="1.2"/>
+
+          <!-- Case 3: anti-parallel (θ=180) -->
+          <text x="330" y="15" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#6b7280">θ = 180°  →  min (negative)</text>
+          <line x1="330" y1="40" x2="410" y2="40" stroke="#1a5276" stroke-width="2.5" marker-end="url(#ar2)"/>
+          <line x1="410" y1="50" x2="330" y2="50" stroke="#1e8449" stroke-width="2.5" marker-end="url(#ar3)"/>
+        </svg>
+        <p class="diagram-caption">Figure 2 — Parallel vectors (left), perpendicular vectors (centre), anti-parallel vectors (right).</p>
+      </div>
+
+      <div class="callout callout-insight">
+        <strong>Key Insight:</strong>
+        A positive dot product means the vectors lean the same way.
+        Zero means they are at right angles.
+        Negative means they lean in opposite directions.
+        You can predict the sign of a dot product from a quick sketch — no arithmetic needed.
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="section-angle">
+      <h2>6 &nbsp; Why the Angle Matters</h2>
+
+      <p>
+        Let's build intuition before we touch a physics equation.
+        Suppose you are walking north-east along a straight path,
+        and the wind blows from due east (pushing you westward).
+        How much does the wind slow you down?
+      </p>
+      <p>
+        The wind pushes you purely westward. Your motion has both a northward part and an eastward part.
+        The eastward part of your motion is directly opposed by the wind — that's the bit the wind fights.
+        The northward part is completely unaffected.
+        The wind only "acts on" the component of your motion that aligns (or anti-aligns) with its direction.
+      </p>
+
+      <p>
+        The dot product extracts <em>exactly</em> that shared component.
+        It answers: "of the length of vector <strong>b</strong>, how much points along the direction of vector <strong>a</strong>?"
+      </p>
+
+      <h3>Decomposing a Vector</h3>
+      <p>
+        Any vector can be split into two perpendicular parts relative to a chosen direction:
+        a <em>parallel</em> component (along the direction) and a <em>perpendicular</em> component (across it).
+      </p>
+      <div class="math-block">
+        \[\vec{b} = \underbrace{|\vec{b}|\cos\theta}_{\text{along } \vec{a}} \hat{a}
+               + \underbrace{|\vec{b}|\sin\theta}_{\text{perpendicular to } \vec{a}} \hat{a}_\perp\]
+      </div>
+      <p>
+        The dot product \(\vec{a} \cdot \vec{b}\) only "sees" the parallel component \(|\vec{b}|\cos\theta\)
+        — the perpendicular component \(|\vec{b}|\sin\theta\) vanishes because
+        \(\cos 90° = 0\). This is not a coincidence; it is the defining feature of the dot product.
+      </p>
+
+      <div class="callout callout-tip">
+        <strong>Tip:</strong>
+        When two vectors are perpendicular (\(\theta = 90°\)), they share <em>nothing</em> —
+        zero overlap, zero dot product.
+        When two vectors are parallel (\(\theta = 0°\)), they share <em>everything</em> —
+        the dot product is simply the product of their magnitudes.
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="section-work">
+      <h2>7 &nbsp; Application: Work = Force · Displacement</h2>
+
+      <!-- TODO: Replace with a generated image of a child pulling a wagon at ~45° angle -->
+      <figure class="lesson-figure">
+        <div style="width:100%;aspect-ratio:16/9;background:#eaf4fb;border:2px dashed #2e86c1;border-radius:var(--border-radius);display:flex;align-items:center;justify-content:center;">
+          <p style="font-family:var(--font-ui);font-size:0.9rem;color:#2e86c1;text-align:center;padding:1rem;">
+            📷 Image placeholder — child pulling a wagon at ~45° angle<br>
+            <span style="font-size:0.8rem;opacity:0.7;">Replace with generated image</span>
+          </p>
+        </div>
+        <figcaption>
+          A child pulls a wagon — the handle rises at an angle above the horizontal, so only part of
+          the pulling force acts along the direction of motion.
+        </figcaption>
+      </figure>
+
+      <h3>The Physical Setup</h3>
+      <p>
+        In physics, <a href="#term-work" class="key-term">work</a> is the energy transferred to (or from) an object
+        by a <a href="#term-force" class="key-term">force</a> acting over a
+        <a href="#term-displacement" class="key-term">displacement</a>.
+        Intuitively: how hard are you pushing, how far does the object move, and — crucially — are you pushing in the right direction?
+      </p>
+
+      <!-- SVG: lawnmower diagram -->
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 380 200" width="380" xmlns="http://www.w3.org/2000/svg"
+             role="img" aria-label="Force applied at angle θ to horizontal displacement">
+          <defs>
+            <marker id="arF" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#c0392b"/>
+            </marker>
+            <marker id="arD" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#1a5276"/>
+            </marker>
+            <marker id="arFx" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+              <path d="M0,0 L0,6 L8,3 z" fill="#d4ac0d"/>
+            </marker>
+          </defs>
+          <!-- Ground line -->
+          <line x1="30" y1="150" x2="360" y2="150" stroke="#aaa" stroke-width="1.5"/>
+          <!-- Box (simplified) -->
+          <rect x="50" y="120" width="50" height="30" rx="3" fill="#ecf0f1" stroke="#7f8c8d" stroke-width="1.5"/>
+          <!-- Displacement vector (along ground) -->
+          <line x1="75" y1="155" x2="300" y2="155" stroke="#1a5276" stroke-width="2.5" marker-end="url(#arD)"/>
+          <text x="175" y="172" font-family="'Playfair Display',Georgia,serif" font-size="14" fill="#1a5276" text-anchor="middle" font-style="italic">d<tspan dx="-5" dy="-7" font-size="11" font-style="normal">&#x2192;</tspan></text>
+          <!-- Force vector (at angle from box) -->
+          <line x1="75" y1="135" x2="185" y2="55" stroke="#c0392b" stroke-width="2.5" marker-end="url(#arF)"/>
+          <text x="148" y="70" font-family="'Playfair Display',Georgia,serif" font-size="14" fill="#c0392b" font-style="italic">F<tspan dx="-7" dy="-7" font-size="11" font-style="normal">&#x2192;</tspan></text>
+          <!-- Horizontal component (projection) -->
+          <line x1="75" y1="135" x2="185" y2="135" stroke="#d4ac0d" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arFx)"/>
+          <text x="130" y="125" font-family="'Playfair Display',Georgia,serif" font-size="12" fill="#d4ac0d">F cos θ</text>
+          <!-- Vertical component (dashed, grey) -->
+          <line x1="185" y1="55" x2="185" y2="135" stroke="#999" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <text x="192" y="100" font-family="'Playfair Display',Georgia,serif" font-size="11" fill="#999">F sin θ</text>
+          <!-- Angle arc at base of force vector -->
+          <path d="M 105,135 A 30,30 0 0,0 99,117" fill="none" stroke="#2c2c2c" stroke-width="1.5"/>
+          <text x="115" y="122" font-family="'Playfair Display',Georgia,serif" font-size="12" fill="#2c2c2c" font-style="italic">θ</text>
+        </svg>
+        <p class="diagram-caption">
+          Figure 3 — A force \(\vec{F}\) applied at angle \(\theta\) to the horizontal.
+          Only the horizontal component \(F\cos\theta\) acts along the displacement \(\vec{d}\) — that is the part that does work.
+        </p>
+      </div>
+
+      <h3>The Definition of Work</h3>
+      <div class="math-block">
+        \[W = \vec{F} \cdot \vec{d} = |\vec{F}|\,|\vec{d}|\cos\theta\]
+        <p class="math-label">where \(\theta\) is the angle between the force vector and the displacement vector</p>
+      </div>
+      <p>
+        The unit of work is the <strong>joule (J)</strong> = newton × metre (N·m).
+      </p>
+      <p>
+        Why does this formula make physical sense? Because only the component of force
+        <em>along the direction of motion</em> causes the object to accelerate in that direction.
+        The perpendicular component either pushes the object into the surface (doing nothing useful horizontally)
+        or lifts it (doing work against gravity, not along \(\vec{d}\)).
+        The dot product automatically isolates the useful component.
+      </p>
+
+      <h3>Three Instructive Cases</h3>
+      <table class="lesson-table">
+        <thead>
+          <tr><th>Scenario</th><th>θ</th><th style="white-space:nowrap">cos θ</th><th>Work</th><th>Interpretation</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Pushing a box straight forward</td>
+            <td>0°</td>
+            <td>1</td>
+            <td>\(W = Fd\) (maximum)</td>
+            <td>All force contributes to motion</td>
+          </tr>
+          <tr>
+            <td>Carrying a bag horizontally (force is upward)</td>
+            <td>90°</td>
+            <td>0</td>
+            <td>\(W = 0\)</td>
+            <td>Force and motion are perpendicular — zero work done on the bag</td>
+          </tr>
+          <tr>
+            <td>Friction on a sliding box</td>
+            <td>180°</td>
+            <td>−1</td>
+            <td>\(W = -Fd\)</td>
+            <td>Force opposes motion — friction removes kinetic energy</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-tip">
+        <strong>Everyday example:</strong>
+        You can carry a full grocery bag all the way across a parking lot and do zero work on it
+        (in the physics sense). Your upward force (supporting the bag) is perpendicular to your
+        horizontal displacement, so \(\cos 90° = 0\) and \(W = 0\).
+        Your muscles still tire — but that energy goes into keeping your arm contracted, not into the bag's motion.
+      </div>
+
+      <h3>Worked Problem</h3>
+      <div class="example-box">
+        <p class="example-title">Pushing a Lawnmower</p>
+        <p>
+          A person pushes a lawnmower handle with a force of <strong>80 N</strong> at an angle of
+          <strong>35° below the horizontal</strong>. The mower travels <strong>20 m</strong> horizontally.
+          How much work does the person do on the mower?
+        </p>
+        <div class="step"><span class="step-num">1.</span>
+          <span>Identify the force and displacement:
+            \(|\vec{F}| = 80\text{ N}\), \(|\vec{d}| = 20\text{ m}\), \(\theta = 35°\)</span>
+        </div>
+        <div class="step"><span class="step-num">2.</span>
+          <span>Apply the work formula: \(W = |\vec{F}|\,|\vec{d}|\cos\theta\)</span>
+        </div>
+        <div class="step"><span class="step-num">3.</span>
+          <span>Substitute: \(W = 80 \times 20 \times \cos 35°\)</span>
+        </div>
+        <div class="step"><span class="step-num">4.</span>
+          <span>Evaluate: \(\cos 35° \approx 0.819\), so \(W = 1600 \times 0.819 \approx \mathbf{1310\text{ J}}\)</span>
+        </div>
+        <p style="margin-top:0.6rem">
+          If the person had pushed perfectly horizontally (θ = 0°), the work would be
+          \(80 \times 20 = 1600\text{ J}\). The 35° angle reduces useful work by about 18%.
+        </p>
+      </div>
+
+      <h3>Negative Work</h3>
+      <p>
+        When \(\theta > 90°\), work is negative. This means the force is removing energy from the object.
+        Brakes do negative work on a car — they apply a force opposing motion, converting kinetic energy into heat.
+        Friction also does negative work on a sliding box, slowing it down.
+        Negative work is not "bad" — it simply means the force is acting as an energy sink rather than a source.
+      </p>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="section-properties">
+      <h2>8 &nbsp; Properties of the Dot Product</h2>
+
+      <p>These algebraic rules hold for all vectors \(\vec{a}\), \(\vec{b}\), \(\vec{c}\) and any scalar \(k\):</p>
+
+      <h3>Commutative</h3>
+      <div class="math-block">\[\vec{a} \cdot \vec{b} = \vec{b} \cdot \vec{a}\]</div>
+      <p>
+        The angle between \(\vec{a}\) and \(\vec{b}\) is the same as the angle between \(\vec{b}\) and \(\vec{a}\),
+        and \(\cos\theta\) is symmetric, so the order doesn't matter.
+      </p>
+
+      <h3>Distributive over addition</h3>
+      <div class="math-block">\[\vec{a} \cdot (\vec{b} + \vec{c}) = \vec{a} \cdot \vec{b} + \vec{a} \cdot \vec{c}\]</div>
+
+      <h3>Compatible with scalar multiplication</h3>
+      <div class="math-block">\[(k\vec{a}) \cdot \vec{b} = k\,(\vec{a} \cdot \vec{b})\]</div>
+
+      <h3>Self-dot product gives magnitude squared</h3>
+      <div class="math-block">\[\vec{a} \cdot \vec{a} = |\vec{a}|^2\]</div>
+      <p>
+        Since the angle between a vector and itself is 0°, and \(\cos 0° = 1\),
+        we get \(|\vec{a}||\vec{a}| \times 1 = |\vec{a}|^2\).
+        This is a useful shortcut: if you ever need to square a magnitude, use the dot product.
+      </p>
+
+      <h3>Not associative (in the usual sense)</h3>
+      <div class="math-block">
+        \[(\vec{a} \cdot \vec{b}) \cdot \vec{c} \quad \text{is undefined}\]
+      </div>
+      <p>
+        \(\vec{a} \cdot \vec{b}\) is a scalar. You cannot take the dot product of a scalar with a vector.
+        Associativity requires all three objects to be the same type, so it doesn't apply here.
+      </p>
+
+      <div class="callout callout-tip">
+        <strong>Quick test for perpendicularity:</strong>
+        Two vectors are <a href="#term-perpendicular" class="key-term">perpendicular</a> if and only if
+        \(\vec{a} \cdot \vec{b} = 0\). This is one of the most-used tests in geometry and physics.
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="section-cross-product-teaser">
+      <h2>9 &nbsp; A Glimpse at the Cross Product</h2>
+
+      <p>
+        The dot product is one of two standard ways to "multiply" two vectors.
+        The other is the <a href="#term-cross-product" class="key-term">cross product</a>, written \(\vec{a} \times \vec{b}\).
+      </p>
+
+      <table class="lesson-table">
+        <thead>
+          <tr><th></th><th>Dot Product \(\vec{a} \cdot \vec{b}\)</th><th>Cross Product \(\vec{a} \times \vec{b}\)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Result type</td><td><strong>Scalar</strong> (a number)</td><td><strong>Vector</strong> (has direction)</td></tr>
+          <tr><td>Uses angle via</td><td>\(\cos\theta\)</td><td>\(\sin\theta\)</td></tr>
+          <tr><td>Maximum when</td><td>Vectors are parallel (θ = 0°)</td><td>Vectors are perpendicular (θ = 90°)</td></tr>
+          <tr><td>Zero when</td><td>Vectors are perpendicular (θ = 90°)</td><td>Vectors are parallel (θ = 0° or 180°)</td></tr>
+          <tr><td>Direction of result</td><td>N/A (scalar)</td><td>Perpendicular to both input vectors</td></tr>
+          <tr><td>Physics use</td><td>Work, power, projection</td><td>Torque, angular momentum, magnetic force</td></tr>
+        </tbody>
+      </table>
+
+      <p>
+        Notice the beautiful symmetry: the dot product is zero when vectors are perpendicular,
+        while the cross product is zero when they are parallel — they answer complementary questions.
+        The dot product asks "how much do these vectors agree?"
+        The cross product asks "how much do these vectors differ in direction?"
+      </p>
+      <p>
+        When you turn a wrench to tighten a bolt, the torque depends on how perpendicular your force is
+        to the wrench — perpendicular force gives maximum torque.
+        That is \(\sin\theta\) at work, not \(\cos\theta\).
+        The cross product handles all such rotational situations.
+      </p>
+
+      <div class="callout callout-tip teaser">
+        <strong>Coming up in Lesson 2 — The Cross Product:</strong>
+        We will define \(\vec{a} \times \vec{b}\) both algebraically (using a determinant)
+        and geometrically (using the right-hand rule to find its direction),
+        and apply it to calculate torque and the magnetic force on a moving charge.
+        <span class="teaser-link">(Lesson 2 will be linked here when published.)</span>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="section-summary">
+      <h2>10 &nbsp; Summary</h2>
+
+      <ul>
+        <li>
+          <strong>Two definitions, one result:</strong>
+          \(\vec{a}\cdot\vec{b} = a_1 b_1 + a_2 b_2 + a_3 b_3 = |\vec{a}||\vec{b}|\cos\theta\).
+          Always use whichever form is more convenient for the information you have.
+        </li>
+        <li>
+          <strong>The result is always a scalar.</strong>
+          Direction information is compressed into a single signed number.
+        </li>
+        <li>
+          <strong>Sign tells you alignment:</strong>
+          positive → vectors lean the same way;
+          zero → perpendicular;
+          negative → vectors lean in opposite directions.
+        </li>
+        <li>
+          <strong>Geometric meaning:</strong>
+          the dot product measures how much of one vector's length falls along the other's direction
+          (the scalar projection), scaled by the other's length.
+        </li>
+        <li>
+          <strong>Work:</strong>
+          \(W = \vec{F}\cdot\vec{d} = |\vec{F}||\vec{d}|\cos\theta\).
+          Only the component of force along the displacement does work.
+          Perpendicular force does zero work; opposing force does negative work.
+        </li>
+        <li>
+          <strong>The dot product vs. the cross product:</strong>
+          dot → scalar, uses \(\cos\theta\);
+          cross → vector, uses \(\sin\theta\).
+          They are complementary tools. Lesson 2 covers the cross product in full.
+        </li>
+      </ul>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="glossary" class="glossary-section">
+      <h2>Glossary</h2>
+      <dl>
+
+        <dt id="term-vector">Vector</dt>
+        <dd>A quantity that has both a magnitude (size) and a direction.
+            Written in bold (<strong>a</strong>) or with an arrow (\(\vec{a}\)).
+            Examples: velocity, force, displacement.</dd>
+
+        <dt id="term-scalar">Scalar</dt>
+        <dd>A quantity that has only a magnitude — no direction.
+            Examples: temperature, mass, the dot product of two vectors.</dd>
+
+        <dt id="term-magnitude">Magnitude</dt>
+        <dd>The length (size) of a vector, always a non-negative number.
+            Written \(|\vec{a}|\). In 2-D: \(|\vec{a}| = \sqrt{a_1^2+a_2^2}\).</dd>
+
+        <dt id="term-dot-product">Dot product</dt>
+        <dd>An operation on two vectors that returns a scalar.
+            Algebraically: sum of products of matching components.
+            Geometrically: \(|\vec{a}||\vec{b}|\cos\theta\).
+            Measures how much the vectors "agree" in direction.</dd>
+
+        <dt id="term-scalar-projection">Scalar projection</dt>
+        <dd>The signed length of the shadow that one vector casts onto another.
+            The projection of \(\vec{b}\) onto \(\vec{a}\) is \(|\vec{b}|\cos\theta\).</dd>
+
+        <dt id="term-angle-between">Angle between vectors</dt>
+        <dd>The smallest angle \(\theta\) (between 0° and 180°) formed when both vectors are
+            placed tail-to-tail. Determines the sign and magnitude of the dot product.</dd>
+
+        <dt id="term-unit-vector">Unit vector</dt>
+        <dd>A vector with magnitude exactly 1, used to represent a pure direction.
+            \(\hat{\imath}\), \(\hat{\jmath}\), \(\hat{k}\) point along the positive x, y, z axes.</dd>
+
+        <dt id="term-component">Component</dt>
+        <dd>The portion of a vector along a specific axis. A scalar value.
+            For \(\vec{a} = (a_1, a_2)\), \(a_1\) is the x-component and \(a_2\) the y-component.</dd>
+
+        <dt id="term-perpendicular">Perpendicular</dt>
+        <dd>At a 90° angle to each other. Two vectors are perpendicular if and only if their dot product is zero.</dd>
+
+        <dt id="term-parallel">Parallel</dt>
+        <dd>Pointing in the same direction (0°) or exactly opposite directions (180°).
+            Parallel vectors have \(|\vec{a}\cdot\vec{b}| = |\vec{a}||\vec{b}|\).</dd>
+
+        <dt id="term-work">Work (physics)</dt>
+        <dd>The energy transferred to an object by a force acting over a displacement.
+            \(W = \vec{F}\cdot\vec{d}\), measured in joules (J).
+            Positive work adds energy; negative work removes energy.</dd>
+
+        <dt id="term-displacement">Displacement</dt>
+        <dd>A vector from an object's starting position to its ending position.
+            Represents how far and in what direction the object moved.</dd>
+
+        <dt id="term-force">Force</dt>
+        <dd>A push or pull acting on an object. A vector measured in newtons (N).
+            Multiple forces can act simultaneously; their effects add as vectors.</dd>
+
+        <dt id="term-cross-product">Cross product</dt>
+        <dd>A second vector multiplication operation (\(\vec{a}\times\vec{b}\)) that produces a vector
+            perpendicular to both inputs. Uses \(\sin\theta\) instead of \(\cos\theta\).
+            Covered in full in Lesson 2.</dd>
+
+      </dl>
+    </section>
+
+  </main><!-- /.lesson-content -->
+</div><!-- /.lesson-layout -->
+
+<!-- ⑥ FOOTER -->
+<footer class="lesson-footer">
+  <span style="font-family:var(--font-ui);font-size:0.85rem;color:var(--color-muted);">
+    ← No previous lesson
+  </span>
+  <a class="btn-exercises" href="lesson-01-dot-product-exercises.html">Practice Exercises &rarr;</a>
+  <a class="btn-next" href="#">Lesson 2 — The Cross Product &rarr;</a>
+</footer>
+
+<script>
+  // ── TOC toggle ────────────────────────────────────────
+  const panel   = document.getElementById('toc-panel');
+  const toggle  = document.getElementById('toc-toggle');
+  const STORAGE_KEY = 'physics-toc-collapsed';
+
+  function applyState(collapsed) {
+    panel.classList.toggle('collapsed', collapsed);
+    toggle.setAttribute('aria-expanded', String(!collapsed));
+    toggle.querySelector('.toc-label').textContent = collapsed ? '' : 'Contents';
+    try { localStorage.setItem(STORAGE_KEY, collapsed ? '1' : '0'); } catch(e) {}
+  }
+
+  // Restore saved state
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved === '1') applyState(true);
+  } catch(e) {}
+
+  toggle.addEventListener('click', () => {
+    applyState(!panel.classList.contains('collapsed'));
+  });
+
+  // Mobile overlay toggle
+  if (window.innerWidth <= 768) {
+    panel.classList.add('collapsed');
+    toggle.addEventListener('click', () => {
+      panel.classList.toggle('mobile-open');
+    });
+  }
+
+  // ── Active TOC link on scroll ─────────────────────────
+  const sections = document.querySelectorAll('section[id]');
+  const tocLinks = document.querySelectorAll('.toc-list a');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        tocLinks.forEach(a => a.classList.remove('active'));
+        const active = document.querySelector(`.toc-list a[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-100px 0px -60% 0px', threshold: 0 });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
