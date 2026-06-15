@@ -361,9 +361,6 @@
     }
 
     /* ─── Teaser Box ────────────────────────────────────── */
-    .teaser {
-      font-style: italic;
-    }
     .teaser-link {
       font-style: normal;
       font-size: 0.82rem;
@@ -451,9 +448,9 @@
         <li><a href="#section-overview"><span class="toc-num">1</span>Overview &amp; Motivation</a></li>
         <li><a href="#section-vector-review"><span class="toc-num">2</span>Vector Review</a></li>
         <li><a href="#section-definition"><span class="toc-num">3</span>Defining the Dot Product</a></li>
-        <li><a href="#section-calculation"><span class="toc-num">4</span>Calculating the Dot Product</a></li>
-        <li><a href="#section-intuition"><span class="toc-num">5</span>Geometric Intuition</a></li>
-        <li><a href="#section-angle"><span class="toc-num">6</span>Why the Angle Matters</a></li>
+        <li><a href="#section-intuition"><span class="toc-num">4</span>Geometric Intuition</a></li>
+        <li><a href="#section-calculation"><span class="toc-num">5</span>Calculating the Dot Product</a></li>
+        <li><a href="#section-angle"><span class="toc-num">6</span>From Geometry to Physics</a></li>
         <li><a href="#section-work"><span class="toc-num">7</span>Work = Force · Displacement</a></li>
         <li><a href="#section-properties"><span class="toc-num">8</span>Properties</a></li>
         <li><a href="#section-cross-product-teaser"><span class="toc-num">9</span>Glimpse at the Cross Product</a></li>
@@ -600,66 +597,8 @@
     </section>
 
     <!-- ══════════════════════════════════════════════════ -->
-    <section id="section-calculation">
-      <h2>4 &nbsp; Calculating the Dot Product</h2>
-
-      <p>Both definitions lead to the same answer. Here are three worked examples showing both routes.</p>
-
-      <!-- Example 1 -->
-      <div class="example-box">
-        <p class="example-title">Example 1 — Component method (2-D)</p>
-        <p>Let \(\vec{a} = (3, 4)\) and \(\vec{b} = (1, 2)\). Find \(\vec{a} \cdot \vec{b}\).</p>
-        <div class="step"><span class="step-num">1.</span>
-          <span>Multiply the first components: \(a_1 b_1 = 3 \times 1 = 3\)</span></div>
-        <div class="step"><span class="step-num">2.</span>
-          <span>Multiply the second components: \(a_2 b_2 = 4 \times 2 = 8\)</span></div>
-        <div class="step"><span class="step-num">3.</span>
-          <span>Add: \(\vec{a} \cdot \vec{b} = 3 + 8 = \mathbf{11}\)</span></div>
-        <p style="margin-top:0.6rem">The answer is the scalar 11. Notice that we never produced a new vector — just a number.</p>
-      </div>
-
-      <!-- Example 2 -->
-      <div class="example-box">
-        <p class="example-title">Example 2 — Angle method</p>
-        <p>
-          Two vectors have magnitudes \(|\vec{a}| = 5\) and \(|\vec{b}| = 6\),
-          and the angle between them is \(\theta = 60°\). Find \(\vec{a} \cdot \vec{b}\).
-        </p>
-        <div class="step"><span class="step-num">1.</span>
-          <span>Write the formula: \(\vec{a} \cdot \vec{b} = |\vec{a}|\,|\vec{b}|\cos\theta\)</span></div>
-        <div class="step"><span class="step-num">2.</span>
-          <span>Substitute: \(= 5 \times 6 \times \cos 60°\)</span></div>
-        <div class="step"><span class="step-num">3.</span>
-          <span>Evaluate \(\cos 60° = 0.5\): \(= 30 \times 0.5 = \mathbf{15}\)</span></div>
-      </div>
-
-      <!-- Example 3 -->
-      <div class="example-box">
-        <p class="example-title">Example 3 — Cross-check: perpendicular vectors</p>
-        <p>Let \(\vec{a} = (3, 0)\) and \(\vec{b} = (0, 4)\). These vectors point along the x- and y-axes respectively.</p>
-        <div class="step"><span class="step-num">1.</span>
-          <span><strong>Component method:</strong> \(3 \times 0 + 0 \times 4 = 0\)</span></div>
-        <div class="step"><span class="step-num">2.</span>
-          <span><strong>Angle method:</strong> The angle between the x-axis and y-axis is 90°.
-            \(\cos 90° = 0\), so \(\vec{a}\cdot\vec{b} = 3 \times 4 \times 0 = 0\) ✓</span></div>
-        <p style="margin-top:0.6rem">
-          Both methods agree: the dot product is zero whenever two vectors are
-          <a href="#term-perpendicular" class="key-term">perpendicular</a>.
-          This will be important very soon.
-        </p>
-      </div>
-
-      <div class="callout callout-warning">
-        <strong>Watch out:</strong>
-        The dot product is not the same as ordinary multiplication of two scalars.
-        You cannot write \(\vec{a} \cdot \vec{b} = |\vec{a}| \times |\vec{b}|\) —
-        that would ignore the angle entirely and be wrong (unless \(\theta = 0°\)).
-      </div>
-    </section>
-
-    <!-- ══════════════════════════════════════════════════ -->
     <section id="section-intuition">
-      <h2>5 &nbsp; The Geometric Intuition</h2>
+      <h2>4 &nbsp; The Geometric Intuition</h2>
 
       <p>
         Numbers are only useful if we understand what they mean.
@@ -679,7 +618,9 @@
       </div>
       <p>
         Equivalently, you can think of it as the shadow of \(\vec{a}\) onto \(\vec{b}\) times \(|\vec{b}|\) —
-        the formula is symmetric, so both interpretations give the same number.
+        both interpretations give the same number. This symmetry is not a coincidence: the formula
+        \(|\vec{a}||\vec{b}|\cos\theta\) is symmetric in \(\vec{a}\) and \(\vec{b}\) because
+        \(\cos\theta\) is the same no matter which vector you measure the angle <em>from</em>.
       </p>
 
       <h3>Where does \(|\vec{b}|\cos\theta\) come from?</h3>
@@ -924,52 +865,172 @@
         Negative means they lean in opposite directions.
         You can predict the sign of a dot product from a quick sketch — no arithmetic needed.
       </div>
+
+      <div class="callout callout-tip">
+        <strong>Pause and predict:</strong>
+        Before moving to the next section, answer this in your head:
+        two unit vectors both have magnitude 1.
+        If the angle between them is 120°, what is their dot product?
+        Write down your prediction, then check it in Section 5.
+        (<em>Hint: what is \(\cos 120°\)?</em>)
+      </div>
+
+      <h3>Why Both Definitions Give the Same Answer</h3>
+      <p>
+        This is not obvious — why should multiplying matching components give the same result as
+        \(|\vec{a}||\vec{b}|\cos\theta\)? Here is a sketch proof using the
+        <a href="#term-magnitude" class="key-term">law of cosines</a>.
+      </p>
+      <p>
+        Place \(\vec{a}\) and \(\vec{b}\) tail-to-tail. The vector \(\vec{a} - \vec{b}\) forms the
+        third side of a triangle, so the law of cosines gives:
+      </p>
+      <div class="math-block">
+        \[|\vec{a} - \vec{b}|^2 = |\vec{a}|^2 + |\vec{b}|^2 - 2|\vec{a}||\vec{b}|\cos\theta\]
+      </div>
+      <p>Now expand the left side using components \(\vec{a} = (a_1, a_2)\), \(\vec{b} = (b_1, b_2)\):</p>
+      <div class="math-block">
+        \[\begin{aligned}
+        |\vec{a} - \vec{b}|^2
+          &= (a_1 - b_1)^2 + (a_2 - b_2)^2 \\
+          &= a_1^2 - 2a_1 b_1 + b_1^2 + a_2^2 - 2a_2 b_2 + b_2^2 \\
+          &= \underbrace{(a_1^2 + a_2^2)}_{|\vec{a}|^2}
+           + \underbrace{(b_1^2 + b_2^2)}_{|\vec{b}|^2}
+           - 2(a_1 b_1 + a_2 b_2)
+        \end{aligned}\]
+      </div>
+      <p>Setting the two expressions for \(|\vec{a}-\vec{b}|^2\) equal and cancelling \(|\vec{a}|^2 + |\vec{b}|^2\):</p>
+      <div class="math-block">
+        \[-2(a_1 b_1 + a_2 b_2) = -2|\vec{a}||\vec{b}|\cos\theta\]
+      </div>
+      <p>Divide both sides by \(-2\):</p>
+      <div class="math-block">
+        \[a_1 b_1 + a_2 b_2 = |\vec{a}||\vec{b}|\cos\theta\]
+      </div>
+      <p>The two definitions are exactly equal — not just approximately, but always.</p>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="section-calculation">
+      <h2>5 &nbsp; Calculating the Dot Product</h2>
+
+      <div class="callout callout-tip">
+        <strong>Pause and predict:</strong>
+        Let \(\vec{a} = (1, 0)\) and \(\vec{b} = (0, 1)\).
+        Without computing, what is \(\vec{a} \cdot \vec{b}\)?
+        These point along the x- and y-axes — what does Section 4 tell you about vectors at 90°?
+        Check your answer in Example 3 below.
+      </div>
+
+      <p>Both definitions lead to the same answer. Here are three worked examples showing both routes.</p>
+
+      <!-- Example 1 -->
+      <div class="example-box">
+        <p class="example-title">Example 1 — Component method (2-D)</p>
+        <p>Let \(\vec{a} = (3, 4)\) and \(\vec{b} = (1, 2)\). Find \(\vec{a} \cdot \vec{b}\).</p>
+        <div class="step"><span class="step-num">1.</span>
+          <span>Multiply the first components: \(a_1 b_1 = 3 \times 1 = 3\)</span></div>
+        <div class="step"><span class="step-num">2.</span>
+          <span>Multiply the second components: \(a_2 b_2 = 4 \times 2 = 8\)</span></div>
+        <div class="step"><span class="step-num">3.</span>
+          <span>Add: \(\vec{a} \cdot \vec{b} = 3 + 8 = \mathbf{11}\)</span></div>
+        <p style="margin-top:0.6rem">The answer is the scalar 11. Notice that we never produced a new vector — just a number.</p>
+      </div>
+
+      <!-- Example 2 -->
+      <div class="example-box">
+        <p class="example-title">Example 2 — Angle method</p>
+        <p>
+          Two vectors have magnitudes \(|\vec{a}| = 5\) and \(|\vec{b}| = 6\),
+          and the angle between them is \(\theta = 60°\). Find \(\vec{a} \cdot \vec{b}\).
+        </p>
+        <div class="step"><span class="step-num">1.</span>
+          <span>Write the formula: \(\vec{a} \cdot \vec{b} = |\vec{a}|\,|\vec{b}|\cos\theta\)</span></div>
+        <div class="step"><span class="step-num">2.</span>
+          <span>Substitute: \(= 5 \times 6 \times \cos 60°\)</span></div>
+        <div class="step"><span class="step-num">3.</span>
+          <span>Evaluate \(\cos 60° = 0.5\): \(= 30 \times 0.5 = \mathbf{15}\)</span></div>
+      </div>
+
+      <!-- Example 3 -->
+      <div class="example-box">
+        <p class="example-title">Example 3 — Cross-check: perpendicular vectors</p>
+        <p>Let \(\vec{a} = (3, 0)\) and \(\vec{b} = (0, 4)\). These vectors point along the x- and y-axes respectively.</p>
+        <div class="step"><span class="step-num">1.</span>
+          <span><strong>Component method:</strong> \(3 \times 0 + 0 \times 4 = 0\)</span></div>
+        <div class="step"><span class="step-num">2.</span>
+          <span><strong>Angle method:</strong> The angle between the x-axis and y-axis is 90°.
+            \(\cos 90° = 0\), so \(\vec{a}\cdot\vec{b} = 3 \times 4 \times 0 = 0\) ✓</span></div>
+        <p style="margin-top:0.6rem">
+          Both methods agree: the dot product is zero whenever two vectors are
+          <a href="#term-perpendicular" class="key-term">perpendicular</a>.
+          This will be important very soon.
+        </p>
+      </div>
+
+      <div class="callout callout-warning">
+        <strong>Watch out:</strong>
+        The dot product is not the same as ordinary multiplication of two scalars.
+        You cannot write \(\vec{a} \cdot \vec{b} = |\vec{a}| \times |\vec{b}|\) —
+        that would ignore the angle entirely and be wrong (unless \(\theta = 0°\)).
+      </div>
+
+      <!-- Example 4 -->
+      <div class="example-box">
+        <p class="example-title">Example 4 — Three dimensions</p>
+        <p>
+          Let \(\vec{a} = (1, 2, 3)\) and \(\vec{b} = (4, -1, 0)\). Find \(\vec{a} \cdot \vec{b}\).
+        </p>
+        <div class="step"><span class="step-num">1.</span>
+          <span>Multiply first components: \(1 \times 4 = 4\)</span></div>
+        <div class="step"><span class="step-num">2.</span>
+          <span>Multiply second components: \(2 \times (-1) = -2\)</span></div>
+        <div class="step"><span class="step-num">3.</span>
+          <span>Multiply third components: \(3 \times 0 = 0\)</span></div>
+        <div class="step"><span class="step-num">4.</span>
+          <span>Add: \(\vec{a} \cdot \vec{b} = 4 + (-2) + 0 = \mathbf{2}\)</span></div>
+        <p style="margin-top:0.6rem">
+          The result is positive, so the angle between these 3-D vectors is acute.
+          The formula extends naturally: add one more product of matching components for each extra dimension.
+        </p>
+      </div>
     </section>
 
     <!-- ══════════════════════════════════════════════════ -->
     <section id="section-angle">
-      <h2>6 &nbsp; Why the Angle Matters</h2>
+      <h2>6 &nbsp; From Geometry to Physics</h2>
 
       <p>
-        Let's build intuition before we touch a physics equation.
-        Suppose you are walking north-east along a straight path,
-        and the wind blows from due east (pushing you westward).
-        How much does the wind slow you down?
-      </p>
-      <p>
-        The wind pushes you purely westward. Your motion has both a northward part and an eastward part.
-        The eastward part of your motion is directly opposed by the wind — that's the bit the wind fights.
-        The northward part is completely unaffected.
-        The wind only "acts on" the component of your motion that aligns (or anti-aligns) with its direction.
+        The geometric picture from Section 4 has a direct physical consequence.
+        Imagine you are walking north-east and the wind blows from due east.
+        The wind only fights the eastward part of your motion — the northward part is completely unaffected.
+        The dot product formalises this: it extracts <em>exactly</em> the component of one vector
+        that runs along the direction of another.
       </p>
 
       <p>
-        The dot product extracts <em>exactly</em> that shared component.
-        It answers: "of the length of vector <strong>b</strong>, how much points along the direction of vector <strong>a</strong>?"
+        Any vector \(\vec{b}\) can be split into two perpendicular parts relative to a direction \(\vec{a}\):
+        a <em>parallel</em> component of length \(|\vec{b}|\cos\theta\) (along \(\vec{a}\))
+        and a <em>perpendicular</em> component of length \(|\vec{b}|\sin\theta\) (across \(\vec{a}\)).
+        The dot product \(\vec{a} \cdot \vec{b}\) sees only the parallel component;
+        the perpendicular part contributes nothing because \(\cos 90° = 0\).
       </p>
 
-      <h3>Decomposing a Vector</h3>
-      <p>
-        Any vector can be split into two perpendicular parts relative to a chosen direction:
-        a <em>parallel</em> component (along the direction) and a <em>perpendicular</em> component (across it).
-      </p>
-      <div class="math-block">
-        \[\vec{b} = \underbrace{|\vec{b}|\cos\theta}_{\text{along } \vec{a}} \hat{a}
-               + \underbrace{|\vec{b}|\sin\theta}_{\text{perpendicular to } \vec{a}} \hat{a}_\perp\]
+      <div class="callout callout-insight">
+        <strong>Key Insight:</strong>
+        The dot product does one specific thing — it isolates the component of one vector
+        that points in the direction of the other, then scales it by the other vector's length.
+        Everything else vanishes.
       </div>
-      <p>
-        The dot product \(\vec{a} \cdot \vec{b}\) only "sees" the parallel component \(|\vec{b}|\cos\theta\)
-        — the perpendicular component \(|\vec{b}|\sin\theta\) vanishes because
-        \(\cos 90° = 0\). This is not a coincidence; it is the defining feature of the dot product.
-      </p>
 
-      <div class="callout callout-tip">
-        <strong>Tip:</strong>
-        When two vectors are perpendicular (\(\theta = 90°\)), they share <em>nothing</em> —
-        zero overlap, zero dot product.
-        When two vectors are parallel (\(\theta = 0°\)), they share <em>everything</em> —
-        the dot product is simply the product of their magnitudes.
-      </div>
+      <p>
+        This is precisely what physicists need when a force acts at an angle to a displacement.
+        Only the force component <em>along the direction of motion</em> accelerates the object in that direction.
+        The perpendicular component either presses the object into a surface (doing no horizontal work)
+        or lifts it against gravity.
+        The dot product automatically extracts the useful part — which is why
+        <strong>Work = \(\vec{F} \cdot \vec{d}\)</strong>.
+      </p>
     </section>
 
     <!-- ══════════════════════════════════════════════════ -->
@@ -1101,9 +1162,16 @@
           <strong>35° below the horizontal</strong>. The mower travels <strong>20 m</strong> horizontally.
           How much work does the person do on the mower?
         </p>
+        <div class="step"><span class="step-num">0.</span>
+          <span><strong>Identify the angle between \(\vec{F}\) and \(\vec{d}\).</strong>
+            The force is directed 35° <em>below the horizontal</em>; the displacement is
+            <em>horizontal</em>. The angle between them is therefore \(\theta = 35°\).
+            This step is easy to skip and often causes errors — always draw the two vectors
+            tail-to-tail before naming \(\theta\).</span>
+        </div>
         <div class="step"><span class="step-num">1.</span>
-          <span>Identify the force and displacement:
-            \(|\vec{F}| = 80\text{ N}\), \(|\vec{d}| = 20\text{ m}\), \(\theta = 35°\)</span>
+          <span>Identify the magnitudes:
+            \(|\vec{F}| = 80\text{ N}\), \(|\vec{d}| = 20\text{ m}\)</span>
         </div>
         <div class="step"><span class="step-num">2.</span>
           <span>Apply the work formula: \(W = |\vec{F}|\,|\vec{d}|\cos\theta\)</span>
@@ -1220,6 +1288,15 @@
     <!-- ══════════════════════════════════════════════════ -->
     <section id="section-summary">
       <h2>10 &nbsp; Summary</h2>
+
+      <p>
+        Return to the question from Section 1: you push a heavy box across a warehouse floor.
+        If your force is 100 N directed 35° above the horizontal and the box moves 5 m,
+        only \(100\cos 35° \approx 82\text{ N}\) of your force contributes to horizontal motion.
+        The work done is \(W = 100 \times 5 \times \cos 35° \approx 410\text{ J}\).
+        The other \(\approx 18\text{ N}\) presses vertically into the floor and does no work on the box.
+        That is the dot product in action.
+      </p>
 
       <ul>
         <li>
