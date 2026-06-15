@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Exercises — The Dot Product | Physics Lessons</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;600;700&display=swap" />
+
+  <style>
+    /* ─── Design Tokens ─────────────────────────────── */
+    :root {
+      --color-bg:          #f9f9f7;
+      --color-surface:     #ffffff;
+      --color-primary:     #1a5276;
+      --color-primary-lt:  #2471a3;
+      --color-accent:      #d4ac0d;
+      --color-text:        #2c2c2c;
+      --color-muted:       #6b7280;
+      --color-border:      #d1d5db;
+      --color-correct:     #1e8449;
+      --color-correct-bg:  #eafaf1;
+      --color-wrong:       #c0392b;
+      --color-wrong-bg:    #fdf0ef;
+      --color-boss:        #4a235a;
+      --font-body:  'Playfair Display', Georgia, serif;
+      --font-ui:    'Source Sans 3', system-ui, sans-serif;
+      --radius: 6px;
+    }
+
+    /* ─── Reset ──────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-ui); font-size: 16px; line-height: 1.6;
+           color: var(--color-text); background: var(--color-bg); }
+
+    /* ─── Header ─────────────────────────────────────── */
+    .ex-header {
+      background: var(--color-primary);
+      color: #fff;
+      padding: 1.1rem 2rem;
+      position: sticky; top: 0; z-index: 50;
+      box-shadow: 0 2px 8px rgba(0,0,0,.25);
+    }
+    .ex-header .breadcrumb {
+      font-size: .78rem; opacity: .72; margin-bottom: .25rem;
+    }
+    .ex-header h1 { font-family: var(--font-body); font-size: 1.35rem; font-weight: 700; }
+    .ex-header .meta { font-size: .8rem; opacity: .65; margin-top: .15rem; }
+
+    /* ─── Score Banner ───────────────────────────────── */
+    .score-banner {
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: .75rem;
+      background: var(--color-surface);
+      border-bottom: 1px solid var(--color-border);
+      padding: .75rem 2rem;
+      position: sticky; top: 68px; z-index: 40;
+    }
+    .score-cells { display: flex; gap: .5rem; flex-wrap: wrap; }
+    .score-cell {
+      font-family: var(--font-ui); font-size: .82rem; font-weight: 600;
+      padding: .35rem .85rem; border-radius: 20px;
+      background: #f0f0ee; color: var(--color-muted);
+      transition: background .2s, color .2s;
+    }
+    .score-cell.active { background: var(--color-primary); color: #fff; }
+    .score-cell .val { font-weight: 700; margin-left: .3em; }
+    .btn-reset {
+      font-family: var(--font-ui); font-size: .88rem; font-weight: 600;
+      padding: .45rem 1.1rem; border-radius: var(--radius);
+      border: 1.5px solid var(--color-primary); color: var(--color-primary);
+      background: none; cursor: pointer; transition: background .15s;
+    }
+    .btn-reset:hover { background: #eaf4fb; }
+
+    /* ─── Main Layout ────────────────────────────────── */
+    .ex-main { max-width: 900px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+    /* ─── Section Headers ────────────────────────────── */
+    .ex-section { margin-bottom: 3.5rem; }
+    .ex-section-head { margin-bottom: 1.25rem; }
+    .ex-section-head h2 {
+      font-family: var(--font-body); font-size: 1.45rem; color: var(--color-primary);
+      border-bottom: 2px solid var(--color-border); padding-bottom: .4rem;
+      margin-bottom: .5rem;
+    }
+    .ex-section-head p { color: var(--color-muted); font-size: .93rem; }
+
+    /* ─── Exercise Cards ─────────────────────────────── */
+    .ex-cards { display: flex; flex-direction: column; gap: 1.5rem; }
+    .ex-card {
+      background: var(--color-surface); border: 1.5px solid var(--color-border);
+      border-radius: var(--radius); padding: 1.25rem 1.5rem;
+      transition: border-color .2s;
+    }
+    .ex-card.correct  { border-color: var(--color-correct); }
+    .ex-card.wrong    { border-color: var(--color-wrong); }
+    .ex-card .ex-num  {
+      font-size: .73rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .07em; color: var(--color-muted); margin-bottom: .7rem;
+    }
+
+    /* ─── Card Body: diagram + formula side by side ── */
+    .ex-body {
+      display: flex; gap: 1.5rem; align-items: flex-start; flex-wrap: wrap;
+    }
+    .ex-diagram { flex-shrink: 0; }
+    .ex-right    { flex: 1; min-width: 220px; }
+
+    /* ─── Formula Row ────────────────────────────────── */
+    .formula-row {
+      display: flex; align-items: center; flex-wrap: wrap;
+      gap: .3rem; font-size: 1rem;
+      margin: .5rem 0 1rem;
+      font-family: var(--font-body); font-style: italic;
+    }
+    .formula-row .sym  { color: var(--color-text); }
+    .formula-row .op   { font-style: normal; color: var(--color-muted); margin: 0 .1rem; }
+    .ex-input {
+      width: 52px; text-align: center; font-size: 1rem;
+      font-family: var(--font-ui); padding: .25rem .4rem;
+      border: 1.5px solid var(--color-border); border-radius: 4px;
+      outline: none; transition: border-color .15s, background .15s;
+    }
+    .ex-input:focus { border-color: var(--color-primary); }
+    .ex-input.correct { border-color: var(--color-correct); background: var(--color-correct-bg); }
+    .ex-input.wrong   { border-color: var(--color-wrong);   background: var(--color-wrong-bg);   }
+    .ex-input.readonly { background: #f4f4f2; color: var(--color-muted); pointer-events: none; }
+    .ex-input-wide { width: 72px; }
+
+    /* ─── Sign Prediction (Set 2) ────────────────────── */
+    .sign-row {
+      display: flex; gap: .5rem; margin: .5rem 0 .9rem; flex-wrap: wrap;
+    }
+    .sign-btn {
+      font-family: var(--font-ui); font-size: .9rem; font-weight: 600;
+      padding: .35rem .9rem; border-radius: 20px;
+      border: 1.5px solid var(--color-border); background: none;
+      cursor: pointer; transition: all .15s;
+    }
+    .sign-btn:hover { border-color: var(--color-primary); color: var(--color-primary); }
+    .sign-btn.selected   { border-color: var(--color-primary); background: #eaf4fb; color: var(--color-primary); }
+    .sign-btn.sign-right { border-color: var(--color-correct); background: var(--color-correct-bg); color: var(--color-correct); }
+    .sign-btn.sign-wrong { border-color: var(--color-wrong);   background: var(--color-wrong-bg);   color: var(--color-wrong); }
+
+    /* ─── Multi-step Derivation (Set 5) ─────────────── */
+    .s5-card { max-width: 680px; }
+    .s5-step { margin-bottom: 1.15rem; }
+    .s5-step-lbl {
+      font-size: .8rem; font-weight: 700; letter-spacing: .08em;
+      text-transform: uppercase; color: var(--color-primary); margin-bottom: .45rem;
+    }
+    .s5-two-cols {
+      display: grid; grid-template-columns: 1fr 1fr; gap: .6rem 1.5rem;
+    }
+    @media (max-width: 540px) { .s5-two-cols { grid-template-columns: 1fr; } }
+    .s5-mag-row {
+      display: flex; flex-wrap: wrap; align-items: center;
+      gap: .3rem .5rem; font-size: 1rem; font-family: var(--font-ui);
+    }
+    .s5-row {
+      display: flex; flex-wrap: wrap; align-items: center;
+      gap: .3rem .5rem; font-size: 1rem; font-family: var(--font-ui);
+    }
+    /* Formula display line (shows abstract definition) */
+    .s5-formula-display {
+      margin: .3rem 0 .55rem; font-size: 1.08rem;
+    }
+    /* HTML fraction for the 3-box cos θ substitution */
+    .s5-frac {
+      display: inline-flex; flex-direction: column;
+      align-items: center; vertical-align: middle; gap: 0;
+    }
+    .s5-frac-bar {
+      width: 100%; height: 1.5px; background: #333; margin: 3px 0;
+    }
+    .s5-frac .ex-input { width: 58px; }
+    .s5-angle-out {
+      display: none; margin: .55rem 0 .7rem;
+      padding: .45rem .9rem; border-radius: var(--radius);
+      background: #f3eafa; border-left: 3px solid #7d3c98;
+      font-size: 1rem; font-family: var(--font-ui); font-weight: 600;
+    }
+    .s5-angle-out.show { display: block; }
+    .s5-diagram { display: none; margin-top: .6rem; }
+    .s5-diagram.show { display: block; }
+    .btn-arccos {
+      padding: .3rem .7rem; border: none; border-radius: var(--radius);
+      background: #7d3c98; color: #fff; font-family: var(--font-ui);
+      font-size: .88rem; cursor: pointer; white-space: nowrap; flex-shrink: 0;
+    }
+    .btn-arccos:hover { background: #6c3483; }
+
+    /* ─── Geometric Formula (Set 4) ─────────────────── */
+    .s4-card { max-width: 580px; }
+    .s4-body { padding: .15rem 0; }
+    .s4-given {
+      display: flex; gap: 2rem; align-items: baseline; flex-wrap: wrap;
+      padding: .65rem 1rem; background: #f0f4f8;
+      border-radius: var(--radius); margin-bottom: .8rem;
+      font-size: 1.05rem; font-family: var(--font-ui);
+    }
+    .s4-qty { display: inline-flex; align-items: baseline; gap: .2rem; }
+    .s4-qty .s4-sym { font-family: var(--font-body); font-style: italic; font-size: 1.05rem; }
+    .s4-hint {
+      font-size: .97rem; margin-bottom: .9rem; line-height: 1.6;
+      padding: .45rem .9rem; background: #fffbea;
+      border-left: 3px solid var(--color-accent);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      font-family: var(--font-ui);
+    }
+    .s4-hint strong { font-size: 1.05rem; }
+    .s4-formula {
+      display: flex; flex-wrap: wrap; align-items: center; gap: .3rem .4rem;
+      font-size: 1rem; margin-bottom: .45rem;
+      font-family: var(--font-ui);
+    }
+    .s4-formula em { font-family: var(--font-body); font-style: italic; font-size: 1.05rem; }
+    .s4-note { font-size: .84rem; color: var(--color-muted); margin-bottom: .75rem; }
+
+    /* ─── Draw Hint (Set 3) ──────────────────────────── */
+    .draw-hint {
+      font-size: .88rem; color: var(--color-muted);
+      margin-bottom: .75rem; padding: .5rem .75rem;
+      background: #f0f4f8; border-radius: var(--radius);
+    }
+    .draw-hint strong { color: var(--color-primary); }
+    .draw-target { font-size: .95rem; margin-bottom: .4rem; }
+    .draw-target .vec-a { color: var(--color-primary); font-weight: 700; }
+    .draw-target .vec-b { color: var(--color-correct);  font-weight: 700; }
+    .btn-undo {
+      font-family: var(--font-ui); font-size: .8rem; padding: .25rem .65rem;
+      border: 1px solid var(--color-border); border-radius: 4px;
+      background: none; cursor: pointer; color: var(--color-muted);
+      margin-top: .4rem;
+    }
+    .btn-undo:hover { background: #f0f0ee; }
+
+    /* ─── Buttons ────────────────────────────────────── */
+    .btn-check, .btn-boss-submit {
+      font-family: var(--font-ui); font-size: .9rem; font-weight: 600;
+      padding: .5rem 1.25rem; border-radius: var(--radius);
+      border: none; background: var(--color-primary); color: #fff;
+      cursor: pointer; transition: background .15s;
+      margin-top: .75rem;
+    }
+    .btn-check:hover, .btn-boss-submit:hover { background: var(--color-primary-lt); }
+    .btn-check:disabled, .btn-boss-submit:disabled {
+      background: var(--color-border); color: var(--color-muted); cursor: default;
+    }
+
+    /* ─── Feedback ───────────────────────────────────── */
+    .feedback {
+      margin-top: .75rem; padding: .6rem .9rem; border-radius: var(--radius);
+      font-size: .9rem; display: none;
+    }
+    .feedback.show { display: block; }
+    .feedback.correct { background: var(--color-correct-bg); color: var(--color-correct); }
+    .feedback.wrong   { background: var(--color-wrong-bg);   color: var(--color-wrong); }
+
+    /* ─── Boss Round ─────────────────────────────────── */
+    .boss-section .ex-section-head h2 { color: var(--color-boss); border-color: var(--color-boss); }
+    .boss-cards { display: flex; flex-direction: column; gap: 1rem; }
+    .boss-card {
+      background: var(--color-surface); border: 1.5px solid #c9a0dc;
+      border-radius: var(--radius); padding: 1rem 1.4rem;
+      display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+    }
+    .boss-card .boss-num {
+      font-size: .73rem; font-weight: 700; text-transform: uppercase;
+      letter-spacing: .07em; color: var(--color-boss); flex-shrink: 0;
+    }
+    .boss-vectors {
+      font-family: var(--font-body); font-size: 1rem;
+      flex: 1; min-width: 200px;
+    }
+    .boss-vectors .vn { font-style: italic; }
+    .boss-answer-wrap { display: flex; align-items: center; gap: .5rem; }
+    .boss-answer-wrap label {
+      font-size: .88rem; color: var(--color-muted); white-space: nowrap;
+    }
+    .boss-submit-row { margin-top: 1.25rem; }
+    .boss-results { margin-top: 1.5rem; display: none; }
+    .boss-results.show { display: block; }
+    .boss-result-grid {
+      border: 1.5px solid var(--color-border); border-radius: var(--radius);
+      overflow: hidden; margin-top: .75rem;
+    }
+    .boss-result-row {
+      display: flex; padding: .6rem 1rem; gap: 1rem; align-items: center;
+      border-bottom: 1px solid var(--color-border); font-size: .9rem;
+    }
+    .boss-result-row:last-child { border-bottom: none; }
+    .boss-result-row.row-correct { background: var(--color-correct-bg); }
+    .boss-result-row.row-wrong   { background: var(--color-wrong-bg); }
+    .boss-result-row .rn  { font-weight: 700; width: 2rem; flex-shrink: 0; }
+    .boss-result-row .rv  { flex: 1; }
+    .boss-result-row .ri  { font-size: 1.1rem; flex-shrink: 0; }
+    .boss-score-line {
+      font-family: var(--font-body); font-size: 1.3rem; font-weight: 700;
+      color: var(--color-primary); margin-bottom: .5rem;
+    }
+
+    .s4-approx-note {
+      display: block; font-size: .78rem; color: var(--color-muted);
+      font-family: var(--font-ui); margin-top: .15rem;
+    }
+    .cos-hint {
+      display: inline-block; margin-left: .5rem; padding: .1rem .4rem;
+      background: #f0f4f8; border-radius: 3px;
+      font-family: var(--font-ui); font-size: .85rem; color: var(--color-muted);
+    }
+    .unit-label {
+      font-family: var(--font-ui); color: var(--color-text); margin-left: .3rem;
+    }
+
+    /* ─── Footer ─────────────────────────────────────── */
+    .ex-footer {
+      border-top: 1px solid var(--color-border); background: var(--color-surface);
+      padding: 1.1rem 2rem; display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: wrap; gap: .5rem;
+    }
+    .ex-footer a {
+      font-family: var(--font-ui); font-size: .9rem; font-weight: 600;
+      color: var(--color-primary); text-decoration: none;
+      padding: .45rem 1rem; border: 1px solid var(--color-primary);
+      border-radius: var(--radius); transition: background .15s;
+    }
+    .ex-footer a:hover { background: #eaf4fb; }
+
+    /* ─── Responsive ─────────────────────────────────── */
+    @media (max-width: 600px) {
+      .ex-main { padding: 1.25rem 1rem 3rem; }
+      .score-banner { padding: .6rem 1rem; top: 60px; }
+      .ex-body { flex-direction: column; }
+    }
+  </style>
+
+  <script>
+  MathJax = {
+    tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+    options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] },
+    startup: {
+      ready() {
+        MathJax.startup.defaultReady();
+        // Re-typeset Set 5 after MathJax finishes loading in case cards are already in the DOM
+        const el = document.getElementById('cards-s5');
+        if (el) MathJax.typesetPromise([el]).catch(() => {});
+      }
+    }
+  };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+</head>
+<body>
+
+<header class="ex-header">
+  <p class="breadcrumb">Physics Lessons &rsaquo; Lesson 1 &rsaquo; Exercises</p>
+  <h1>Lesson 1 Exercises — The Dot Product</h1>
+  <p class="meta">5 exercise sets + final challenge &bull; randomly generated &bull; reset any time</p>
+</header>
+
+<!-- Score Banner -->
+<div class="score-banner">
+  <div class="score-cells">
+    <div class="score-cell" id="sc-s2">Set 1 <span class="val" id="sv-s2">0 / 3</span></div>
+    <div class="score-cell" id="sc-s1">Set 2 <span class="val" id="sv-s1">0 / 3</span></div>
+    <div class="score-cell" id="sc-s3">Set 3 <span class="val" id="sv-s3">0 / 3</span></div>
+    <div class="score-cell" id="sc-s4">Set 4 <span class="val" id="sv-s4">0 / 3</span></div>
+    <div class="score-cell" id="sc-s5">Set 5 <span class="val" id="sv-s5">0 / 3</span></div>
+    <div class="score-cell" id="sc-final">Final <span class="val" id="sv-final">— / 7</span></div>
+  </div>
+  <button class="btn-reset" onclick="resetAll()">&#8635; New Exercise Set</button>
+</div>
+
+<main class="ex-main">
+
+  <!-- ══ SET 1 ══════════════════════════════════════════ -->
+  <section class="ex-section" id="section-s2">
+    <div class="ex-section-head">
+      <h2>Set 1 &mdash; Predict the Sign</h2>
+      <p>Look at the diagram before you calculate. Predict whether the dot product is positive, negative, or zero &mdash; then compute the exact value. One of each will appear in random order.</p>
+    </div>
+    <div class="ex-cards" id="cards-s2"></div>
+  </section>
+
+  <!-- ══ SET 2 ══════════════════════════════════════════ -->
+  <section class="ex-section" id="section-s1">
+    <div class="ex-section-head">
+      <h2>Set 2 &mdash; Fill in the Formula</h2>
+      <p>Both vectors are drawn on the grid. Fill every blank in the dot product formula, then check your answer.</p>
+    </div>
+    <div class="ex-cards" id="cards-s1"></div>
+  </section>
+
+  <!-- ══ SET 3 ══════════════════════════════════════════ -->
+  <section class="ex-section" id="section-s3">
+    <div class="ex-section-head">
+      <h2>Set 3 &mdash; Draw the Vectors</h2>
+      <p>The grid is blank. Click on the grid to place the tip of each vector (tails are always at the origin). After placing both, compute the dot product.</p>
+    </div>
+    <div class="ex-cards" id="cards-s3"></div>
+  </section>
+
+  <!-- ══ SET 4 ══════════════════════════════════════════ -->
+  <section class="ex-section" id="section-s4">
+    <div class="ex-section-head">
+      <h2>Set 4 &mdash; Geometric Formula</h2>
+      <p>You are given the magnitudes of two vectors and the angle between them. Use <strong>a&thinsp;&middot;&thinsp;b = |a| |b| cos&thinsp;&theta;</strong> to compute the dot product. The value of cos&thinsp;&theta; is provided as a hint. Round to 2 decimal places where needed.</p>
+    </div>
+    <div class="ex-cards" id="cards-s4"></div>
+  </section>
+
+  <!-- ══ SET 5 ══════════════════════════════════════════ -->
+  <section class="ex-section" id="section-s5">
+    <div class="ex-section-head">
+      <h2>Set 5 &mdash; From Components to Angle</h2>
+      <p>Use both definitions together. Given two vectors as coordinates, compute their magnitudes and dot product, then use the geometric formula to find the angle between them. Click <strong>arccos &rarr; &theta;</strong> to evaluate the inverse cosine once you have your answer.</p>
+    </div>
+    <div class="ex-cards" id="cards-s5"></div>
+  </section>
+
+  <!-- ══ FINAL EXERCISES ═══════════════════════════════════ -->
+  <section class="ex-section boss-section" id="section-final">
+    <div class="ex-section-head">
+      <h2>Final Exercises</h2>
+      <p>Seven mixed problems covering all formula types &mdash; components, geometric formula, sign prediction, 3-D, and physics. No diagrams, no hints. Fill in all seven answers, then submit to see your score.</p>
+    </div>
+    <div class="boss-cards" id="cards-final"></div>
+    <div class="boss-submit-row">
+      <button class="btn-boss-submit" id="final-submit-btn" onclick="checkFinal()" disabled>
+        Submit All 7
+      </button>
+    </div>
+    <div class="boss-results" id="final-results"></div>
+  </section>
+
+</main>
+
+<footer class="ex-footer">
+  <a href="lesson-01-dot-product.html">&larr; Back to Lesson</a>
+  <button class="btn-reset" onclick="resetAll()" style="border-color:var(--color-border);color:var(--color-muted);">
+    &#8635; New Exercise Set
+  </button>
+</footer>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   CONSTANTS & HELPERS
+   ═══════════════════════════════════════════════════════ */
+const SCALE  = 28;   // px per grid unit
+const RANGE  = 5;    // grid runs from -5 to +5
+const SZ     = 300;  // SVG canvas size (px)
+const CX     = 150;  // SVG centre x
+const CY     = 150;  // SVG centre y
+
+const COMP_POOL  = [-5,-4,-3,-2,-1,1,2,3,4,5];
+const BOSS_POOL  = [-6,-5,-4,-3,-2,2,3,4,5,6];
+
+// Set 5: only Pythagorean-triple vectors so magnitudes are integers (all magnitude 5)
+const S5_VECTORS = [
+  [3,4], [-3,4], [3,-4], [-3,-4],
+  [4,3], [-4,3], [4,-3], [-4,-3],
+];
+
+// Angle entries for Set 4: one positive-cos, one zero, one negative-cos (shuffled)
+const COS_TABLE = {
+  pos:  [
+    { deg: 0,  cos: 1,    display: '1'     },
+    { deg: 30, cos: 0.87, display: '0.87'  },
+    { deg: 45, cos: 0.71, display: '0.71'  },
+    { deg: 60, cos: 0.5,  display: '0.5'   },
+  ],
+  zero: [
+    { deg: 90, cos: 0,    display: '0'     },
+  ],
+  neg:  [
+    { deg: 120, cos: -0.5,  display: '−0.5'  },
+    { deg: 135, cos: -0.71, display: '−0.71' },
+    { deg: 150, cos: -0.87, display: '−0.87' },
+    { deg: 180, cos: -1,    display: '−1'    },
+  ],
+};
+
+function rnd(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+function rc()     { return rnd(COMP_POOL); }
+
+// Grid coord → SVG pixel
+function gx(n) { return CX + n * SCALE; }
+function gy(n) { return CY - n * SCALE; }
+
+// Shorten a line endpoint toward the start so arrowhead sits correctly
+function shorten(x1, y1, x2, y2, px = 9) {
+  const dx = x2 - x1, dy = y2 - y1;
+  const len = Math.hypot(dx, dy);
+  if (len < px + 2) return [x2, y2];
+  return [x2 - (dx / len) * px, y2 - (dy / len) * px];
+}
+
+// Label offset: push away from origin
+function labelOffset(gvx, gvy, dist = 16) {
+  const len = Math.hypot(gvx, gvy) || 1;
+  return [(gvx / len) * dist, -(gvy / len) * dist];
+}
+
+/* ═══════════════════════════════════════════════════════
+   STATE
+   ═══════════════════════════════════════════════════════ */
+const state = {
+  s1: [], s2: [], s3: [], s4: [], s5: [], final: [],
+  scores: { s1: [null,null,null], s2: [null,null,null], s3: [null,null,null], s4: [null,null,null], s5: [null,null,null], final: null }
+};
+
+/* ═══════════════════════════════════════════════════════
+   DATA GENERATION
+   ═══════════════════════════════════════════════════════ */
+function genS1() {
+  return Array.from({length: 3}, () => {
+    const a = [rc(), rc()], b = [rc(), rc()];
+    return { a, b, ans: a[0]*b[0] + a[1]*b[1] };
+  });
+}
+
+function genS2() {
+  // One positive, one zero, one negative — shuffled
+  const types = ['pos', 'zero', 'neg'].sort(() => Math.random() - 0.5);
+  return types.map(type => {
+    let a, b;
+    if (type === 'zero') {
+      // Perpendicular: b is a rotated 90°
+      const a1 = rnd([2,3,4]), a2 = rnd([1,2,3]);
+      a = [a1, a2]; b = [-a2, a1];
+    } else {
+      let tries = 0;
+      do {
+        a = [rc(), rc()]; b = [rc(), rc()];
+        tries++;
+      } while (
+        (type === 'pos' && a[0]*b[0]+a[1]*b[1] <= 0) ||
+        (type === 'neg' && a[0]*b[0]+a[1]*b[1] >= 0) ||
+        tries > 50
+      );
+    }
+    const ans = a[0]*b[0] + a[1]*b[1];
+    const sign = ans > 0 ? 'positive' : ans < 0 ? 'negative' : 'zero';
+    return { a, b, ans, sign };
+  });
+}
+
+function genS3() {
+  return Array.from({length: 3}, () => {
+    const a = [rc(), rc()], b = [rc(), rc()];
+    // Keep them distinct
+    return { a, b, ans: a[0]*b[0] + a[1]*b[1], drawnA: null, drawnB: null, step: 'a' };
+  });
+}
+
+function genS4() {
+  // Guarantee one positive-cos, one zero, one negative-cos problem, in random order
+  const types = ['pos', 'zero', 'neg'].sort(() => Math.random() - 0.5);
+  return types.map(type => {
+    const pool  = COS_TABLE[type];
+    const entry = pool[Math.floor(Math.random() * pool.length)];
+    const magA  = 2 + Math.floor(Math.random() * 7);  // 2–8
+    const magB  = 2 + Math.floor(Math.random() * 7);  // 2–8
+    // Answer uses the displayed (rounded) cos value so it matches student's calculation
+    const ans   = Math.round(magA * magB * entry.cos * 100) / 100;
+    return { magA, magB, deg: entry.deg, cos: entry.cos, cosDisplay: entry.display, ans };
+  });
+}
+
+function genS5() {
+  return Array.from({length: 3}, () => {
+    let a, b, dot, cosT, theta;
+    let tries = 0;
+    do {
+      a = [...S5_VECTORS[Math.floor(Math.random() * S5_VECTORS.length)]];
+      b = [...S5_VECTORS[Math.floor(Math.random() * S5_VECTORS.length)]];
+      dot   = a[0]*b[0] + a[1]*b[1];
+      cosT  = dot / 25;        // magA = magB = 5, so magA*magB = 25
+      theta = Math.acos(Math.max(-1, Math.min(1, cosT)));
+      const cross = a[0]*b[1] - a[1]*b[0];
+      // Reject parallel/antiparallel and angles too close to 0° or 180°
+      if (Math.abs(cross) >= 4 && theta > 0.15 && theta < Math.PI - 0.15) break;
+    } while (++tries < 300);
+    return { a, b, magA: 5, magB: 5, dot, cosT, theta };
+  });
+}
+
+function genFinal() {
+  const problems = [];
+  // 2 component 2-D problems
+  for (let i = 0; i < 2; i++) {
+    const a = [rnd(BOSS_POOL), rnd(BOSS_POOL)];
+    const b = [rnd(BOSS_POOL), rnd(BOSS_POOL)];
+    problems.push({ type: 'component2d', a, b, ans: a[0]*b[0] + a[1]*b[1] });
+  }
+  // 2 geometric formula problems (one positive-cos, one negative-cos)
+  ['pos','neg'].forEach(cat => {
+    const magA = rnd([3,4,5,6,7,8]);
+    const magB = rnd([3,4,5,6,7,8]);
+    const entry = rnd(COS_TABLE[cat]);
+    const rawAns = magA * magB * entry.cos;
+    const ans = Math.round(rawAns * 100) / 100;
+    const isExact = [1,-1,0.5,-0.5,0].includes(entry.cos);
+    problems.push({ type: 'geometric', magA, magB, deg: entry.deg, cosDisplay: entry.display, cos: entry.cos, ans, isExact });
+  });
+  // 1 sign prediction (angle only, no diagram)
+  const signCat = rnd(['pos','neg']);
+  const signEntry = rnd(COS_TABLE[signCat]);
+  problems.push({ type: 'sign', deg: signEntry.deg, sign: signCat });
+  // 1 3-D component problem
+  const POOL3D = [-4,-3,-2,-1,1,2,3,4];
+  const a3 = [rnd(POOL3D), rnd(POOL3D), rnd(POOL3D)];
+  const b3 = [rnd(POOL3D), rnd(POOL3D), rnd(POOL3D)];
+  problems.push({ type: 'component3d', a: a3, b: b3, ans: a3[0]*b3[0] + a3[1]*b3[1] + a3[2]*b3[2] });
+  // 1 physics word problem: W = F · d
+  const f2 = [rnd([2,3,4,5,6]), rnd([2,3,4,5,6])];
+  const d2 = [rnd([3,4,5,6,7]), 0];
+  problems.push({ type: 'physics', f: f2, d: d2, ans: f2[0]*d2[0] + f2[1]*d2[1] });
+  return problems;
+}
+
+// TeX helpers for Set 5 MathJax formulas
+function fmtSqTex(n)      { return n < 0 ? `(-${Math.abs(n)})^2` : `${n}^2`; }
+function fmtTermTex(a, b) {
+  const as = a < 0 ? `(${a})` : `${a}`;
+  const bs = b < 0 ? `(${b})` : `${b}`;
+  return `${as} \\times ${bs}`;
+}
+
+/* ═══════════════════════════════════════════════════════
+   SVG GRID BUILDER
+   ═══════════════════════════════════════════════════════ */
+function makeSVGBase(uid) {
+  let h = `<svg viewBox="0 0 ${SZ} ${SZ}" width="${SZ}" height="${SZ}"
+       xmlns="http://www.w3.org/2000/svg" style="display:block;border:1px solid #e5e5e5;border-radius:4px;background:#fff;">
+  <defs>
+    <marker id="mA-${uid}" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L0,8 L9,4 z" fill="#1a5276"/>
+    </marker>
+    <marker id="mB-${uid}" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L0,8 L9,4 z" fill="#1e8449"/>
+    </marker>
+  </defs>`;
+
+  // Grid lines
+  for (let i = -RANGE; i <= RANGE; i++) {
+    const major = i === 0;
+    const sc = major ? '#bbb' : '#e8e8e8', sw = major ? 1.5 : 0.5;
+    h += `<line x1="${gx(i)}" y1="${gy(-RANGE)}" x2="${gx(i)}" y2="${gy(RANGE)}" stroke="${sc}" stroke-width="${sw}"/>`;
+    h += `<line x1="${gx(-RANGE)}" y1="${gy(i)}" x2="${gx(RANGE)}" y2="${gy(i)}" stroke="${sc}" stroke-width="${sw}"/>`;
+  }
+
+  // Tick labels (skip 0)
+  for (let i = -RANGE; i <= RANGE; i++) {
+    if (i === 0) continue;
+    h += `<text x="${gx(i)}" y="${gy(0)+13}" text-anchor="middle"
+               font-family="Source Sans 3,sans-serif" font-size="10" fill="#bbb">${i}</text>`;
+    h += `<text x="${gx(0)-11}" y="${gy(i)+4}" text-anchor="middle"
+               font-family="Source Sans 3,sans-serif" font-size="10" fill="#bbb">${i}</text>`;
+  }
+  return h;
+}
+
+function svgVector(uid, which, gvx, gvy) {
+  const color = which === 'A' ? '#1a5276' : '#1e8449';
+  const label = which === 'A' ? 'a' : 'b';
+  const ex = gx(gvx), ey = gy(gvy);
+  const [ox, oy] = labelOffset(gvx, gvy);
+  return `
+  <line x1="${CX}" y1="${CY}" x2="${ex.toFixed(1)}" y2="${ey.toFixed(1)}"
+        stroke="${color}" stroke-width="2.5" marker-end="url(#m${which}-${uid})"/>
+  <text x="${(ex+ox).toFixed(1)}" y="${(ey+oy+5).toFixed(1)}"
+        font-family="'Playfair Display',Georgia,serif" font-size="15"
+        fill="${color}" font-style="italic" text-anchor="middle">${label}</text>`;
+}
+
+// Builds an SVG showing vectors a and b with the angle arc between them
+function svgWithAngle(uid, ax, ay, bx, by) {
+  const R    = 38;  // arc radius in SVG px
+  const magA = Math.hypot(ax, ay);
+  const magB = Math.hypot(bx, by);
+
+  // Endpoints of the arc on each unit vector (SVG coords: y flipped)
+  const sx = CX + R * (ax / magA),  sy = CY - R * (ay / magA);
+  const ex = CX + R * (bx / magB),  ey = CY - R * (by / magB);
+
+  // Sweep direction: cross > 0 means b is CCW from a in math, which is CCW on screen
+  // after y-flip, so sweep=0 (SVG CCW = counterclockwise on screen) draws the short arc.
+  const cross = ax * by - ay * bx;
+  const sweep = cross > 0 ? 0 : 1;
+
+  const arc = `M ${sx.toFixed(1)},${sy.toFixed(1)} A ${R},${R} 0 0,${sweep} ${ex.toFixed(1)},${ey.toFixed(1)}`;
+
+  // θ label on the bisector of the two SVG direction vectors
+  const baX = ax / magA + bx / magB;
+  const baY = -(ay / magA + by / magB);  // SVG y (negated)
+  const baLen = Math.hypot(baX, baY);
+  const lr = R + 14;
+  const lblX = baLen > 0.05
+    ? CX + lr * baX / baLen
+    : CX - lr * (ay / magA);  // fallback perpendicular if near-antiparallel
+  const lblY = baLen > 0.05
+    ? CY + lr * baY / baLen
+    : CY + lr * (ax / magA);
+
+  return makeSVGBase(uid)
+    + svgVector(uid, 'A', ax, ay)
+    + svgVector(uid, 'B', bx, by)
+    + `<path d="${arc}" fill="none" stroke="#7d3c98" stroke-width="1.8"/>`
+    + `<text x="${lblX.toFixed(1)}" y="${(lblY + 4).toFixed(1)}"
+            font-family="Georgia,serif" font-size="14" fill="#7d3c98"
+            text-anchor="middle" font-style="italic">θ</text>`
+    + `<circle cx="${CX}" cy="${CY}" r="3" fill="#888"/>`
+    + '</svg>';
+}
+
+/* ═══════════════════════════════════════════════════════
+   RENDER SET 1
+   ═══════════════════════════════════════════════════════ */
+function renderS1() {
+  const el = document.getElementById('cards-s1');
+  el.innerHTML = state.s1.map((ex, i) => {
+    const uid = `s1-${i}`;
+    const svg = makeSVGBase(uid) + svgVector(uid,'A',ex.a[0],ex.a[1]) + svgVector(uid,'B',ex.b[0],ex.b[1]) + '</svg>';
+    return `
+    <div class="ex-card" id="card-${uid}">
+      <div class="ex-num">Exercise ${i+1} of 3</div>
+      <div class="ex-body">
+        <div class="ex-diagram">${svg}</div>
+        <div class="ex-right">
+          <div style="margin-bottom:.9rem;padding:.6rem .85rem;background:#f0f4f8;border-radius:var(--radius);font-size:.97rem;line-height:1.9;">
+            <span style="color:#1a5276;font-family:var(--font-body);font-style:italic;font-weight:600;">a</span>
+            = (${ex.a[0]},&thinsp;${ex.a[1]})
+            &emsp;
+            <span style="color:#1e8449;font-family:var(--font-body);font-style:italic;font-weight:600;">b</span>
+            = (${ex.b[0]},&thinsp;${ex.b[1]})
+          </div>
+          <p style="margin-bottom:.5rem;font-size:.93rem;">
+            Fill in each blank using the values above, then compute the dot product.
+          </p>
+          <div class="formula-row">
+            <span class="sym">a</span><span class="op">&middot;</span><span class="sym">b</span>
+            <span class="op">=</span>
+            <span class="op">(</span>
+            <input class="ex-input" id="${uid}-a1" type="number" placeholder="?" />
+            <span class="op">&times;</span>
+            <input class="ex-input" id="${uid}-b1" type="number" placeholder="?" />
+            <span class="op">)</span>
+            <span class="op">+</span>
+            <span class="op">(</span>
+            <input class="ex-input" id="${uid}-a2" type="number" placeholder="?" />
+            <span class="op">&times;</span>
+            <input class="ex-input" id="${uid}-b2" type="number" placeholder="?" />
+            <span class="op">)</span>
+            <span class="op">=</span>
+            <input class="ex-input ex-input-wide" id="${uid}-ans" type="number" placeholder="?" />
+          </div>
+          <button class="btn-check" onclick="checkS1(${i})">Check Answer</button>
+          <div class="feedback" id="fb-${uid}"></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function checkS1(i) {
+  const uid  = `s1-${i}`;
+  const ex   = state.s1[i];
+  const vals = {
+    a1: +document.getElementById(`${uid}-a1`).value,
+    b1: +document.getElementById(`${uid}-b1`).value,
+    a2: +document.getElementById(`${uid}-a2`).value,
+    b2: +document.getElementById(`${uid}-b2`).value,
+    ans:+document.getElementById(`${uid}-ans`).value,
+  };
+  const correct = {
+    a1: ex.a[0], b1: ex.b[0], a2: ex.a[1], b2: ex.b[1],
+    ans: ex.ans
+  };
+  let allRight = true;
+  ['a1','b1','a2','b2','ans'].forEach(k => {
+    const inp = document.getElementById(`${uid}-${k}`);
+    const ok  = vals[k] === correct[k];
+    inp.classList.toggle('correct', ok);
+    inp.classList.toggle('wrong', !ok);
+    if (!ok) allRight = false;
+  });
+
+  const fb = document.getElementById(`fb-${uid}`);
+  const card = document.getElementById(`card-${uid}`);
+  fb.className = `feedback show ${allRight ? 'correct' : 'wrong'}`;
+
+  if (allRight) {
+    fb.textContent = '✓ Correct! a · b = ' + ex.ans;
+    card.classList.add('correct');
+    lockCard(uid, ['a1','b1','a2','b2','ans']);
+    state.scores.s1[i] = true;
+  } else {
+    const computed = correct.a1*correct.b1 + correct.a2*correct.b2;
+    fb.innerHTML = `✗ Not quite. The components are a = (${ex.a[0]}, ${ex.a[1]}), b = (${ex.b[0]}, ${ex.b[1]}). `
+                 + `a · b = (${ex.a[0]})×(${ex.b[0]}) + (${ex.a[1]})×(${ex.b[1]}) = ${ex.ans}`;
+    card.classList.add('wrong');
+    state.scores.s1[i] = false;
+  }
+  updateScores();
+}
+
+/* ═══════════════════════════════════════════════════════
+   RENDER SET 2
+   ═══════════════════════════════════════════════════════ */
+function renderS2() {
+  const el = document.getElementById('cards-s2');
+  el.innerHTML = state.s2.map((ex, i) => {
+    const uid = `s2-${i}`;
+    const svg = makeSVGBase(uid) + svgVector(uid,'A',ex.a[0],ex.a[1]) + svgVector(uid,'B',ex.b[0],ex.b[1]) + '</svg>';
+    return `
+    <div class="ex-card" id="card-${uid}">
+      <div class="ex-num">Exercise ${i+1} of 3</div>
+      <div class="ex-body">
+        <div class="ex-diagram">${svg}</div>
+        <div class="ex-right">
+          <div style="margin-bottom:.9rem;padding:.6rem .85rem;background:#f0f4f8;border-radius:var(--radius);font-size:.97rem;line-height:1.9;">
+            <span style="color:#1a5276;font-family:var(--font-body);font-style:italic;font-weight:600;">a</span>
+            = (${ex.a[0]},&thinsp;${ex.a[1]})
+            &emsp;
+            <span style="color:#1e8449;font-family:var(--font-body);font-style:italic;font-weight:600;">b</span>
+            = (${ex.b[0]},&thinsp;${ex.b[1]})
+          </div>
+          <p style="margin-bottom:.4rem;font-size:.93rem;font-weight:600;">
+            Step 1 — Predict the sign
+          </p>
+          <div class="sign-row" id="signs-${uid}">
+            <button class="sign-btn" id="sign-pos-${uid}" onclick="selectSign('${uid}','positive')">Positive (+)</button>
+            <button class="sign-btn" id="sign-zero-${uid}" onclick="selectSign('${uid}','zero')">Zero (0)</button>
+            <button class="sign-btn" id="sign-neg-${uid}" onclick="selectSign('${uid}','negative')">Negative (−)</button>
+          </div>
+          <p style="margin:.6rem 0 .4rem;font-size:.93rem;font-weight:600;">
+            Step 2 — Compute the dot product
+          </p>
+          <div class="formula-row">
+            <span class="sym">a</span><span class="op">&middot;</span><span class="sym">b</span>
+            <span class="op">=</span>
+            <input class="ex-input ex-input-wide" id="${uid}-ans" type="number" placeholder="?" />
+          </div>
+          <button class="btn-check" onclick="checkS2(${i})">Check Answer</button>
+          <div class="feedback" id="fb-${uid}"></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+const s2SelectedSign = {};
+function selectSign(uid, sign) {
+  s2SelectedSign[uid] = sign;
+  ['positive','zero','negative'].forEach(s => {
+    document.getElementById(`sign-${s.slice(0,3)}-${uid}`)
+      .classList.toggle('selected', s === sign);
+  });
+}
+
+function checkS2(i) {
+  const uid = `s2-${i}`;
+  const ex  = state.s2[i];
+  const chosenSign = s2SelectedSign[uid];
+  const signOk = chosenSign === ex.sign;
+  const ansVal = +document.getElementById(`${uid}-ans`).value;
+  const ansOk  = ansVal === ex.ans;
+  const allRight = signOk && ansOk;
+
+  // Style sign buttons
+  const btnMap = { positive:'pos', zero:'zero', negative:'neg' };
+  Object.entries(btnMap).forEach(([s, id]) => {
+    const btn = document.getElementById(`sign-${id}-${uid}`);
+    btn.classList.remove('selected','sign-right','sign-wrong');
+    if (s === ex.sign) btn.classList.add('sign-right');
+    else if (s === chosenSign && !signOk) btn.classList.add('sign-wrong');
+    btn.disabled = true;
+  });
+
+  // Style answer input
+  const ansInp = document.getElementById(`${uid}-ans`);
+  ansInp.classList.toggle('correct', ansOk);
+  ansInp.classList.toggle('wrong', !ansOk);
+  ansInp.readOnly = true;
+
+  const fb   = document.getElementById(`fb-${uid}`);
+  const card = document.getElementById(`card-${uid}`);
+  fb.className = `feedback show ${allRight ? 'correct' : 'wrong'}`;
+
+  if (allRight) {
+    fb.textContent = `✓ Correct! The dot product is ${ex.ans} (${ex.sign}).`;
+    card.classList.add('correct');
+    state.scores.s2[i] = true;
+  } else {
+    let msg = '';
+    if (!signOk) msg += `✗ Sign: the result is ${ex.sign} (${ex.ans}), not ${chosenSign || 'unselected'}. `;
+    if (!ansOk)  msg += `✗ Value: a · b = (${ex.a[0]})(${ex.b[0]}) + (${ex.a[1]})(${ex.b[1]}) = ${ex.ans}.`;
+    if (signOk && !ansOk) msg = `Sign was right (${ex.sign}) ✓ — ` + msg;
+    fb.innerHTML = msg;
+    card.classList.add('wrong');
+    state.scores.s2[i] = false;
+  }
+  document.querySelector(`#card-${uid} .btn-check`).disabled = true;
+  updateScores();
+}
+
+/* ═══════════════════════════════════════════════════════
+   RENDER SET 3 (click-to-draw)
+   ═══════════════════════════════════════════════════════ */
+function renderS3() {
+  const el = document.getElementById('cards-s3');
+  el.innerHTML = state.s3.map((ex, i) => {
+    const uid = `s3-${i}`;
+    return `
+    <div class="ex-card" id="card-${uid}">
+      <div class="ex-num">Exercise ${i+1} of 3</div>
+      <div class="ex-body">
+        <div class="ex-diagram">
+          ${makeDrawGrid(uid)}
+        </div>
+        <div class="ex-right">
+          <div class="draw-target">
+            Draw <span class="vec-a">vector a = (${ex.a[0]}, ${ex.a[1]})</span>
+          </div>
+          <div class="draw-target">
+            then <span class="vec-b">vector b = (${ex.b[0]}, ${ex.b[1]})</span>
+          </div>
+          <div class="draw-hint" id="hint-${uid}">
+            <strong>Click the grid</strong> to place the tip of <strong style="color:#1a5276">vector a</strong>.
+          </div>
+          <button class="btn-undo" onclick="undoDraw(${i})" id="undo-${uid}" style="display:none">
+            ↩ Undo last vector
+          </button>
+          <div id="compute-${uid}" style="display:none;margin-top:.85rem;">
+            <div class="formula-row">
+              <span class="sym">a</span><span class="op">&middot;</span><span class="sym">b</span>
+              <span class="op">=</span>
+              <input class="ex-input ex-input-wide" id="${uid}-ans" type="number" placeholder="?" />
+            </div>
+            <button class="btn-check" onclick="checkS3(${i})">Check Answer</button>
+          </div>
+          <div class="feedback" id="fb-${uid}"></div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Attach click listeners after DOM is set
+  state.s3.forEach((_, i) => {
+    const svg = document.getElementById(`svg-s3-${i}`);
+    svg.addEventListener('click', e => handleGridClick(e, svg, i));
+  });
+}
+
+function makeDrawGrid(uid) {
+  const idx = uid.split('-')[1];
+  let h = `<svg id="svg-${uid}" viewBox="0 0 ${SZ} ${SZ}" width="${SZ}" height="${SZ}"
+       xmlns="http://www.w3.org/2000/svg"
+       style="display:block;border:1px solid #e5e5e5;border-radius:4px;background:#fff;cursor:crosshair;">
+  <defs>
+    <marker id="mA-${uid}" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L0,8 L9,4 z" fill="#1a5276"/>
+    </marker>
+    <marker id="mB-${uid}" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L0,8 L9,4 z" fill="#1e8449"/>
+    </marker>
+  </defs>`;
+
+  // Grid lines
+  for (let i = -RANGE; i <= RANGE; i++) {
+    const major = i === 0;
+    const sc = major ? '#bbb' : '#e8e8e8', sw = major ? 1.5 : 0.5;
+    h += `<line x1="${gx(i)}" y1="${gy(-RANGE)}" x2="${gx(i)}" y2="${gy(RANGE)}" stroke="${sc}" stroke-width="${sw}"/>`;
+    h += `<line x1="${gx(-RANGE)}" y1="${gy(i)}" x2="${gx(RANGE)}" y2="${gy(i)}" stroke="${sc}" stroke-width="${sw}"/>`;
+  }
+  for (let i = -RANGE; i <= RANGE; i++) {
+    if (i === 0) continue;
+    h += `<text x="${gx(i)}" y="${gy(0)+13}" text-anchor="middle"
+               font-family="Source Sans 3,sans-serif" font-size="10" fill="#bbb">${i}</text>`;
+    h += `<text x="${gx(0)-11}" y="${gy(i)+4}" text-anchor="middle"
+               font-family="Source Sans 3,sans-serif" font-size="10" fill="#bbb">${i}</text>`;
+  }
+
+  // Mutable vector elements (hidden initially)
+  h += `<line id="line-A-${uid}" x1="${CX}" y1="${CY}" x2="${CX}" y2="${CY}"
+              stroke="#1a5276" stroke-width="2.5" marker-end="url(#mA-${uid})" display="none"/>`;
+  h += `<text id="lbl-A-${uid}" font-family="'Playfair Display',Georgia,serif" font-size="15"
+              fill="#1a5276" font-style="italic" text-anchor="middle" display="none">a</text>`;
+  h += `<line id="line-B-${uid}" x1="${CX}" y1="${CY}" x2="${CX}" y2="${CY}"
+              stroke="#1e8449" stroke-width="2.5" marker-end="url(#mB-${uid})" display="none"/>`;
+  h += `<text id="lbl-B-${uid}" font-family="'Playfair Display',Georgia,serif" font-size="15"
+              fill="#1e8449" font-style="italic" text-anchor="middle" display="none">b</text>`;
+
+  // Origin dot
+  h += `<circle cx="${CX}" cy="${CY}" r="3" fill="#888"/>`;
+  h += '</svg>';
+  return h;
+}
+
+function handleGridClick(e, svg, i) {
+  const ex = state.s3[i];
+  if (ex.step === 'done') return;
+
+  const rect   = svg.getBoundingClientRect();
+  const svgX   = (e.clientX - rect.left)  * (SZ / rect.width);
+  const svgY   = (e.clientY - rect.top)   * (SZ / rect.height);
+  const gridX  = Math.round((svgX - CX) / SCALE);
+  const gridY  = Math.round((CY - svgY) / SCALE);
+  const cgx    = Math.max(-RANGE, Math.min(RANGE, gridX));
+  const cgy    = Math.max(-RANGE, Math.min(RANGE, gridY));
+
+  const uid = `s3-${i}`;
+
+  if (ex.step === 'a') {
+    ex.drawnA = [cgx, cgy];
+    ex.step   = 'b';
+    placeDrawnVector(uid, 'A', cgx, cgy);
+    document.getElementById(`hint-${uid}`).innerHTML =
+      `<strong>Vector a</strong> placed at (${cgx}, ${cgy}). Now click to place <strong style="color:#1e8449">vector b</strong>.`;
+    document.getElementById(`undo-${uid}`).style.display = '';
+  } else if (ex.step === 'b') {
+    ex.drawnB = [cgx, cgy];
+    ex.step   = 'done';
+    placeDrawnVector(uid, 'B', cgx, cgy);
+    document.getElementById(`hint-${uid}`).innerHTML =
+      `Both vectors placed. Now compute the dot product.`;
+    document.getElementById(`compute-${uid}`).style.display = '';
+    svg.style.cursor = 'default';
+  }
+}
+
+function placeDrawnVector(uid, which, gvx, gvy) {
+  const ex  = gx(gvx), ey = gy(gvy);
+  const [ox, oy] = labelOffset(gvx, gvy);
+
+  const line = document.getElementById(`line-${which}-${uid}`);
+  line.setAttribute('x2', ex.toFixed(1));
+  line.setAttribute('y2', ey.toFixed(1));
+  line.setAttribute('display', '');
+
+  const lbl = document.getElementById(`lbl-${which}-${uid}`);
+  lbl.setAttribute('x', (ex + ox).toFixed(1));
+  lbl.setAttribute('y', (ey + oy + 5).toFixed(1));
+  lbl.setAttribute('display', '');
+}
+
+function undoDraw(i) {
+  const ex  = state.s3[i];
+  const uid = `s3-${i}`;
+  const svg = document.getElementById(`svg-s3-${i}`);
+
+  if (ex.step === 'done' || ex.step === 'b') {
+    // Remove the last placed vector
+    const which = ex.step === 'done' ? 'B' : 'A';
+    document.getElementById(`line-${which}-${uid}`).setAttribute('display','none');
+    document.getElementById(`lbl-${which}-${uid}`).setAttribute('display','none');
+
+    if (ex.step === 'done') {
+      ex.drawnB = null; ex.step = 'b';
+      document.getElementById(`compute-${uid}`).style.display = 'none';
+      document.getElementById(`hint-${uid}`).innerHTML =
+        `<strong>Vector a</strong> placed. Click to place <strong style="color:#1e8449">vector b</strong>.`;
+      svg.style.cursor = 'crosshair';
+    } else {
+      ex.drawnA = null; ex.step = 'a';
+      document.getElementById(`undo-${uid}`).style.display = 'none';
+      document.getElementById(`hint-${uid}`).innerHTML =
+        `<strong>Click the grid</strong> to place the tip of <strong style="color:#1a5276">vector a</strong>.`;
+    }
+  }
+}
+
+function checkS3(i) {
+  const uid = `s3-${i}`;
+  const ex  = state.s3[i];
+  const ansVal = +document.getElementById(`${uid}-ans`).value;
+  const ansOk  = ansVal === ex.ans;
+
+  // Check placement accuracy
+  const aOk = ex.drawnA && ex.drawnA[0] === ex.a[0] && ex.drawnA[1] === ex.a[1];
+  const bOk = ex.drawnB && ex.drawnB[0] === ex.b[0] && ex.drawnB[1] === ex.b[1];
+  const allRight = aOk && bOk && ansOk;
+
+  const ansInp = document.getElementById(`${uid}-ans`);
+  ansInp.classList.toggle('correct', ansOk);
+  ansInp.classList.toggle('wrong', !ansOk);
+  ansInp.readOnly = true;
+
+  const fb   = document.getElementById(`fb-${uid}`);
+  const card = document.getElementById(`card-${uid}`);
+  fb.className = `feedback show ${allRight ? 'correct' : 'wrong'}`;
+
+  if (allRight) {
+    fb.textContent = `✓ Perfect! Vectors placed correctly and a · b = ${ex.ans}.`;
+    card.classList.add('correct');
+    state.scores.s3[i] = true;
+  } else {
+    let msg = '';
+    if (!aOk) msg += `Vector a: you placed (${ex.drawnA ? ex.drawnA.join(', ') : '?'}), correct was (${ex.a.join(', ')}). `;
+    if (!bOk) msg += `Vector b: you placed (${ex.drawnB ? ex.drawnB.join(', ') : '?'}), correct was (${ex.b.join(', ')}). `;
+    if (!ansOk) msg += `Dot product: you entered ${ansVal}, correct is ${ex.ans}.`;
+    if (aOk && bOk && !ansOk) msg = 'Vectors correct ✓ — ' + msg;
+    fb.innerHTML = '✗ ' + msg;
+    card.classList.add('wrong');
+    state.scores.s3[i] = false;
+  }
+  document.querySelector(`#card-${uid} .btn-check`).disabled = true;
+  updateScores();
+}
+
+/* ═══════════════════════════════════════════════════════
+   RENDER SET 4 — GEOMETRIC FORMULA
+   ═══════════════════════════════════════════════════════ */
+function renderS4() {
+  const el = document.getElementById('cards-s4');
+  el.innerHTML = state.s4.map((ex, i) => {
+    const uid = `s4-${i}`;
+    return `
+    <div class="ex-card s4-card" id="card-${uid}">
+      <div class="ex-num">Exercise ${i+1} of 3</div>
+      <div class="s4-body">
+        <div class="s4-given">
+          <span class="s4-qty">|<span class="s4-sym">a</span>| = ${ex.magA}</span>
+          <span class="s4-qty">|<span class="s4-sym">b</span>| = ${ex.magB}</span>
+          <span class="s4-qty">&theta; = ${ex.deg}&deg;</span>
+        </div>
+        <div class="s4-hint">
+          Hint: &nbsp; cos(${ex.deg}&deg;) ${[1,-1,0.5,-0.5,0].includes(ex.cos) ? '=' : '&approx;'} <strong>${ex.cosDisplay}</strong>
+          ${[1,-1,0.5,-0.5,0].includes(ex.cos) ? '' : '<span class="s4-approx-note">(rounded — answers computed from this value are accepted)</span>'}
+        </div>
+        <div class="s4-formula">
+          <em>a</em>&thinsp;&middot;&thinsp;<em>b</em>
+          &nbsp;=&nbsp; |<em>a</em>|&thinsp;&times;&thinsp;|<em>b</em>|&thinsp;&times;&thinsp;cos&thinsp;&theta;
+          &nbsp;=&nbsp;
+          <input class="ex-input ex-input-wide" id="${uid}-ans" type="number" step="0.01" placeholder="?" />
+        </div>
+        <p class="s4-note">Round to 2 decimal places if needed.</p>
+        <button class="btn-check" onclick="checkS4(${i})">Check Answer</button>
+        <div class="feedback" id="fb-${uid}"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function checkS4(i) {
+  const uid     = `s4-${i}`;
+  const ex      = state.s4[i];
+  const entered = parseFloat(document.getElementById(`${uid}-ans`).value);
+  const ok      = Math.abs(entered - ex.ans) < 0.015;  // ±0.01 for 2dp rounding
+
+  const inp = document.getElementById(`${uid}-ans`);
+  inp.classList.toggle('correct', ok);
+  inp.classList.toggle('wrong', !ok);
+  inp.readOnly = true;
+
+  const fb   = document.getElementById(`fb-${uid}`);
+  const card = document.getElementById(`card-${uid}`);
+  fb.className = `feedback show ${ok ? 'correct' : 'wrong'}`;
+
+  if (ok) {
+    fb.textContent = `✓ Correct! ${ex.magA} × ${ex.magB} × (${ex.cosDisplay}) = ${ex.ans}`;
+    card.classList.add('correct');
+    state.scores.s4[i] = true;
+  } else {
+    fb.innerHTML = `✗ Not quite. ${ex.magA} × ${ex.magB} × (${ex.cosDisplay}) = <strong>${ex.ans}</strong>`;
+    card.classList.add('wrong');
+    state.scores.s4[i] = false;
+  }
+  document.querySelector(`#card-${uid} .btn-check`).disabled = true;
+  updateScores();
+}
+
+/* ═══════════════════════════════════════════════════════
+   RENDER SET 5 — FROM COMPONENTS TO ANGLE
+   ═══════════════════════════════════════════════════════ */
+function renderS5() {
+  const el = document.getElementById('cards-s5');
+  el.innerHTML = state.s5.map((ex, i) => {
+    const uid = `s5-${i}`;
+    // TeX strings (backslash must be doubled in JS template literals)
+    const magATex = `\\(|a| = \\sqrt{${fmtSqTex(ex.a[0])} + ${fmtSqTex(ex.a[1])}}\\)`;
+    const magBTex = `\\(|b| = \\sqrt{${fmtSqTex(ex.b[0])} + ${fmtSqTex(ex.b[1])}}\\)`;
+    const dotTex  = `\\(a \\cdot b = ${fmtTermTex(ex.a[0], ex.b[0])} + ${fmtTermTex(ex.a[1], ex.b[1])}\\)`;
+    const cosTex  = `\\(\\displaystyle \\cos\\theta = \\frac{a \\cdot b}{|a|\\,|b|}\\)`;
+    return `
+    <div class="ex-card s5-card" id="card-${uid}">
+      <div class="ex-num">Exercise ${i+1} of 3</div>
+
+      <div class="s4-given" style="margin-bottom:.9rem;">
+        <span class="s4-qty" style="color:#1a5276;">
+          <span style="font-family:var(--font-body);font-style:italic;font-weight:600;">a</span>
+          &nbsp;=&nbsp;(${ex.a[0]},&thinsp;${ex.a[1]})
+        </span>
+        <span class="s4-qty" style="color:#1e8449;">
+          <span style="font-family:var(--font-body);font-style:italic;font-weight:600;">b</span>
+          &nbsp;=&nbsp;(${ex.b[0]},&thinsp;${ex.b[1]})
+        </span>
+      </div>
+
+      <div class="s5-step">
+        <div class="s5-step-lbl">Step 1 — Magnitudes</div>
+        <div class="s5-two-cols">
+          <div class="s5-mag-row">
+            ${magATex} &nbsp;=&nbsp;
+            <input class="ex-input ex-input-wide" id="${uid}-magA" type="number" step="1" placeholder="?" />
+          </div>
+          <div class="s5-mag-row">
+            ${magBTex} &nbsp;=&nbsp;
+            <input class="ex-input ex-input-wide" id="${uid}-magB" type="number" step="1" placeholder="?" />
+          </div>
+        </div>
+      </div>
+
+      <div class="s5-step">
+        <div class="s5-step-lbl">Step 2 — Dot product</div>
+        <div class="s5-row">
+          ${dotTex} &nbsp;=&nbsp;
+          <input class="ex-input ex-input-wide" id="${uid}-dot" type="number" placeholder="?" />
+        </div>
+      </div>
+
+      <div class="s5-step">
+        <div class="s5-step-lbl">Step 3 — Find the angle</div>
+        <div class="s5-formula-display">${cosTex}</div>
+        <div class="s5-row" style="align-items:center; flex-wrap:wrap; gap:.5rem .6rem;">
+          <span style="font-family:var(--font-ui);">cos&thinsp;&theta; =</span>
+          <div class="s5-frac">
+            <input class="ex-input" id="${uid}-num" type="number" placeholder="a&middot;b" title="numerator: a · b" />
+            <div class="s5-frac-bar"></div>
+            <input class="ex-input" id="${uid}-den" type="number" placeholder="|a||b|" title="denominator: |a|·|b|" />
+          </div>
+          <span style="font-family:var(--font-ui);">=</span>
+          <input class="ex-input ex-input-wide" id="${uid}-cos" type="number" step="0.0001" placeholder="?" />
+          <button class="btn-arccos" onclick="computeAngle5(${i})">arccos &rarr; &theta;</button>
+        </div>
+        <div class="s5-angle-out" id="angle-out-${uid}"></div>
+        <div class="s5-diagram"   id="diag-${uid}"></div>
+      </div>
+
+      <button class="btn-check" onclick="checkS5(${i})">Check My Work</button>
+      <div class="feedback" id="fb-${uid}"></div>
+    </div>`;
+  }).join('');
+
+  // Re-typeset MathJax for the newly inserted content
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise([el]).catch(() => {});
+  }
+}
+
+function computeAngle5(i) {
+  const uid = `s5-${i}`;
+  const raw = document.getElementById(`${uid}-cos`).value;
+  if (raw === '' || isNaN(+raw)) {
+    document.getElementById(`angle-out-${uid}`).textContent = 'Enter your cos θ value first.';
+    document.getElementById(`angle-out-${uid}`).classList.add('show');
+    return;
+  }
+  const cosVal   = Math.max(-1, Math.min(1, parseFloat(raw)));
+  const thetaRad = Math.acos(cosVal);
+  const thetaDeg = thetaRad * 180 / Math.PI;
+
+  const out = document.getElementById(`angle-out-${uid}`);
+  out.innerHTML = `θ = ${thetaRad.toFixed(4)}&thinsp;rad &nbsp;≈&nbsp; ${thetaDeg.toFixed(2)}°`;
+  out.classList.add('show');
+
+  // Draw the diagram using the true vectors (correct regardless of student's cos θ)
+  const ex   = state.s5[i];
+  const diag = document.getElementById(`diag-${uid}`);
+  diag.innerHTML = svgWithAngle(`s5d-${i}`, ex.a[0], ex.a[1], ex.b[0], ex.b[1]);
+  diag.classList.add('show');
+}
+
+function checkS5(i) {
+  const uid = `s5-${i}`;
+  const ex  = state.s5[i];
+  const den = ex.magA * ex.magB;  // always 25 with S5_VECTORS
+
+  const vals = {
+    magA: parseFloat(document.getElementById(`${uid}-magA`).value),
+    magB: parseFloat(document.getElementById(`${uid}-magB`).value),
+    dot:  parseFloat(document.getElementById(`${uid}-dot`).value),
+    num:  parseFloat(document.getElementById(`${uid}-num`).value),
+    den:  parseFloat(document.getElementById(`${uid}-den`).value),
+    cos:  parseFloat(document.getElementById(`${uid}-cos`).value),
+  };
+  const ok = {
+    magA: Math.abs(vals.magA - ex.magA) < 0.5,
+    magB: Math.abs(vals.magB - ex.magB) < 0.5,
+    dot:  vals.dot === ex.dot,
+    num:  vals.num === ex.dot,          // numerator should equal a·b
+    den:  Math.abs(vals.den - den) < 0.5,  // denominator = |a||b|
+    cos:  Math.abs(vals.cos - ex.cosT) < 0.005,
+  };
+  const allOk = Object.values(ok).every(Boolean);
+
+  Object.keys(vals).forEach(f => {
+    const inp = document.getElementById(`${uid}-${f}`);
+    inp.classList.toggle('correct', ok[f]);
+    inp.classList.toggle('wrong', !ok[f]);
+    inp.readOnly = true;
+  });
+
+  const fb   = document.getElementById(`fb-${uid}`);
+  const card = document.getElementById(`card-${uid}`);
+  fb.className = `feedback show ${allOk ? 'correct' : 'wrong'}`;
+
+  if (allOk) {
+    fb.textContent = `✓ All steps correct! θ ≈ ${(ex.theta * 180 / Math.PI).toFixed(2)}°`;
+    card.classList.add('correct');
+    state.scores.s5[i] = true;
+  } else {
+    const corrections = [];
+    if (!ok.magA) corrections.push(`|a| = ${ex.magA}`);
+    if (!ok.magB) corrections.push(`|b| = ${ex.magB}`);
+    if (!ok.dot)  corrections.push(`a·b = ${ex.dot}`);
+    if (!ok.num)  corrections.push(`numerator = ${ex.dot}`);
+    if (!ok.den)  corrections.push(`denominator = ${den}`);
+    if (!ok.cos)  corrections.push(`cos θ = ${ex.cosT.toFixed(4)}`);
+    fb.innerHTML = '✗ &nbsp;' + corrections.join('&emsp;');
+    card.classList.add('wrong');
+    state.scores.s5[i] = false;
+  }
+  document.querySelector(`#card-${uid} .btn-check`).disabled = true;
+  updateScores();
+}
+
+/* ═══════════════════════════════════════════════════════
+   RENDER FINAL EXERCISES
+   ═══════════════════════════════════════════════════════ */
+function renderFinal() {
+  const el = document.getElementById('cards-final');
+  el.innerHTML = state.final.map((ex, i) => {
+    let inner = '';
+    if (ex.type === 'component2d') {
+      inner = `
+      <div class="boss-vectors">
+        <span class="vn">a</span> = (${ex.a[0]}, ${ex.a[1]}) &nbsp;&nbsp;
+        <span class="vn">b</span> = (${ex.b[0]}, ${ex.b[1]})
+      </div>
+      <div class="boss-answer-wrap">
+        <label for="final-ans-${i}">a &middot; b =</label>
+        <input class="ex-input ex-input-wide" id="final-ans-${i}" type="number"
+               placeholder="?" oninput="checkFinalReady()" />
+      </div>`;
+    } else if (ex.type === 'geometric') {
+      const eqSign = ex.isExact ? '=' : '&approx;';
+      inner = `
+      <div class="boss-vectors">
+        |<span class="vn">a</span>| = ${ex.magA} &nbsp;&nbsp;
+        |<span class="vn">b</span>| = ${ex.magB} &nbsp;&nbsp;
+        &theta; = ${ex.deg}&deg;
+        <span class="cos-hint">cos(${ex.deg}&deg;) ${eqSign} ${ex.cosDisplay}</span>
+      </div>
+      <div class="boss-answer-wrap">
+        <label for="final-ans-${i}">a &middot; b =</label>
+        <input class="ex-input ex-input-wide" id="final-ans-${i}" type="number" step="0.01"
+               placeholder="?" oninput="checkFinalReady()" />
+      </div>`;
+    } else if (ex.type === 'sign') {
+      inner = `
+      <div class="boss-vectors">
+        Two vectors with angle &theta; = ${ex.deg}&deg; between them.
+      </div>
+      <div class="boss-answer-wrap">
+        <label for="final-ans-${i}">Sign of a&thinsp;&middot;&thinsp;b:</label>
+        <select class="ex-input" id="final-ans-${i}" onchange="checkFinalReady()"
+                style="font-family:var(--font-ui);cursor:pointer;padding:.25rem .4rem;">
+          <option value="">&#8212; choose &#8212;</option>
+          <option value="pos">positive (+)</option>
+          <option value="neg">negative (&minus;)</option>
+          <option value="zero">zero</option>
+        </select>
+      </div>`;
+    } else if (ex.type === 'component3d') {
+      inner = `
+      <div class="boss-vectors">
+        <span class="vn">a</span> = (${ex.a[0]}, ${ex.a[1]}, ${ex.a[2]}) &nbsp;&nbsp;
+        <span class="vn">b</span> = (${ex.b[0]}, ${ex.b[1]}, ${ex.b[2]})
+      </div>
+      <div class="boss-answer-wrap">
+        <label for="final-ans-${i}">a &middot; b =</label>
+        <input class="ex-input ex-input-wide" id="final-ans-${i}" type="number"
+               placeholder="?" oninput="checkFinalReady()" />
+      </div>`;
+    } else if (ex.type === 'physics') {
+      inner = `
+      <div class="boss-vectors">
+        Force <span class="vn">F</span> = (${ex.f[0]}, ${ex.f[1]}) N &nbsp;&nbsp;
+        Displacement <span class="vn">d</span> = (${ex.d[0]}, ${ex.d[1]}) m
+      </div>
+      <div class="boss-answer-wrap">
+        <label for="final-ans-${i}">W = <span class="vn">F</span>&thinsp;&middot;&thinsp;<span class="vn">d</span> =</label>
+        <input class="ex-input ex-input-wide" id="final-ans-${i}" type="number"
+               placeholder="?" oninput="checkFinalReady()" />
+        <span class="unit-label">J</span>
+      </div>`;
+    }
+    return `
+    <div class="boss-card" id="final-card-${i}">
+      <div class="boss-num"># ${i+1}</div>
+      ${inner}
+    </div>`;
+  }).join('');
+
+  document.getElementById('final-results').className = 'boss-results';
+  document.getElementById('final-submit-btn').disabled = true;
+}
+
+function checkFinalReady() {
+  const allFilled = state.final.every((ex, i) => {
+    const el = document.getElementById(`final-ans-${i}`);
+    if (!el) return false;
+    const v = el.value;
+    if (el.tagName === 'SELECT') return v !== '';
+    return v !== '' && !isNaN(+v);
+  });
+  document.getElementById('final-submit-btn').disabled = !allFilled;
+}
+
+function finalDesc(ex) {
+  if (ex.type === 'component2d') return `a&middot;b: a=(${ex.a.join(', ')}), b=(${ex.b.join(', ')})`;
+  if (ex.type === 'geometric')   return `|a|=${ex.magA}, |b|=${ex.magB}, &theta;=${ex.deg}&deg;`;
+  if (ex.type === 'sign')        return `Sign when &theta;=${ex.deg}&deg;`;
+  if (ex.type === 'component3d') return `a&middot;b: a=(${ex.a.join(', ')}), b=(${ex.b.join(', ')})`;
+  if (ex.type === 'physics')     return `W=F&middot;d: F=(${ex.f.join(', ')}), d=(${ex.d.join(', ')})`;
+  return '';
+}
+
+function checkFinal() {
+  const total = state.final.length;
+  let correct = 0;
+  const rows = state.final.map((ex, i) => {
+    const el = document.getElementById(`final-ans-${i}`);
+    const userVal = el.value;
+    let ok = false;
+    let correctAns = '';
+    const signLabels = { pos: 'positive', neg: 'negative', zero: 'zero' };
+
+    if (ex.type === 'sign') {
+      ok = userVal === ex.sign;
+      correctAns = signLabels[ex.sign];
+    } else if (ex.type === 'geometric') {
+      const tol = ex.isExact ? 0.05 : 0.5;
+      ok = Math.abs(+userVal - ex.ans) < tol;
+      correctAns = ex.ans % 1 === 0 ? String(ex.ans) : ex.ans.toFixed(2);
+    } else {
+      ok = +userVal === ex.ans;
+      correctAns = ex.ans;
+    }
+
+    if (ok) correct++;
+    if (el.tagName === 'SELECT') {
+      el.disabled = true;
+    } else {
+      el.classList.toggle('correct', ok);
+      el.classList.toggle('wrong', !ok);
+      el.readOnly = true;
+    }
+    return { ex, userVal, ok, correctAns };
+  });
+
+  state.scores.final = correct;
+  document.getElementById('final-submit-btn').disabled = true;
+
+  const pct   = Math.round((correct / total) * 100);
+  const emoji = correct === total ? '🏆' : correct >= Math.ceil(total * 0.7) ? '✓' : '✗';
+
+  const resultDiv = document.getElementById('final-results');
+  resultDiv.innerHTML = `
+    <div class="boss-score-line">${emoji} ${correct} / ${total} correct (${pct}%)</div>
+    <div class="boss-result-grid">
+      ${rows.map((r, i) => `
+        <div class="boss-result-row ${r.ok ? 'row-correct' : 'row-wrong'}">
+          <span class="rn">#${i+1}</span>
+          <span class="rv">${finalDesc(r.ex)} &nbsp;&rarr;&nbsp;
+            <strong>${r.correctAns}</strong>
+            ${!r.ok ? ` <em style="opacity:.7">(you answered: ${r.userVal || '&mdash;'})</em>` : ''}
+          </span>
+          <span class="ri">${r.ok ? '✓' : '✗'}</span>
+        </div>`).join('')}
+    </div>`;
+  resultDiv.className = 'boss-results show';
+  updateScores();
+  resultDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+/* ═══════════════════════════════════════════════════════
+   SCORING
+   ═══════════════════════════════════════════════════════ */
+function updateScores() {
+  const s = state.scores;
+  const count = arr => arr.filter(x => x === true).length;
+
+  const sets = [
+    { key:'s1', id:'s1', total: 3 },
+    { key:'s2', id:'s2', total: 3 },
+    { key:'s3', id:'s3', total: 3 },
+    { key:'s4', id:'s4', total: 3 },
+    { key:'s5', id:'s5', total: 3 },
+  ];
+  sets.forEach(({ key, id, total }) => {
+    const n = count(s[key]);
+    document.getElementById(`sv-${id}`).textContent = `${n} / ${total}`;
+    const anyDone = s[key].some(x => x !== null);
+    document.getElementById(`sc-${id}`).classList.toggle('active', anyDone);
+  });
+
+  if (s.final !== null) {
+    document.getElementById('sv-final').textContent = `${s.final} / 7`;
+    document.getElementById('sc-final').classList.add('active');
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   UTILITIES
+   ═══════════════════════════════════════════════════════ */
+function lockCard(uid, fields) {
+  fields.forEach(f => {
+    const inp = document.getElementById(`${uid}-${f}`);
+    if (inp) { inp.readOnly = true; inp.classList.add('readonly'); }
+  });
+  const btn = document.querySelector(`#card-${uid} .btn-check`);
+  if (btn) btn.disabled = true;
+}
+
+/* ═══════════════════════════════════════════════════════
+   INIT & RESET
+   ═══════════════════════════════════════════════════════ */
+function resetAll() {
+  state.s1    = genS1();
+  state.s2    = genS2();
+  state.s3    = genS3();
+  state.s4    = genS4();
+  state.s5    = genS5();
+  state.final = genFinal();
+  state.scores = { s1:[null,null,null], s2:[null,null,null], s3:[null,null,null], s4:[null,null,null], s5:[null,null,null], final:null };
+
+  renderS1();
+  renderS2();
+  renderS3();
+  renderS4();
+  renderS5();
+  renderFinal();
+  updateScores();
+
+  // Reset sign selections
+  Object.keys(s2SelectedSign).forEach(k => delete s2SelectedSign[k]);
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Boot
+resetAll();
+</script>
+</body>
+</html>
