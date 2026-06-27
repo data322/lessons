@@ -1,32 +1,161 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="./support.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lesson 2 — Motion in a Straight Line | Physics Lessons</title>
+  <script src="./support.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" />
+
+  <style>
+    /* ─── Design Tokens ─────────────────────────────────── */
+    :root {
+      --color-bg:            #f9f9f7;
+      --color-surface:       #ffffff;
+      --color-primary:       #1a5276;
+      --color-primary-light: #2471a3;
+      --color-accent:        #d4ac0d;
+      --color-text:          #2c2c2c;
+      --color-muted:         #6b7280;
+      --color-border:        #d1d5db;
+      --font-body:           'Playfair Display', Georgia, serif;
+      --font-ui:             'Source Sans 3', system-ui, sans-serif;
+      --border-radius:       6px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* dc-runtime's boot() appends FULL_PAGE_CSS which sets html,body{height:100%}.
+       Override it here with !important so our page layout stays intact. */
+    html, body { height: auto !important; }
+    body {
+      background: var(--color-bg);
+      color: var(--color-text);
+      font-family: var(--font-body);
+      line-height: 1.6;
+    }
+
+    /* ─── Header ─────────────────────────────────────────── */
+    .lesson-header {
+      background: var(--color-primary);
+      color: #fff;
+      padding: 1.25rem 2rem;
+    }
+    .breadcrumb {
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      color: rgba(255, 255, 255, 0.65);
+      margin-bottom: 0.4rem;
+    }
+    .breadcrumb a {
+      color: rgba(255, 255, 255, 0.65);
+      text-decoration: none;
+    }
+    .breadcrumb a:hover { color: #fff; }
+    .lesson-header h1 {
+      font-size: clamp(1.3rem, 3vw, 1.75rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 0.25rem;
+    }
+    .lesson-meta {
+      font-family: var(--font-ui);
+      font-size: 0.82rem;
+      color: rgba(255, 255, 255, 0.65);
+    }
+
+    /* ─── Animation Wrapper ──────────────────────────────── */
+    .animation-wrapper {
+      max-width: 1100px;
+      margin: 2rem auto;
+      padding: 0 2rem;
+    }
+
+    /* 16:9 container; dc-runtime replaces the custom element with #dc-root,
+       which we position absolutely to fill this box. */
+    .animation-stage {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border-radius: 8px;
+      border: 1px solid var(--color-border);
+      box-shadow: 0 4px 20px rgba(26, 82, 118, 0.08);
+    }
+
+    #dc-root              { position: absolute !important; inset: 0 !important; }
+    #dc-root > .sc-host   { height: 100% !important; }
+
+    /* ─── Footer ─────────────────────────────────────────── */
+    .lesson-footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      max-width: 1100px;
+      margin: 0 auto 2.5rem;
+      padding: 1.25rem 2rem 0;
+      border-top: 1px solid var(--color-border);
+    }
+    .lesson-footer a {
+      font-family: var(--font-ui);
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--color-primary);
+      text-decoration: none;
+      padding: 0.4rem 0.9rem;
+      border: 1.5px solid var(--color-primary);
+      border-radius: var(--border-radius);
+      transition: background 0.15s, color 0.15s;
+    }
+    .lesson-footer a:hover {
+      background: var(--color-primary);
+      color: #fff;
+    }
+  </style>
 </head>
 <body>
-<x-dc>
-<helmet>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400;1,8..60,600&display=swap" rel="stylesheet">
-  <style>
-    html, body { margin: 0; height: 100%; background: #0a0a0a; }
-    #root, x-dc { display: block; height: 100%; }
-  </style>
-  <template id="__bundler_thumbnail">
-    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-      <rect width="100" height="100" fill="#A31F34"/>
-      <line x1="22" y1="60" x2="78" y2="60" stroke="#fff" stroke-width="2.5"/>
-      <circle cx="40" cy="60" r="5" fill="#fff"/>
-      <path d="M28 66 L72 34" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="0.1 7"/>
-    </svg>
-  </template>
-</helmet>
-<div style="position:absolute; inset:0;">
-  <x-import component-from-global-scope="MotionScene" from="./animations.jsx ./motion-scene.jsx" hint-size="100%,100%"></x-import>
-</div>
-</x-dc>
+
+  <!-- ① HEADER -->
+  <header class="lesson-header">
+    <nav class="breadcrumb">
+      <a href="../../landing-page.html">Physics Lessons</a>
+      &rsaquo; Lesson 2 &rsaquo; Motion in a Straight Line
+    </nav>
+    <h1>Motion in a Straight Line</h1>
+    <p class="lesson-meta">Lesson 2 &bull; Motion Graphics &bull; ~3 min</p>
+  </header>
+
+  <!-- ② ANIMATION STAGE -->
+  <div class="animation-wrapper">
+    <div class="animation-stage">
+      <x-dc>
+        <helmet>
+          <link rel="preconnect" href="https://fonts.googleapis.com">
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+          <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+          <template id="__bundler_thumbnail">
+            <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+              <rect width="100" height="100" fill="#1a5276"/>
+              <line x1="22" y1="60" x2="78" y2="60" stroke="#fff" stroke-width="2.5"/>
+              <circle cx="40" cy="60" r="5" fill="#d4ac0d"/>
+              <path d="M28 66 L72 34" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="0.1 7"/>
+            </svg>
+          </template>
+        </helmet>
+        <div style="position:absolute; inset:0;">
+          <x-import component-from-global-scope="MotionScene" from="./animations.jsx ./motion-scene.jsx" hint-size="100%,100%"></x-import>
+        </div>
+      </x-dc>
+    </div>
+  </div>
+
+  <!-- ③ FOOTER -->
+  <footer class="lesson-footer">
+    <a href="../lesson-01-dot-product.html">&larr; Lesson 1 — The Dot Product</a>
+    <a href="../../landing-page.html">Back to Syllabus &rarr;</a>
+  </footer>
+
 </body>
 </html>
