@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Side Quest A — The Mean Speed Theorem | Physics Lessons</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;600;700&display=swap" />
+
+  <script>
+    MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+
+  <style>
+    :root {
+      --color-bg:             #f9f9f7;
+      --color-surface:        #ffffff;
+      --color-primary:        #1a5276;
+      --color-primary-light:  #2471a3;
+      --color-accent:         #d4ac0d;
+      --color-text:           #2c2c2c;
+      --color-muted:          #6b7280;
+      --color-border:         #d1d5db;
+      --color-callout-tip-bg:     #eaf4fb;
+      --color-callout-tip-border: #2e86c1;
+      --color-callout-warn-bg:    #fef9e7;
+      --color-callout-warn-border:#d4ac0d;
+      --color-callout-insight-bg: #eafaf1;
+      --color-callout-insight-border: #1e8449;
+      --color-callout-sq-bg:   #f5eef8;
+      --color-callout-sq-border: #7d3c98;
+      --font-body:  'Playfair Display', Georgia, serif;
+      --font-ui:    'Source Sans 3', system-ui, sans-serif;
+      --toc-width:  260px;
+      --content-max-width: 760px;
+      --border-radius: 6px;
+      --transition: 0.25s ease;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--color-text);
+      background: var(--color-bg);
+    }
+
+    .lesson-header {
+      background: var(--color-primary);
+      color: #fff;
+      padding: 1.25rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
+    .breadcrumb {
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      opacity: 0.75;
+      margin-bottom: 0.3rem;
+    }
+    .breadcrumb a { color: rgba(255,255,255,0.85); text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .lesson-header h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.01em; }
+    .lesson-meta { font-family: var(--font-ui); font-size: 0.82rem; opacity: 0.7; margin-top: 0.2rem; }
+    .sq-badge {
+      display: inline-block;
+      font-family: var(--font-ui);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      background: rgba(125, 60, 152, 0.75);
+      color: #fff;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      vertical-align: middle;
+      margin-right: 0.45rem;
+    }
+
+    .lesson-layout {
+      display: flex;
+      align-items: flex-start;
+      min-height: calc(100vh - 80px);
+    }
+
+    .toc-panel {
+      width: var(--toc-width);
+      flex-shrink: 0;
+      position: sticky;
+      top: 80px;
+      height: calc(100vh - 80px);
+      overflow-y: auto;
+      background: var(--color-surface);
+      border-right: 1px solid var(--color-border);
+      padding: 1rem 0;
+      transition: width var(--transition), transform var(--transition);
+      z-index: 50;
+    }
+    .toc-panel.collapsed { width: 44px; overflow: hidden; }
+    .toc-panel.collapsed .toc-inner { display: none; }
+
+    #toc-toggle {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0.4rem 0.85rem;
+      font-family: var(--font-ui);
+      font-size: 0.85rem;
+      color: var(--color-primary);
+      width: 100%;
+    }
+    #toc-toggle:hover { background: var(--color-callout-tip-bg); }
+    .toc-icon { font-size: 1.1rem; flex-shrink: 0; }
+    .toc-inner { padding: 0.5rem 1rem 1rem; }
+    .toc-heading {
+      font-family: var(--font-ui);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-muted);
+      margin-bottom: 0.6rem;
+      font-weight: 600;
+    }
+    .toc-list { list-style: none; padding: 0; }
+    .toc-list li { margin: 0; }
+    .toc-list a {
+      display: block;
+      font-family: var(--font-ui);
+      font-size: 0.82rem;
+      color: var(--color-text);
+      text-decoration: none;
+      padding: 0.3rem 0.5rem;
+      border-radius: 4px;
+      line-height: 1.35;
+      transition: background var(--transition), color var(--transition);
+    }
+    .toc-list a:hover, .toc-list a.active {
+      background: var(--color-callout-tip-bg);
+      color: var(--color-primary);
+    }
+    .toc-list .toc-num { font-size: 0.72rem; color: var(--color-muted); margin-right: 0.3em; }
+    .toc-sep { border: none; border-top: 1px solid var(--color-border); margin: 0.5rem 0; }
+
+    .lesson-content {
+      flex: 1;
+      max-width: var(--content-max-width);
+      padding: 2.5rem 2.5rem 3rem;
+      margin: 0 auto;
+    }
+    .lesson-content section {
+      margin-bottom: 3.5rem;
+      scroll-margin-top: 100px;
+    }
+    .lesson-content h2 {
+      font-size: 1.55rem;
+      color: var(--color-primary);
+      border-bottom: 2px solid var(--color-border);
+      padding-bottom: 0.4rem;
+      margin-bottom: 1.1rem;
+    }
+    .lesson-content h3 {
+      font-size: 1.15rem;
+      color: var(--color-primary-light);
+      margin: 1.5rem 0 0.6rem;
+    }
+    .lesson-content p { margin-bottom: 1rem; }
+    .lesson-content ul, .lesson-content ol {
+      padding-left: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .lesson-content li { margin-bottom: 0.35rem; }
+
+    a.key-term {
+      color: var(--color-text);
+      text-decoration-line: underline;
+      text-decoration-style: dashed;
+      text-decoration-color: var(--color-accent);
+      text-underline-offset: 3px;
+      cursor: help;
+    }
+    a.key-term:hover { color: var(--color-primary); }
+
+    .callout {
+      border-left: 4px solid;
+      border-radius: 0 var(--border-radius) var(--border-radius) 0;
+      padding: 0.85rem 1.1rem;
+      margin: 1.4rem 0;
+      font-size: 0.95rem;
+    }
+    .callout-tip    { background: var(--color-callout-tip-bg);     border-color: var(--color-callout-tip-border); }
+    .callout-warning { background: var(--color-callout-warn-bg);   border-color: var(--color-callout-warn-border); }
+    .callout-insight { background: var(--color-callout-insight-bg); border-color: var(--color-callout-insight-border); }
+    .callout-sidequest { background: var(--color-callout-sq-bg);   border-color: var(--color-callout-sq-border); }
+    .callout strong { display: block; margin-bottom: 0.25rem; }
+
+    .math-block {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius);
+      padding: 1rem 1.5rem;
+      margin: 1.2rem 0;
+      overflow-x: auto;
+      font-size: 1.05rem;
+      text-align: center;
+    }
+
+    .example-box {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--border-radius);
+      padding: 1.2rem 1.5rem;
+      margin: 1.4rem 0;
+    }
+    .example-box .example-title {
+      font-family: var(--font-ui);
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--color-primary);
+      margin-bottom: 0.7rem;
+    }
+    .example-box .step {
+      display: grid;
+      grid-template-columns: 2rem 1fr;
+      gap: 0 0.6rem;
+      margin-bottom: 0.4rem;
+      font-size: 0.95rem;
+    }
+    .step-num { font-family: var(--font-ui); font-weight: 700; color: var(--color-primary); padding-top: 2px; }
+
+    .lesson-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.2rem 0;
+      font-size: 0.92rem;
+    }
+    .lesson-table th {
+      background: var(--color-primary);
+      color: #fff;
+      font-family: var(--font-ui);
+      font-weight: 600;
+      padding: 0.6rem 0.9rem;
+      text-align: left;
+    }
+    .lesson-table td {
+      padding: 0.55rem 0.9rem;
+      border-bottom: 1px solid var(--color-border);
+      font-size: 0.91rem;
+    }
+    .lesson-table tr:last-child td { border-bottom: none; }
+    .lesson-table tr:nth-child(even) td { background: #f8f8f6; }
+
+    blockquote.merton {
+      border-left: 4px solid var(--color-accent);
+      padding: 0.7rem 1.1rem;
+      margin: 1rem 0;
+      font-style: italic;
+      color: var(--color-text);
+      background: var(--color-callout-warn-bg);
+      border-radius: 0 var(--border-radius) var(--border-radius) 0;
+      font-size: 0.95rem;
+    }
+
+    .diagram-wrap { margin: 1.6rem 0; text-align: center; }
+    .diagram-wrap svg { max-width: 100%; height: auto; }
+    .diagram-caption {
+      font-family: var(--font-ui);
+      font-size: 0.82rem;
+      color: var(--color-muted);
+      margin-top: 0.6rem;
+      line-height: 1.4;
+    }
+
+    #glossary { scroll-margin-top: 100px; margin-bottom: 3.5rem; }
+    .glossary-list { list-style: none; padding: 0; }
+    .glossary-list dt {
+      font-weight: 600;
+      color: var(--color-primary-light);
+      margin-top: 1rem;
+      font-size: 0.98rem;
+    }
+    .glossary-list dd {
+      font-family: var(--font-ui);
+      font-size: 0.9rem;
+      color: var(--color-text);
+      padding-left: 1rem;
+      line-height: 1.55;
+    }
+
+    .lesson-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.4rem 2.5rem; border-top: 1px solid var(--color-border);
+      background: var(--color-surface); flex-wrap: wrap; gap: 0.75rem;
+    }
+    .lesson-footer a {
+      font-family: var(--font-ui); font-size: 0.9rem; font-weight: 600;
+      padding: 0.5rem 1.1rem; border-radius: var(--border-radius);
+      text-decoration: none; transition: background var(--transition);
+    }
+    .btn-prev { border: 1px solid var(--color-border); color: var(--color-text); }
+    .btn-prev:hover { background: var(--color-border); }
+    .btn-next { border: 1px solid var(--color-primary); color: var(--color-primary); }
+    .btn-next:hover { background: var(--color-callout-tip-bg); }
+
+    @media (max-width: 768px) {
+      .toc-panel {
+        position: fixed; top: 0; left: 0; height: 100vh;
+        transform: translateX(-100%); box-shadow: 4px 0 16px rgba(0,0,0,0.15);
+      }
+      .toc-panel.mobile-open { transform: translateX(0); width: var(--toc-width); }
+      .toc-panel.mobile-open .toc-inner { display: block; }
+      .lesson-content { padding: 1.5rem 1.25rem 2.5rem; }
+      .lesson-footer { padding: 1rem 1.25rem; }
+      .lesson-header { padding: 0.9rem 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="lesson-header">
+  <nav class="breadcrumb">
+    <a href="../landing-page.html">Physics Lessons</a> &rsaquo;
+    <a href="lesson-02-motion-on-a-line.html">Lesson 2</a> &rsaquo;
+    Side Quest A
+  </nav>
+  <h1><span class="sq-badge">Side Quest</span>A &mdash; The Mean Speed Theorem</h1>
+  <p class="lesson-meta">Merton College, Oxford &bull; Nicole Oresme, Paris &bull; c.&thinsp;1335&ndash;1360 &bull; Estimated reading time: ~20 min</p>
+</header>
+
+<div class="lesson-layout">
+
+  <aside id="toc-panel" class="toc-panel" aria-label="Table of contents">
+    <button id="toc-toggle" aria-expanded="true" aria-controls="toc-inner">
+      <span class="toc-icon">&#9776;</span>
+      <span class="toc-label">Contents</span>
+    </button>
+    <div class="toc-inner" id="toc-inner">
+      <p class="toc-heading">In this side quest</p>
+      <ol class="toc-list">
+        <li><a href="#section-overview"><span class="toc-num">A1</span>Overview</a></li>
+        <li><a href="#section-merton"><span class="toc-num">A2</span>The Merton Calculators</a></li>
+        <li><a href="#section-language"><span class="toc-num">A3</span>The Language of Motion</a></li>
+        <li><a href="#section-theorem"><span class="toc-num">A4</span>The Theorem</a></li>
+        <li><a href="#section-oresme"><span class="toc-num">A5</span>Oresme's Geometric Proof</a></li>
+        <li><a href="#section-hump"><span class="toc-num">A6</span>The Hump and the Notch</a></li>
+        <li><a href="#section-modern"><span class="toc-num">A7</span>Modern Translation</a></li>
+        <li><a href="#section-kinematics"><span class="toc-num">A8</span>Deriving x&thinsp;=&thinsp;&frac12;at&sup2;</a></li>
+        <li><a href="#section-legacy"><span class="toc-num">A9</span>Historical Legacy</a></li>
+      </ol>
+      <hr class="toc-sep"/>
+      <ol class="toc-list">
+        <li><a href="#glossary"><span class="toc-num">G</span>Glossary</a></li>
+      </ol>
+    </div>
+  </aside>
+
+  <main class="lesson-content">
+
+    <!-- ══ A1 OVERVIEW ══════════════════════════════════════ -->
+    <section id="section-overview">
+      <h2>A1 &nbsp; Overview</h2>
+
+      <p>
+        A <em>side quest</em> is a detour that rewards curiosity. You have already mastered the language
+        of kinematics — position, velocity, acceleration, the \(v\)–\(t\) graph. This side quest uses
+        that language to visit one of the most remarkable achievements of medieval science: a geometric
+        proof, made in Oxford and Paris around 1335–1360, that the distance covered by a uniformly
+        accelerating body equals the distance it would cover at its <em>mean speed</em>.
+      </p>
+
+      <p>
+        That statement is not merely a curiosity. It is the <a href="#term-mean-speed-theorem" class="key-term">mean speed theorem</a>
+        — and it is the geometric heart of the kinematic equation
+        \(x = \tfrac{1}{2}at^2\). Galileo built his description of free fall on it. The equation you
+        have been using comes, ultimately, from 14th-century geometry.
+      </p>
+
+      <div class="callout callout-sidequest">
+        <strong>Prerequisites.</strong>
+        This side quest assumes you are comfortable with Lesson&nbsp;2's vocabulary: displacement,
+        average velocity, the \(v\)–\(t\) graph, and the idea that the area under a \(v\)–\(t\) curve
+        equals displacement. No calculus is required for the geometric proofs in §A5–A6; §A7–A8
+        translate everything into the calculus language of Lesson&nbsp;2.
+      </div>
+
+      <div class="callout callout-tip">
+        <strong>What you will see.</strong>
+        Who proved the mean speed theorem and how; the medieval language they used; Oresme's geometric
+        proof using triangles and rectangles; the visual "hump and notch" rearrangement argument; how
+        it all becomes \(x = \tfrac{1}{2}at^2\); and why it matters that this was known three centuries
+        before Newton.
+      </div>
+    </section>
+
+    <!-- ══ A2 MERTON ═════════════════════════════════════════ -->
+    <section id="section-merton">
+      <h2>A2 &nbsp; The Merton Calculators</h2>
+
+      <p>
+        In the first half of the fourteenth century, a group of scholars at Merton College, Oxford,
+        launched a systematic attempt to apply mathematics to Aristotelian natural philosophy. They
+        are known today as the <strong>Oxford Calculators</strong> or the <strong>Merton School</strong>.
+        Their key figures:
+      </p>
+
+      <ul>
+        <li>
+          <strong>Thomas Bradwardine</strong> (c.&thinsp;1300–1349) — later Archbishop of Canterbury;
+          established a mathematical law of motion and set the tone for the group's quantitative approach.
+        </li>
+        <li>
+          <strong>William Heytesbury</strong> (c.&thinsp;1313–1372) — in his
+          <em>Regule solvendi sophismata</em> (1335), stated and proved the mean speed theorem as a
+          rule for calculating the distance traversed under uniform acceleration.
+        </li>
+        <li>
+          <strong>Richard Swineshead</strong> (fl. 1340–1354) — so dominant a mathematician that he was
+          called <em>the Calculator</em>; his <em>Liber Calculationum</em> extended the Oxford methods
+          across every measurable quality.
+        </li>
+        <li>
+          <strong>John Dumbleton</strong> (fl. 1331–1349) — provided physical interpretations and a
+          more encyclopedic treatment in his <em>Summa logicae et philosophiae naturalis</em>.
+        </li>
+      </ul>
+
+      <p>
+        The Merton group proved the theorem in the language of <em>intension and remission of forms</em>
+        — the scholastic framework for how qualities increase or decrease. Their proofs were verbal and
+        proto-algebraic, not geometric.
+      </p>
+
+      <p>
+        The geometric proof came from Paris. <strong>Nicole Oresme</strong> (c.&thinsp;1323–1382), a
+        Norman scholar attached to the Collège de Navarre, invented a way to draw pictures of how
+        qualities vary — what he called the <em>latitude of forms</em>. Applied to motion, this produced
+        a velocity–time diagram indistinguishable in concept from the ones you drew in Lesson&nbsp;2.
+        On that diagram, the mean speed theorem becomes a statement about the equality of two areas.
+      </p>
+
+      <div class="callout callout-insight">
+        <strong>Why Oxford and Paris?</strong>
+        Both cities housed Europe's leading universities. Oxford's strength was logic and mathematics;
+        Paris's was theology and natural philosophy. The two traditions cross-pollinated steadily through
+        traveling scholars, and Oresme knew the Merton results before he supplied the geometric proof.
+      </div>
+    </section>
+
+    <!-- ══ A3 LANGUAGE ═══════════════════════════════════════ -->
+    <section id="section-language">
+      <h2>A3 &nbsp; The Language of Motion</h2>
+
+      <p>
+        The Oxford Calculators did not have the word "acceleration." They worked within Aristotle's
+        framework of <em>qualities</em> — properties that objects possess to varying degrees — and used
+        a specialized Latin vocabulary to describe how qualities change. Before reading their results,
+        it helps to build a translation dictionary.
+      </p>
+
+      <table class="lesson-table">
+        <thead>
+          <tr>
+            <th>Medieval Latin</th>
+            <th>Literal meaning</th>
+            <th>Modern equivalent</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><em>motus uniformis</em></td>
+            <td>uniform motion</td>
+            <td>constant velocity</td>
+          </tr>
+          <tr>
+            <td><em>motus difformis</em></td>
+            <td>difform motion</td>
+            <td>any non-constant velocity</td>
+          </tr>
+          <tr>
+            <td><em>motus uniformiter difformis</em></td>
+            <td>uniformly difform motion</td>
+            <td>constant acceleration (velocity changes at a constant rate)</td>
+          </tr>
+          <tr>
+            <td><em>gradus velocitatis</em></td>
+            <td>degree of velocity</td>
+            <td>instantaneous velocity</td>
+          </tr>
+          <tr>
+            <td><em>latitudo formae</em></td>
+            <td>latitude of the form</td>
+            <td>value of a quality at a given instant (height on Oresme's diagram)</td>
+          </tr>
+          <tr>
+            <td><em>longitudo</em></td>
+            <td>longitude</td>
+            <td>the time axis (horizontal extent) on Oresme's diagram</td>
+          </tr>
+          <tr>
+            <td><em>intensio / remissio</em></td>
+            <td>intension / remission</td>
+            <td>increase / decrease of a quality; positive / negative acceleration</td>
+          </tr>
+          <tr>
+            <td><em>medium gradum</em></td>
+            <td>middle degree</td>
+            <td>mean (average) velocity: \(\bar{v} = (v_0 + v_f)/2\)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>
+        The key term is <a href="#term-uniformiter-difformis" class="key-term"><em>uniformiter difformis</em></a>:
+        "uniformly difform." A uniformly difform velocity is one that changes at a constant rate —
+        exactly what we mean by constant acceleration. The Merton theorem concerns motion that starts
+        at one <em>gradus velocitatis</em> and ends at another, with the rate of change constant
+        throughout.
+      </p>
+
+      <div class="callout callout-warning">
+        <strong>A subtle word: "difform."</strong>
+        In modern English "uniform" means constant. In the medieval framework, <em>uniformis</em> also
+        means constant, but <em>difformis</em> means non-constant. A quality that is
+        <em>uniformiter difformis</em> is therefore non-constant in a <em>uniform</em> way — changing
+        at a constant rate. The "uniformly" applies to the <em>rate of change</em>, not the value
+        itself.
+      </div>
+    </section>
+
+    <!-- ══ A4 THE THEOREM ════════════════════════════════════ -->
+    <section id="section-theorem">
+      <h2>A4 &nbsp; The Theorem</h2>
+
+      <p>
+        The mean speed theorem in three registers:
+      </p>
+
+      <h3>Heytesbury's formulation (c.&thinsp;1335)</h3>
+      <blockquote class="merton">
+        "Of every non-uniform or difform quality uniformly difform from no degree to some degree,
+        the measure, and the quantity of the whole, is that of the mean degree."
+      </blockquote>
+
+      <h3>Plain English</h3>
+      <p>
+        A body that accelerates uniformly — starting from rest and reaching final speed \(v_f\) — covers
+        the same distance in time \(T\) as a body that moves at constant speed \(\tfrac{1}{2}v_f\) for
+        the same time. More generally (with non-zero initial speed \(v_0\)), the constant speed that
+        produces the same displacement is the arithmetic mean \(\bar{v} = (v_0 + v_f)/2\).
+      </p>
+
+      <h3>Modern notation</h3>
+      <div class="math-block">
+        \[
+          \Delta x \;=\; \bar{v}\cdot T, \qquad \bar{v} = \frac{v_0 + v_f}{2}
+          \qquad \bigl(\text{valid when acceleration is constant}\bigr)
+        \]
+      </div>
+
+      <div class="callout callout-insight">
+        <strong>This is already in Lesson&nbsp;2.</strong>
+        Kinematic equation&nbsp;(4) from Lesson&nbsp;2 is \(x = x_0 + \tfrac{1}{2}(v_0 + v)\,t\).
+        That is precisely the mean speed theorem: displacement equals mean speed times time.
+        The Oxford Calculators proved this in 1335; Newton's <em>Principia</em> appeared in 1687.
+      </div>
+    </section>
+
+    <!-- ══ A5 ORESME'S PROOF ══════════════════════════════════ -->
+    <section id="section-oresme">
+      <h2>A5 &nbsp; Oresme's Geometric Proof</h2>
+
+      <p>
+        Around 1350, Nicole Oresme published his <em>Tractatus de configurationibus qualitatum et
+        motuum</em>. In it, he introduced the idea of drawing a quality as a vertical height above a
+        horizontal "longitude." The resulting shape — he called it the <em>figura</em> or
+        <em>configuratio</em> — has an area, and Oresme argued that the area represents the
+        total quantity of the quality over the interval.
+      </p>
+
+      <p>
+        For motion, the quality is velocity and the longitude is time. Oresme's diagram is precisely
+        our \(v\)–\(t\) graph: velocity vertical, time horizontal. The area enclosed — which he called
+        the <em>quantitas motus</em> — is the displacement. This is the geometric meaning of
+        \(\Delta x = \int v\,dt\), stated without calculus.
+      </p>
+
+      <h3>The triangle and the rectangle</h3>
+      <p>
+        For <em>uniformiter difformis</em> motion starting from rest, the velocity–time figure is a
+        right triangle: a straight line rising from zero at \(t = 0\) to \(v_f\) at \(t = T\),
+        closing against the time axis. For motion at the constant mean speed \(\bar{v} = v_f/2\),
+        the figure is a rectangle of height \(v_f/2\) and width \(T\).
+      </p>
+      <p>
+        These two figures have identical areas:
+      </p>
+      <div class="math-block">
+        \[
+          \underbrace{\tfrac{1}{2} \cdot T \cdot v_f}_{\text{triangle (accelerating)}}
+          \;=\;
+          \underbrace{T \cdot \tfrac{v_f}{2}}_{\text{rectangle (mean speed)}}
+        \]
+      </div>
+      <p>
+        Therefore — since area equals displacement — the two motions produce the same displacement
+        in time \(T\). The mean speed theorem is proved.
+      </p>
+
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 520 210" width="520" height="210" xmlns="http://www.w3.org/2000/svg"
+             aria-label="Two velocity-time diagrams side by side: a right triangle for uniform acceleration from rest, and a rectangle for constant mean speed, both enclosing the same area">
+
+          <!-- ── LEFT PANEL: Uniform acceleration (triangle) ── -->
+          <line x1="50" y1="180" x2="50" y2="25" stroke="#2c2c2c" stroke-width="1.5"/>
+          <line x1="50" y1="180" x2="225" y2="180" stroke="#2c2c2c" stroke-width="1.5"/>
+          <polygon points="50,25 45,37 55,37" fill="#2c2c2c"/>
+          <polygon points="225,180 213,175 213,185" fill="#2c2c2c"/>
+          <!-- Triangle area -->
+          <polygon points="50,180 210,180 210,40" fill="#1a5276" opacity="0.18"/>
+          <polygon points="50,180 210,180 210,40" fill="none" stroke="#1a5276" stroke-width="1.2"/>
+          <!-- v(t) line -->
+          <line x1="50" y1="180" x2="210" y2="40" stroke="#c0392b" stroke-width="2.5"/>
+          <!-- Axis labels -->
+          <text x="43" y="21" font-family="'Source Sans 3',sans-serif" font-size="12" font-style="italic" fill="#c0392b" text-anchor="end">v</text>
+          <text x="228" y="184" font-family="'Source Sans 3',sans-serif" font-size="12" font-style="italic" fill="#2c2c2c">t</text>
+          <!-- Ticks -->
+          <line x1="210" y1="178" x2="210" y2="182" stroke="#2c2c2c"/>
+          <text x="210" y="195" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#6b7280" text-anchor="middle">T</text>
+          <text x="44" y="43" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#c0392b" text-anchor="end">v<tspan font-size="8" dy="2">f</tspan></text>
+          <!-- Area label -->
+          <text x="148" y="140" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#1a5276" text-anchor="middle">½·T·v<tspan font-size="8" dy="2">f</tspan></text>
+          <!-- Panel title -->
+          <text x="130" y="13" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="600">Uniformly accelerating</text>
+
+          <!-- ── "=" SIGN ── -->
+          <text x="258" y="125" font-family="'Source Sans 3',sans-serif" font-size="24" fill="#d4ac0d" text-anchor="middle" font-weight="700">=</text>
+
+          <!-- ── RIGHT PANEL: Constant mean speed (rectangle) ── -->
+          <line x1="295" y1="180" x2="295" y2="25" stroke="#2c2c2c" stroke-width="1.5"/>
+          <line x1="295" y1="180" x2="470" y2="180" stroke="#2c2c2c" stroke-width="1.5"/>
+          <polygon points="295,25 290,37 300,37" fill="#2c2c2c"/>
+          <polygon points="470,180 458,175 458,185" fill="#2c2c2c"/>
+          <!-- Rectangle area -->
+          <rect x="295" y="110" width="160" height="70" fill="#c0392b" opacity="0.18"/>
+          <rect x="295" y="110" width="160" height="70" fill="none" stroke="#c0392b" stroke-width="1.2"/>
+          <!-- Constant velocity line -->
+          <line x1="295" y1="110" x2="455" y2="110" stroke="#c0392b" stroke-width="2.5"/>
+          <!-- Axis labels -->
+          <text x="288" y="21" font-family="'Source Sans 3',sans-serif" font-size="12" font-style="italic" fill="#c0392b" text-anchor="end">v</text>
+          <text x="473" y="184" font-family="'Source Sans 3',sans-serif" font-size="12" font-style="italic" fill="#2c2c2c">t</text>
+          <!-- Ticks -->
+          <line x1="455" y1="178" x2="455" y2="182" stroke="#2c2c2c"/>
+          <text x="455" y="195" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#6b7280" text-anchor="middle">T</text>
+          <text x="290" y="114" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#c0392b" text-anchor="end">v̄</text>
+          <!-- Area label -->
+          <text x="375" y="150" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#c0392b" text-anchor="middle">T · v̄</text>
+          <!-- Panel title -->
+          <text x="375" y="13" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#6b7280" text-anchor="middle" font-weight="600">Constant mean speed</text>
+        </svg>
+        <p class="diagram-caption">
+          Figure A5.1 &mdash; Both figures enclose identical areas: \(\tfrac{1}{2}T v_f = T\bar{v}\) with \(\bar{v} = v_f/2\).
+          Since area under the \(v\)&ndash;\(t\) curve equals displacement, both motions cover the same distance in time \(T\).
+        </p>
+      </div>
+
+      <p>
+        Oresme's insight was to see the theorem as a geometric fact about areas, not an algebraic
+        identity. That reframing made a purely verbal scholastic result visible — and in a sense,
+        obvious.
+      </p>
+    </section>
+
+    <!-- ══ A6 HUMP AND NOTCH ══════════════════════════════════ -->
+    <section id="section-hump">
+      <h2>A6 &nbsp; The Hump and the Notch</h2>
+
+      <p>
+        There is a companion visual argument — arguably even more elegant — that shows <em>why</em>
+        the triangle and rectangle have equal areas without computing either one.
+      </p>
+
+      <h3>Setting up the comparison</h3>
+      <p>
+        Draw the \(v\)–\(t\) diagram for uniform acceleration from rest: a diagonal line from
+        \((0,\,0)\) to \((T,\,v_f)\). Now draw a horizontal dashed line at the mean speed
+        \(\bar{v} = v_f/2\). This line, together with the two axes, outlines the "mean speed
+        rectangle" \([0,T]\times[0,\bar{v}]\). Relative to that rectangle, the velocity curve
+        creates two regions:
+      </p>
+      <ul>
+        <li>
+          <strong>The hump</strong> — in the right half of the diagram (\(t \in [T/2,\,T]\)),
+          the velocity exceeds the mean speed. The curve rises above the top of the rectangle,
+          forming a triangular hump.
+        </li>
+        <li>
+          <strong>The notch</strong> — in the left half (\(t \in [0,\,T/2]\)), the velocity is
+          still climbing toward \(\bar{v}\). The mean speed rectangle extends to height \(\bar{v}\),
+          but the curve has not reached it yet. The empty triangular space above the curve and below
+          the rectangle's top edge is the notch.
+        </li>
+      </ul>
+
+      <h3>The congruence</h3>
+      <p>
+        Both the hump and the notch are right triangles with the same two legs: horizontal leg
+        \(= T/2\) and vertical leg \(= v_f/2\). They are congruent. The hump can be slid left and
+        flipped to fill the notch exactly. The area of the full velocity triangle therefore equals
+        the area of the mean speed rectangle. The mean speed theorem follows without a single
+        calculation.
+      </p>
+
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 480 215" width="480" height="215" xmlns="http://www.w3.org/2000/svg"
+             aria-label="Velocity-time diagram showing the hump above the mean speed line in the right half and the notch below it in the left half, with both triangles highlighted to show they are congruent">
+
+          <defs>
+            <marker id="arr-sq-a" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="#6b7280"/>
+            </marker>
+          </defs>
+
+          <!-- Axes -->
+          <line x1="55" y1="185" x2="55" y2="20" stroke="#2c2c2c" stroke-width="1.5"/>
+          <line x1="55" y1="185" x2="440" y2="185" stroke="#2c2c2c" stroke-width="1.5"/>
+          <polygon points="55,20 50,32 60,32" fill="#2c2c2c"/>
+          <polygon points="440,185 428,180 428,190" fill="#2c2c2c"/>
+
+          <!-- Mean speed rectangle (light gold fill) -->
+          <rect x="55" y="105" width="370" height="80" fill="#d4ac0d" opacity="0.08"/>
+          <rect x="55" y="105" width="370" height="80" fill="none" stroke="#d4ac0d" stroke-width="1" stroke-dasharray="5,3"/>
+
+          <!-- Notch: triangle (55,105),(240,105),(55,185) — space above curve, inside rectangle, left half -->
+          <polygon points="55,105 240,105 55,185" fill="#1e8449" opacity="0.38"/>
+
+          <!-- Hump: triangle (240,105),(425,105),(425,25) — curve above rectangle, right half -->
+          <polygon points="240,105 425,105 425,25" fill="#c0392b" opacity="0.38"/>
+
+          <!-- Velocity curve -->
+          <line x1="55" y1="185" x2="425" y2="25" stroke="#c0392b" stroke-width="2.5"/>
+
+          <!-- Mean speed dashed line -->
+          <line x1="55" y1="105" x2="425" y2="105" stroke="#d4ac0d" stroke-width="1.8" stroke-dasharray="7,4"/>
+
+          <!-- Axis labels -->
+          <text x="47" y="17" font-family="'Source Sans 3',sans-serif" font-size="13" font-style="italic" fill="#c0392b" text-anchor="end">v</text>
+          <text x="446" y="189" font-family="'Source Sans 3',sans-serif" font-size="13" font-style="italic" fill="#2c2c2c">t</text>
+          <text x="50" y="189" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#6b7280" text-anchor="end">0</text>
+
+          <!-- v_f label -->
+          <text x="50" y="28" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#c0392b" text-anchor="end">v<tspan font-size="7" dy="2">f</tspan></text>
+          <!-- v̄ label -->
+          <text x="50" y="108" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#d4ac0d" text-anchor="end">v̄</text>
+
+          <!-- T/2 tick -->
+          <line x1="240" y1="183" x2="240" y2="187" stroke="#2c2c2c"/>
+          <text x="240" y="200" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#6b7280" text-anchor="middle">T/2</text>
+          <!-- T tick -->
+          <line x1="425" y1="183" x2="425" y2="187" stroke="#2c2c2c"/>
+          <text x="425" y="200" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#6b7280" text-anchor="middle">T</text>
+
+          <!-- Right-angle marker at (425,105) for hump -->
+          <rect x="417" y="97" width="8" height="8" fill="none" stroke="#c0392b" stroke-width="1"/>
+          <!-- Right-angle marker at (55,105) for notch -->
+          <rect x="55" y="105" width="8" height="8" fill="none" stroke="#1e8449" stroke-width="1"/>
+
+          <!-- HUMP label -->
+          <text x="362" y="72" font-family="'Source Sans 3',sans-serif" font-size="12" fill="#c0392b" text-anchor="middle" font-weight="600">HUMP</text>
+          <text x="362" y="86" font-family="'Source Sans 3',sans-serif" font-size="9.5" fill="#c0392b" text-anchor="middle">legs: T/2, v<tspan font-size="7" dy="2">f</tspan><tspan dy="-2">/2</tspan></text>
+
+          <!-- NOTCH label -->
+          <text x="113" y="150" font-family="'Source Sans 3',sans-serif" font-size="12" fill="#1e8449" text-anchor="middle" font-weight="600">NOTCH</text>
+          <text x="113" y="164" font-family="'Source Sans 3',sans-serif" font-size="9.5" fill="#1e8449" text-anchor="middle">legs: T/2, v<tspan font-size="7" dy="2">f</tspan><tspan dy="-2">/2</tspan></text>
+
+          <!-- "HUMP ≅ NOTCH" annotation -->
+          <text x="240" y="57" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#6b7280" text-anchor="middle">HUMP &#8773; NOTCH</text>
+          <line x1="265" y1="62" x2="348" y2="78" stroke="#6b7280" stroke-width="1" marker-end="url(#arr-sq-a)"/>
+          <line x1="215" y1="62" x2="127" y2="143" stroke="#6b7280" stroke-width="1" marker-end="url(#arr-sq-a)"/>
+        </svg>
+        <p class="diagram-caption">
+          Figure A6.1 &mdash; The hump (red) and notch (green) are congruent right triangles, each with legs \(T/2\) and \(v_f/2\).
+          The hump exactly fills the notch, proving that the triangle area equals the mean-speed rectangle area without any arithmetic.
+        </p>
+      </div>
+
+      <div class="callout callout-insight">
+        <strong>The general case.</strong>
+        When the motion does not start from rest — with initial speed \(v_0 \neq 0\) — the
+        \(v\)–\(t\) figure is a trapezoid. The mean speed line at \(\bar{v} = (v_0+v_f)/2\) again
+        creates a hump and a notch that are congruent right triangles (both with legs \(T/2\) and
+        \((v_f - v_0)/2\)). The theorem holds for any linear (constant-acceleration) velocity profile.
+      </div>
+    </section>
+
+    <!-- ══ A7 MODERN TRANSLATION ══════════════════════════════ -->
+    <section id="section-modern">
+      <h2>A7 &nbsp; Modern Translation</h2>
+
+      <p>
+        Oresme's geometric language translates directly into the calculus vocabulary of Lesson&nbsp;2.
+        Let the object start from rest with constant acceleration \(a\), so \(v(t) = at\).
+      </p>
+
+      <h3>Displacement as an integral</h3>
+      <div class="math-block">
+        \[
+          \Delta x = \int_0^T v(t)\,dt = \int_0^T at\,dt
+          = \left[\frac{at^2}{2}\right]_0^T = \frac{1}{2}aT^2
+        \]
+      </div>
+
+      <h3>Displacement as triangle area</h3>
+      <p>
+        The \(v\)–\(t\) graph from \(t=0\) to \(t=T\) is a right triangle with base \(T\) and
+        height \(v_f = aT\):
+      </p>
+      <div class="math-block">
+        \[
+          \Delta x = \tfrac{1}{2}\cdot\text{base}\cdot\text{height}
+          = \tfrac{1}{2}\cdot T \cdot aT = \frac{1}{2}aT^2
+        \]
+      </div>
+
+      <h3>Displacement as mean speed &times; time</h3>
+      <p>
+        The mean velocity is \(\bar{v} = (0 + aT)/2 = aT/2\):
+      </p>
+      <div class="math-block">
+        \[
+          \Delta x = \bar{v}\cdot T = \frac{aT}{2}\cdot T = \frac{1}{2}aT^2
+        \]
+      </div>
+
+      <p>
+        All three derivations give \(\Delta x = \tfrac{1}{2}aT^2\). The integral is a machine;
+        the triangle area is Oresme's picture; the mean speed is Heytesbury's theorem. They are the
+        same fact, written in three different languages.
+      </p>
+
+      <div class="callout callout-tip">
+        <strong>The area connection, restated.</strong>
+        The area under the \(v\)–\(t\) curve equals displacement. For constant acceleration from
+        rest, the curve is a straight line and the area is a triangle. The formula
+        \(\tfrac{1}{2}\cdot\text{base}\cdot\text{height}\) immediately gives \(\tfrac{1}{2}aT^2\)
+        — no integration needed. Oresme's diagram is a proof by picture.
+      </div>
+    </section>
+
+    <!-- ══ A8 DERIVING x = ½at² ══════════════════════════════ -->
+    <section id="section-kinematics">
+      <h2>A8 &nbsp; Deriving \(x = \tfrac{1}{2}at^2\)</h2>
+
+      <div class="example-box">
+        <p class="example-title">Worked Example A8.1 &mdash; Three Methods, One Answer</p>
+        <p>
+          A car accelerates uniformly from rest to \(v_f = 24\ \mathrm{m/s}\) in \(T = 6\ \mathrm{s}\).
+          Find the distance covered using all three methods.
+        </p>
+        <div class="step">
+          <span class="step-num">1</span>
+          <span><strong>Acceleration:</strong> \(a = v_f/T = 24/6 = 4\ \mathrm{m/s^2}\).</span>
+        </div>
+        <div class="step">
+          <span class="step-num">2</span>
+          <span>
+            <strong>Formula:</strong>
+            \(x = \tfrac{1}{2}at^2 = \tfrac{1}{2}(4)(36) = 72\ \mathrm{m}\).
+          </span>
+        </div>
+        <div class="step">
+          <span class="step-num">3</span>
+          <span>
+            <strong>Triangle area:</strong>
+            base \(= 6\ \mathrm{s}\), height \(= 24\ \mathrm{m/s}\);
+            area \(= \tfrac{1}{2}(6)(24) = 72\ \mathrm{m}\). &#10003;
+          </span>
+        </div>
+        <div class="step">
+          <span class="step-num">4</span>
+          <span>
+            <strong>Mean speed:</strong>
+            \(\bar{v} = 24/2 = 12\ \mathrm{m/s}\);
+            distance \(= 12 \times 6 = 72\ \mathrm{m}\). &#10003;
+          </span>
+        </div>
+      </div>
+
+      <h3>The general case: non-zero initial velocity</h3>
+      <p>
+        When the object begins with velocity \(v_0 \neq 0\), the \(v\)–\(t\) figure is a
+        <em>trapezoid</em>. The trapezoid area formula gives displacement directly:
+      </p>
+
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 420 200" width="420" height="200" xmlns="http://www.w3.org/2000/svg"
+             aria-label="Trapezoid velocity-time graph for a body with initial velocity v0 accelerating uniformly to final velocity vf, with the mean speed dashed line shown at the midpoint height">
+
+          <!-- Axes -->
+          <line x1="55" y1="175" x2="55" y2="20" stroke="#2c2c2c" stroke-width="1.5"/>
+          <line x1="55" y1="175" x2="400" y2="175" stroke="#2c2c2c" stroke-width="1.5"/>
+          <polygon points="55,20 50,32 60,32" fill="#2c2c2c"/>
+          <polygon points="400,175 388,170 388,180" fill="#2c2c2c"/>
+
+          <!-- Trapezoid area: v0 at y=130, vf at y=45 -->
+          <polygon points="55,130 375,45 375,175 55,175" fill="#1a5276" opacity="0.18"/>
+
+          <!-- Velocity line -->
+          <line x1="55" y1="130" x2="375" y2="45" stroke="#c0392b" stroke-width="2.5"/>
+
+          <!-- Mean speed dashed line at y = (130+45)/2 = 87.5 ≈ 88 -->
+          <line x1="55" y1="88" x2="375" y2="88" stroke="#d4ac0d" stroke-width="1.8" stroke-dasharray="7,4"/>
+
+          <!-- Axis labels -->
+          <text x="47" y="17" font-family="'Source Sans 3',sans-serif" font-size="13" font-style="italic" fill="#c0392b" text-anchor="end">v</text>
+          <text x="406" y="179" font-family="'Source Sans 3',sans-serif" font-size="13" font-style="italic" fill="#2c2c2c">t</text>
+
+          <!-- v₀ tick -->
+          <line x1="53" y1="130" x2="57" y2="130" stroke="#2c2c2c"/>
+          <text x="50" y="134" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#c0392b" text-anchor="end">v₀</text>
+
+          <!-- v_f tick -->
+          <line x1="53" y1="45" x2="57" y2="45" stroke="#2c2c2c"/>
+          <text x="50" y="49" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#c0392b" text-anchor="end">v<tspan font-size="7" dy="2">f</tspan></text>
+
+          <!-- v̄ tick -->
+          <line x1="53" y1="88" x2="57" y2="88" stroke="#d4ac0d"/>
+          <text x="50" y="92" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#d4ac0d" text-anchor="end">v̄</text>
+
+          <!-- T tick -->
+          <line x1="375" y1="173" x2="375" y2="177" stroke="#2c2c2c"/>
+          <text x="375" y="190" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#6b7280" text-anchor="middle">T</text>
+
+          <!-- Area label -->
+          <text x="215" y="125" font-family="'Source Sans 3',sans-serif" font-size="12" fill="#1a5276" text-anchor="middle">&Delta;x = v̄ &middot; T</text>
+          <text x="215" y="141" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#6b7280" text-anchor="middle">= ½(v₀ + v<tspan font-size="7" dy="2">f</tspan><tspan dy="-2">) &middot; T</tspan></text>
+        </svg>
+        <p class="diagram-caption">
+          Figure A8.1 &mdash; For a body starting at \(v_0\) and accelerating uniformly to \(v_f\) over time \(T\),
+          the displacement equals the trapezoid area \(= \bar{v}\cdot T = \tfrac{1}{2}(v_0+v_f)\cdot T\).
+          This is kinematic equation&nbsp;(4) from Lesson&nbsp;2.
+        </p>
+      </div>
+
+      <div class="math-block">
+        \[
+          \Delta x = \frac{1}{2}(v_0 + v_f)\,T = \bar{v}\cdot T
+          \tag{kinematic eq.\ 4}
+        \]
+      </div>
+      <p>Substituting \(v_f = v_0 + aT\):</p>
+      <div class="math-block">
+        \[
+          \Delta x = \frac{1}{2}(v_0 + v_0 + aT)\,T = v_0 T + \frac{1}{2}aT^2
+          \tag{kinematic eq.\ 2}
+        \]
+      </div>
+      <p>
+        The two most important constant-acceleration formulas emerge directly from computing the
+        area of a velocity–time trapezoid — exactly as Oresme would have done it, 700 years ago.
+      </p>
+    </section>
+
+    <!-- ══ A9 HISTORICAL LEGACY ═══════════════════════════════ -->
+    <section id="section-legacy">
+      <h2>A9 &nbsp; Historical Legacy</h2>
+
+      <p>
+        The mean speed theorem was proved in Oxford around 1335 — more than three centuries before
+        Isaac Newton published the <em>Principia</em> (1687) and nearly three centuries before Galileo
+        published the <em>Two New Sciences</em> (1638). The following timeline sketches the chain of
+        transmission:
+      </p>
+
+      <ul>
+        <li><strong>c.&thinsp;1335:</strong> Heytesbury states and proves the mean speed theorem verbally at Merton College.</li>
+        <li><strong>c.&thinsp;1350:</strong> Oresme provides the geometric proof at Paris via the <em>latitudo formae</em> diagram.</li>
+        <li><strong>c.&thinsp;1380–1430:</strong> The Merton results spread to Italian and German universities through traveling scholars.</li>
+        <li><strong>1555:</strong> Domingo de Soto, in his commentary on Aristotle's <em>Physics</em>, explicitly applies the mean speed theorem to free fall — the first written claim that freely falling bodies undergo <em>uniformiter difformis</em> motion.</li>
+        <li><strong>c.&thinsp;1604–1638:</strong> Galileo derives and experimentally confirms \(x \propto t^2\) for free fall and inclined planes. He was almost certainly aware of the medieval tradition through de Soto and his own extensive reading.</li>
+      </ul>
+
+      <div class="callout callout-insight">
+        <strong>What Galileo actually contributed.</strong>
+        Galileo did not prove the mean speed theorem — that was already done. His contributions
+        were: (1)&nbsp;identifying free fall as a physical instance of uniform acceleration;
+        (2)&nbsp;designing experiments (the inclined plane) to verify this identification;
+        and (3)&nbsp;connecting the kinematics to dynamics — the causal story of why bodies fall as
+        they do. The mathematics was medieval; the experimental confirmation and physical interpretation
+        were Galilean. For Galileo's experimental methods and the law of odd numbers,
+        see <a href="lesson-02-sq-b-galileo.html">Side Quest&nbsp;B</a>.
+      </div>
+
+      <h3>What was new about the medieval approach</h3>
+      <p>
+        The most remarkable feature of the Merton–Oresme achievement is what it does <em>not</em>
+        require:
+      </p>
+      <ul>
+        <li>calculus (invented three centuries later by Newton and Leibniz);</li>
+        <li>a correct theory of force (Aristotle's dynamics was wrong; the Calculators bracketed it);</li>
+        <li>any specific physical system — the theorem applies to any uniformly difform motion.</li>
+      </ul>
+      <p>
+        The Calculators thereby took a crucial step in the history of science: the separation of the
+        <em>description</em> of motion (kinematics) from the <em>explanation</em> of motion
+        (dynamics). That separation, which we now take for granted, was radical in the fourteenth
+        century.
+      </p>
+
+      <div class="callout callout-warning">
+        <strong>The limit of the medieval achievement.</strong>
+        The Merton–Oresme result was mathematical and abstract. The Calculators did not claim — or
+        check — whether any physical bodies actually move in a uniformly difform manner. It took two
+        more centuries and Galileo's inclined-plane experiments to establish that freely falling objects
+        near Earth's surface actually do follow this mathematical law.
+      </div>
+
+      <h3>A medieval theorem in a modern course</h3>
+      <p>
+        Every time you use \(v = v_0 + at\), \(x = x_0 + v_0 t + \tfrac{1}{2}at^2\), or the
+        equivalent trapezoid formula, you are using mathematics first worked out at Merton College
+        and the Collège de Navarre in the mid-fourteenth century. The \(v\)–\(t\) graph you drew in
+        Lesson&nbsp;2 is, in concept if not in notation, the <em>latitudo formae</em> of Nicole
+        Oresme. Physics has a long memory.
+      </p>
+    </section>
+
+    <!-- ══ GLOSSARY ════════════════════════════════════════════ -->
+    <section id="glossary">
+      <h2>Glossary</h2>
+      <dl class="glossary-list">
+
+        <dt id="term-mean-speed-theorem">Mean Speed Theorem</dt>
+        <dd>
+          A body in uniformly accelerating motion (from \(v_0\) to \(v_f\) over time \(T\))
+          travels the same distance as a body moving at constant speed
+          \(\bar{v} = (v_0 + v_f)/2\) for the same time: \(\Delta x = \bar{v}\cdot T\).
+          Proved at Merton College c.&thinsp;1335; given geometric form by Oresme c.&thinsp;1350.
+        </dd>
+
+        <dt id="term-uniformiter-difformis">Uniformly difform (<em>uniformiter difformis</em>)</dt>
+        <dd>
+          Medieval Latin for motion in which velocity changes at a constant rate — equivalent to
+          constant acceleration. The "uniformly" describes the <em>rate of change</em>, not the
+          velocity itself.
+        </dd>
+
+        <dt id="term-latitudo">Latitude of forms (<em>latitudo formarum</em>)</dt>
+        <dd>
+          Oresme's graphical method: draw a quality as a vertical height above a horizontal time
+          axis. Applied to velocity, the result is a \(v\)–\(t\) diagram whose enclosed area
+          represents displacement.
+        </dd>
+
+        <dt id="term-gradus">Degree of velocity (<em>gradus velocitatis</em>)</dt>
+        <dd>
+          The instantaneous velocity at a given moment — the medieval equivalent of \(v(t)\).
+        </dd>
+
+        <dt id="term-medium-gradum">Mean degree (<em>medium gradum</em>)</dt>
+        <dd>
+          The arithmetic mean of initial and final velocity: \(\bar{v} = (v_0 + v_f)/2\).
+          The "mean speed" in the mean speed theorem.
+        </dd>
+
+        <dt id="term-merton-calculators">Oxford Calculators (Merton School)</dt>
+        <dd>
+          A group of fourteenth-century scholars at Merton College, Oxford — including Heytesbury,
+          Swineshead, Dumbleton, and Bradwardine — who applied mathematics to the analysis of
+          qualities and motions within the Aristotelian framework.
+        </dd>
+
+      </dl>
+    </section>
+
+  </main>
+</div>
+
+<footer class="lesson-footer">
+  <a class="btn-prev" href="lesson-02-motion-on-a-line.html">&larr; Lesson 2 &mdash; Motion in a Straight Line</a>
+  <a class="btn-next" href="lesson-02-sq-b-galileo.html">Side Quest B &mdash; Galileo and Falling Bodies &rarr;</a>
+</footer>
+
+<script>
+  const panel  = document.getElementById('toc-panel');
+  const toggle = document.getElementById('toc-toggle');
+  const STORAGE_KEY = 'physics-toc-sq-a-collapsed';
+
+  function applyState(collapsed) {
+    panel.classList.toggle('collapsed', collapsed);
+    toggle.setAttribute('aria-expanded', String(!collapsed));
+    toggle.querySelector('.toc-label').textContent = collapsed ? '' : 'Contents';
+    try { localStorage.setItem(STORAGE_KEY, collapsed ? '1' : '0'); } catch(e) {}
+  }
+
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved === '1') applyState(true);
+  } catch(e) {}
+
+  toggle.addEventListener('click', () => {
+    applyState(!panel.classList.contains('collapsed'));
+  });
+
+  if (window.innerWidth <= 768) {
+    panel.classList.add('collapsed');
+    toggle.addEventListener('click', () => {
+      panel.classList.toggle('mobile-open');
+    });
+  }
+
+  const sections = document.querySelectorAll('section[id]');
+  const tocLinks = document.querySelectorAll('.toc-list a');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        tocLinks.forEach(a => a.classList.remove('active'));
+        const active = document.querySelector(`.toc-list a[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-100px 0px -60% 0px', threshold: 0 });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>

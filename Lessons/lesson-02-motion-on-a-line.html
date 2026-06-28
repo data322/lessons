@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lesson 2 — Motion in a Straight Line | Physics Lessons</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;600;700&display=swap" />
+
+  <script>
+    MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+
+  <style>
+    /* ─── Design Tokens ─────────────────────────────────── */
+    :root {
+      --color-bg:             #f9f9f7;
+      --color-surface:        #ffffff;
+      --color-primary:        #1a5276;
+      --color-primary-light:  #2471a3;
+      --color-accent:         #d4ac0d;
+      --color-text:           #2c2c2c;
+      --color-muted:          #6b7280;
+      --color-border:         #d1d5db;
+      --color-callout-tip-bg:     #eaf4fb;
+      --color-callout-tip-border: #2e86c1;
+      --color-callout-warn-bg:    #fef9e7;
+      --color-callout-warn-border:#d4ac0d;
+      --color-callout-insight-bg: #eafaf1;
+      --color-callout-insight-border: #1e8449;
+      /* Physics palette */
+      --col-x:  #1a5276;   /* position — navy   */
+      --col-v:  #c0392b;   /* velocity — crimson */
+      --col-a:  #1e8449;   /* acceleration — green */
+      --col-gold: #d4ac0d; /* accent / slope triangles */
+      --col-ink:  #2c2c2c;
+      --col-mute: #6b7280;
+      --font-body:  'Playfair Display', Georgia, serif;
+      --font-ui:    'Source Sans 3', system-ui, sans-serif;
+      --font-mono:  'Fira Mono', 'Courier New', monospace;
+      --toc-width:  260px;
+      --content-max-width: 760px;
+      --border-radius: 6px;
+      --transition: 0.25s ease;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--color-text);
+      background: var(--color-bg);
+    }
+
+    /* ─── Header ────────────────────────────────────────── */
+    .lesson-header {
+      background: var(--color-primary);
+      color: #fff;
+      padding: 1.25rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
+    .breadcrumb {
+      font-family: var(--font-ui);
+      font-size: 0.8rem;
+      opacity: 0.75;
+      margin-bottom: 0.3rem;
+    }
+    .lesson-header h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.01em; }
+    .lesson-meta { font-family: var(--font-ui); font-size: 0.82rem; opacity: 0.7; margin-top: 0.2rem; }
+
+    /* ─── Layout ────────────────────────────────────────── */
+    .lesson-layout { display: flex; align-items: flex-start; min-height: calc(100vh - 80px); }
+
+    /* ─── TOC Panel ─────────────────────────────────────── */
+    .toc-panel {
+      width: var(--toc-width);
+      flex-shrink: 0;
+      position: sticky;
+      top: 80px;
+      height: calc(100vh - 80px);
+      overflow-y: auto;
+      background: var(--color-surface);
+      border-right: 1px solid var(--color-border);
+      padding: 1rem 0;
+      transition: width var(--transition), transform var(--transition);
+      z-index: 50;
+    }
+    .toc-panel.collapsed { width: 44px; overflow: hidden; }
+    .toc-panel.collapsed .toc-inner { display: none; }
+
+    #toc-toggle {
+      display: flex; align-items: center; gap: 0.4rem;
+      background: none; border: none; cursor: pointer;
+      padding: 0.4rem 0.85rem;
+      font-family: var(--font-ui); font-size: 0.85rem; color: var(--color-primary);
+      width: 100%;
+    }
+    #toc-toggle:hover { background: var(--color-callout-tip-bg); }
+    .toc-icon { font-size: 1.1rem; flex-shrink: 0; }
+    .toc-inner { padding: 0.5rem 1rem 1rem; }
+    .toc-heading {
+      font-family: var(--font-ui); font-size: 0.7rem;
+      text-transform: uppercase; letter-spacing: 0.08em;
+      color: var(--color-muted); margin-bottom: 0.6rem; font-weight: 600;
+    }
+    .toc-list { list-style: none; padding: 0; }
+    .toc-list li { margin: 0; }
+    .toc-list a {
+      display: block; font-family: var(--font-ui); font-size: 0.82rem;
+      color: var(--color-text); text-decoration: none;
+      padding: 0.3rem 0.5rem; border-radius: 4px; line-height: 1.35;
+      transition: background var(--transition), color var(--transition);
+    }
+    .toc-list a:hover, .toc-list a.active {
+      background: var(--color-callout-tip-bg); color: var(--color-primary);
+    }
+    .toc-list .toc-num { font-size: 0.72rem; color: var(--color-muted); margin-right: 0.3em; }
+
+    /* ─── Main Content ──────────────────────────────────── */
+    .lesson-content {
+      flex: 1; max-width: var(--content-max-width);
+      padding: 2.5rem 2.5rem 3rem; margin: 0 auto;
+    }
+    .lesson-content section { margin-bottom: 3.5rem; scroll-margin-top: 100px; }
+    .lesson-content h2 {
+      font-size: 1.55rem; color: var(--color-primary);
+      border-bottom: 2px solid var(--color-border);
+      padding-bottom: 0.4rem; margin-bottom: 1.1rem;
+    }
+    .lesson-content h3 { font-size: 1.15rem; color: var(--color-primary-light); margin: 1.5rem 0 0.6rem; }
+    .lesson-content p { margin-bottom: 1rem; }
+    .lesson-content ul, .lesson-content ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+    .lesson-content li { margin-bottom: 0.35rem; }
+
+    a.key-term {
+      color: var(--color-text); text-decoration-line: underline;
+      text-decoration-style: dashed; text-decoration-color: var(--color-accent);
+      text-underline-offset: 3px; cursor: help;
+    }
+    a.key-term:hover { color: var(--color-primary); }
+
+    /* ─── Callout Boxes ─────────────────────────────────── */
+    .callout {
+      border-left: 4px solid; border-radius: 0 var(--border-radius) var(--border-radius) 0;
+      padding: 0.85rem 1.1rem; margin: 1.4rem 0; font-size: 0.95rem;
+    }
+    .callout-tip    { background: var(--color-callout-tip-bg);     border-color: var(--color-callout-tip-border); }
+    .callout-warning{ background: var(--color-callout-warn-bg);    border-color: var(--color-callout-warn-border); }
+    .callout-insight{ background: var(--color-callout-insight-bg); border-color: var(--color-callout-insight-border); }
+    .callout strong { display: block; margin-bottom: 0.25rem; }
+
+    /* ─── Math Blocks ───────────────────────────────────── */
+    .math-block {
+      background: var(--color-surface); border: 1px solid var(--color-border);
+      border-radius: var(--border-radius); padding: 1rem 1.5rem;
+      margin: 1.2rem 0; overflow-x: auto; font-size: 1.05rem; text-align: center;
+    }
+    .math-label {
+      font-family: var(--font-ui); font-size: 0.78rem; color: var(--color-muted);
+      text-align: right; margin-top: 0.3rem;
+    }
+
+    /* ─── Worked Examples ───────────────────────────────── */
+    .example-box {
+      background: var(--color-surface); border: 1px solid var(--color-border);
+      border-radius: var(--border-radius); padding: 1.2rem 1.5rem; margin: 1.4rem 0;
+    }
+    .example-box .example-title {
+      font-family: var(--font-ui); font-size: 0.78rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.06em;
+      color: var(--color-primary); margin-bottom: 0.7rem;
+    }
+    .example-box .step {
+      display: grid; grid-template-columns: 2rem 1fr;
+      gap: 0 0.6rem; margin-bottom: 0.4rem; font-size: 0.95rem;
+    }
+    .step-num { font-family: var(--font-ui); font-weight: 700; color: var(--color-primary); padding-top: 2px; }
+
+    /* ─── Table ─────────────────────────────────────────── */
+    .lesson-table { width: 100%; border-collapse: collapse; margin: 1.2rem 0; font-size: 0.92rem; }
+    .lesson-table th {
+      background: var(--color-primary); color: #fff;
+      font-family: var(--font-ui); font-weight: 600;
+      padding: 0.6rem 0.9rem; text-align: left;
+    }
+    .lesson-table td { padding: 0.55rem 0.9rem; border-bottom: 1px solid var(--color-border); vertical-align: top; }
+    .lesson-table tr:nth-child(even) td { background: #f4f4f2; }
+
+    /* ─── SVG Diagrams ──────────────────────────────────── */
+    .diagram-wrap { text-align: center; margin: 1.6rem 0; }
+    .diagram-wrap svg { max-width: 100%; height: auto; }
+    .diagram-caption { font-family: var(--font-ui); font-size: 0.8rem; color: var(--color-muted); margin-top: 0.4rem; }
+
+    /* ─── Glossary ──────────────────────────────────────── */
+    .glossary-section { border-top: 3px solid var(--color-primary); padding-top: 1.5rem; }
+    .glossary-section dl { margin-top: 1rem; }
+    .glossary-section dt {
+      font-family: var(--font-ui); font-weight: 700;
+      color: var(--color-primary); font-size: 1rem; margin-top: 1.1rem;
+    }
+    .glossary-section dt::before { content: ''; display: block; height: 80px; margin-top: -80px; }
+    .glossary-section dd {
+      margin-left: 0; margin-top: 0.2rem; font-size: 0.95rem;
+      color: var(--color-text); padding-left: 1rem;
+      border-left: 3px solid var(--color-accent);
+    }
+
+    /* ─── Footer ────────────────────────────────────────── */
+    .lesson-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.4rem 2.5rem; border-top: 1px solid var(--color-border);
+      background: var(--color-surface); flex-wrap: wrap; gap: 0.75rem;
+    }
+    .lesson-footer a {
+      font-family: var(--font-ui); font-size: 0.9rem; font-weight: 600;
+      padding: 0.5rem 1.1rem; border-radius: var(--border-radius);
+      text-decoration: none; transition: background var(--transition);
+    }
+    .btn-prev { border: 1px solid var(--color-border); color: var(--color-text); }
+    .btn-prev:hover { background: var(--color-border); }
+    .btn-exercises { background: var(--color-primary); color: #fff; }
+    .btn-exercises:hover { background: var(--color-primary-light); }
+    .btn-next { border: 1px solid var(--color-primary); color: var(--color-primary); }
+    .btn-next:hover { background: var(--color-callout-tip-bg); }
+
+    /* ─── Responsive ────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .toc-panel {
+        position: fixed; top: 0; left: 0; height: 100vh;
+        transform: translateX(-100%); box-shadow: 4px 0 16px rgba(0,0,0,0.15);
+      }
+      .toc-panel.mobile-open { transform: translateX(0); width: var(--toc-width); }
+      .toc-panel.mobile-open .toc-inner { display: block; }
+      .lesson-content { padding: 1.5rem 1.25rem 2.5rem; }
+      .lesson-footer { padding: 1rem 1.25rem; }
+      .lesson-header { padding: 0.9rem 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="lesson-header">
+  <nav class="breadcrumb">Physics Lessons &rsaquo; Lesson 2 &rsaquo; Kinematics</nav>
+  <h1>Lesson 2 — Motion in a Straight Line</h1>
+  <p class="lesson-meta">Lesson 2 of the Physics Lessons series &bull; Estimated reading time: ~30 min</p>
+</header>
+
+<div class="lesson-layout">
+
+  <aside id="toc-panel" class="toc-panel" aria-label="Table of contents">
+    <button id="toc-toggle" aria-expanded="true" aria-controls="toc-inner">
+      <span class="toc-icon">&#9776;</span>
+      <span class="toc-label">Contents</span>
+    </button>
+    <div class="toc-inner" id="toc-inner">
+      <p class="toc-heading">In this lesson</p>
+      <ol class="toc-list">
+        <li><a href="#section-overview"><span class="toc-num">1</span>Overview</a></li>
+        <li><a href="#section-coordinates"><span class="toc-num">2</span>Coordinate System &amp; Position</a></li>
+        <li><a href="#section-displacement"><span class="toc-num">3</span>Displacement</a></li>
+        <li><a href="#section-distance"><span class="toc-num">4</span>Distance Travelled</a></li>
+        <li><a href="#section-avg-velocity"><span class="toc-num">5</span>Average Velocity &amp; Speed</a></li>
+        <li><a href="#section-xt-graph"><span class="toc-num">6</span>Position–Time Graph</a></li>
+        <li><a href="#section-inst-velocity"><span class="toc-num">7</span>Instantaneous Velocity</a></li>
+        <li><a href="#section-inst-speed"><span class="toc-num">8</span>Instantaneous Speed</a></li>
+        <li><a href="#section-acceleration"><span class="toc-num">9</span>Acceleration</a></li>
+        <li><a href="#section-hierarchy"><span class="toc-num">10</span>The x–v–a Hierarchy</a></li>
+        <li><a href="#section-area"><span class="toc-num">11</span>Area Under Curves</a></li>
+        <li><a href="#section-const-accel"><span class="toc-num">12</span>Constant Acceleration</a></li>
+        <li><a href="#section-summary"><span class="toc-num">13</span>Summary</a></li>
+        <li><a href="#glossary"><span class="toc-num">G</span>Glossary</a></li>
+      </ol>
+    </div>
+  </aside>
+
+  <main class="lesson-content">
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="section-overview">
+      <h2>1 &nbsp; Overview</h2>
+
+      <p>
+        How fast is a ball rolling? Where will a car be in five seconds? How quickly does a sprinter
+        accelerate out of the blocks? All of these questions are answered by <em>kinematics</em> —
+        the branch of mechanics that describes <em>how</em> objects move without asking <em>why</em>
+        they move. This lesson builds kinematics from the ground up for motion along a single straight
+        line, which physicists call <strong>one-dimensional motion</strong>.
+      </p>
+
+      <div class="callout callout-tip">
+        <strong>What you will learn:</strong>
+        How to define position, displacement, distance, average velocity, and average speed precisely;
+        how to read and interpret position–time graphs; how instantaneous velocity emerges from the
+        limit of an average; what acceleration means; how position, velocity, and acceleration are
+        related by derivatives and integrals; and how to solve problems under constant acceleration
+        using the four kinematic equations.
+      </div>
+
+      <p>
+        We treat motion rigorously using calculus — the natural language of change — so definitions
+        here are exact, not approximate. If you are comfortable with limits and derivatives you will
+        find the ideas fall into place cleanly. If calculus is new to you, focus on the geometric
+        interpretations (slopes and areas) which give the same answers with less formalism.
+      </p>
+
+      <div class="callout callout-insight">
+        <strong>Notation convention used in this lesson:</strong>
+        We restrict motion to a single axis and choose a positive direction at the start of each
+        problem. Positive quantities point in that direction; negative quantities point opposite.
+        This sign convention is the backbone of everything that follows.
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="section-coordinates">
+      <h2>2 &nbsp; Coordinate System &amp; Position</h2>
+
+      <p>
+        Before we can discuss motion we need a reference: a fixed point from which to measure
+        distances and a positive direction along the line.
+      </p>
+
+      <h3>The number line as a coordinate axis</h3>
+      <p>
+        Choose a point on the line and call it the <strong>origin</strong>, labeled \(O\) or \(x = 0\).
+        Designate one direction as <strong>positive</strong> — conventional choices are "right," "up,"
+        or "east," but any consistent choice works. The opposite direction is negative.
+      </p>
+
+      <!-- Number-line SVG -->
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 560 90" width="560" height="90" xmlns="http://www.w3.org/2000/svg"
+             aria-label="A number line from −3 to +3 with an origin O and a dot at x = 2">
+          <!-- axis -->
+          <line x1="40" y1="45" x2="520" y2="45" stroke="#2c2c2c" stroke-width="2"/>
+          <!-- arrowhead right -->
+          <polygon points="520,45 510,40 510,50" fill="#2c2c2c"/>
+          <!-- arrowhead left -->
+          <polygon points="40,45 50,40 50,50" fill="#2c2c2c"/>
+          <!-- ticks and labels -->
+          <g font-family="'Source Sans 3',sans-serif" font-size="13" fill="#2c2c2c" text-anchor="middle">
+            <line x1="120" y1="40" x2="120" y2="50" stroke="#2c2c2c" stroke-width="1.5"/>
+            <text x="120" y="68">−3</text>
+            <line x1="200" y1="40" x2="200" y2="50" stroke="#2c2c2c" stroke-width="1.5"/>
+            <text x="200" y="68">−2</text>
+            <line x1="280" y1="36" x2="280" y2="54" stroke="#2c2c2c" stroke-width="2"/>
+            <text x="280" y="68" font-weight="700">0</text>
+            <text x="280" y="28" font-size="11" fill="#6b7280">O (origin)</text>
+            <line x1="360" y1="40" x2="360" y2="50" stroke="#2c2c2c" stroke-width="1.5"/>
+            <text x="360" y="68">+2</text>
+            <line x1="440" y1="40" x2="440" y2="50" stroke="#2c2c2c" stroke-width="1.5"/>
+            <text x="440" y="68">+3</text>
+          </g>
+          <!-- label x -->
+          <text x="530" y="49" font-family="'Source Sans 3',sans-serif" font-size="14" font-style="italic" fill="#1a5276">x</text>
+          <!-- position dot at x = +2 (x-pixel = 360 + 80 = but let's use +2 which is 360) -->
+          <circle cx="360" cy="45" r="7" fill="#1a5276"/>
+          <text x="360" y="22" font-family="'Source Sans 3',sans-serif" font-size="12" fill="#1a5276" text-anchor="middle">x = +2 m</text>
+          <!-- arrow from origin to dot -->
+          <line x1="282" y1="45" x2="353" y2="45" stroke="#1a5276" stroke-width="2" stroke-dasharray="4,3"/>
+        </svg>
+        <p class="diagram-caption">Figure 2.1 — A number line coordinate axis. Position \(x = +2\ \text{m}\) means 2 metres in the positive direction from the origin.</p>
+      </div>
+
+      <h3>Position</h3>
+      <p>
+        The <a href="#term-position" class="key-term">position</a> of an object, \(x\), is its signed
+        distance from the origin along the axis. It is a scalar in 1-D (because direction is encoded
+        by the sign) and its SI unit is the <strong>metre (m)</strong>.
+      </p>
+      <p>
+        Because the object can move, position is really a function of time:
+      </p>
+      <div class="math-block">
+        \[x = x(t)\]
+      </div>
+      <p>
+        The complete function \(x(t)\) is called the object's <a href="#term-position-function" class="key-term">position function</a>
+        or <em>equation of motion</em>. Knowing \(x(t)\) tells us everything about the object's location
+        at every instant.
+      </p>
+
+      <div class="callout callout-warning">
+        <strong>Sign ≠ direction of motion.</strong>
+        A negative position \(x < 0\) does not mean the object is moving in the negative direction;
+        it means the object is on the negative side of the origin. The direction of motion is determined
+        by the sign of velocity, not position.
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="section-displacement">
+      <h2>3 &nbsp; Displacement</h2>
+
+      <p>
+        We rarely care about a single snapshot of position; we care about <em>change</em> in position.
+      </p>
+
+      <h3>Definition</h3>
+      <p>
+        The <a href="#term-displacement" class="key-term">displacement</a> \(\Delta x\) of an object
+        over a time interval \([t_1,\, t_2]\) is:
+      </p>
+      <div class="math-block">
+        \[\Delta x = x(t_2) - x(t_1) = x_2 - x_1\]
+        <p class="math-label">Definition — Displacement (1-D)</p>
+      </div>
+      <p>
+        Displacement is a <strong>signed scalar</strong> in 1-D: positive means the object ended up
+        further in the positive direction than it started; negative means the opposite.
+      </p>
+
+      <!-- Displacement number-line SVG -->
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 560 100" width="560" height="100" xmlns="http://www.w3.org/2000/svg"
+             aria-label="Number line showing displacement from x1 = +1 to x2 = +4">
+          <line x1="40" y1="55" x2="520" y2="55" stroke="#2c2c2c" stroke-width="2"/>
+          <polygon points="520,55 510,50 510,60" fill="#2c2c2c"/>
+          <polygon points="40,55 50,50 50,60" fill="#2c2c2c"/>
+          <g font-family="'Source Sans 3',sans-serif" font-size="13" fill="#2c2c2c" text-anchor="middle">
+            <line x1="160" y1="50" x2="160" y2="60" stroke="#2c2c2c" stroke-width="1.5"/>
+            <text x="160" y="76">0</text>
+            <line x1="240" y1="50" x2="240" y2="60" stroke="#2c2c2c" stroke-width="1.5"/>
+            <text x="240" y="76">1</text>
+            <line x1="320" y1="50" x2="320" y2="60" stroke="#2c2c2c" stroke-width="1.5"/>
+            <text x="320" y="76">2</text>
+            <line x1="400" y1="50" x2="400" y2="60" stroke="#2c2c2c" stroke-width="1.5"/>
+            <text x="400" y="76">3</text>
+            <line x1="480" y1="50" x2="480" y2="60" stroke="#2c2c2c" stroke-width="1.5"/>
+            <text x="480" y="76">4</text>
+          </g>
+          <text x="530" y="59" font-family="'Source Sans 3',sans-serif" font-size="14" font-style="italic" fill="#1a5276">x</text>
+          <!-- x1 dot -->
+          <circle cx="240" cy="55" r="7" fill="#1a5276"/>
+          <text x="240" y="32" font-family="'Source Sans 3',sans-serif" font-size="12" fill="#1a5276" text-anchor="middle">x₁ = 1 m</text>
+          <!-- x2 dot -->
+          <circle cx="480" cy="55" r="7" fill="#c0392b"/>
+          <text x="480" y="32" font-family="'Source Sans 3',sans-serif" font-size="12" fill="#c0392b" text-anchor="middle">x₂ = 4 m</text>
+          <!-- displacement arrow -->
+          <line x1="248" y1="55" x2="471" y2="55" stroke="#d4ac0d" stroke-width="3"/>
+          <polygon points="471,55 461,50 461,60" fill="#d4ac0d"/>
+          <text x="360" y="20" font-family="'Source Sans 3',sans-serif" font-size="13" fill="#d4ac0d" text-anchor="middle">Δx = +3 m</text>
+        </svg>
+        <p class="diagram-caption">Figure 3.1 — Displacement is the net change in position: \(\Delta x = x_2 - x_1 = 4 - 1 = +3\ \text{m}\).</p>
+      </div>
+
+      <div class="example-box">
+        <p class="example-title">Worked Example 3.1 — Computing Displacement</p>
+        <p>A jogger starts at \(x_1 = +8\ \text{m}\) and ends at \(x_2 = +3\ \text{m}\). Find the displacement.</p>
+        <div class="step">
+          <span class="step-num">1</span>
+          <span>Apply the definition: \(\Delta x = x_2 - x_1 = 3 - 8 = -5\ \text{m}\).</span>
+        </div>
+        <div class="step">
+          <span class="step-num">2</span>
+          <span>The displacement is \(-5\ \text{m}\): the jogger moved 5 metres in the <em>negative</em> direction even though both positions are positive.</span>
+        </div>
+      </div>
+
+      <h3>Displacement in three dimensions</h3>
+      <p>
+        In 2-D or 3-D, displacement becomes a true vector:
+        \(\Delta\vec{r} = \vec{r}_2 - \vec{r}_1\).
+        For this lesson we confine ourselves to 1-D, where the signed scalar \(\Delta x\) suffices.
+      </p>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="section-distance">
+      <h2>4 &nbsp; Distance Travelled</h2>
+
+      <p>
+        Displacement asks "where did you end up relative to where you started?" Distance asks
+        "how many metres did your odometer click?" They are related but distinct.
+      </p>
+
+      <h3>Definition</h3>
+      <p>
+        The <a href="#term-distance" class="key-term">distance travelled</a> (or <em>path length</em>)
+        \(d\) is the total length of the path traced by the object, regardless of direction:
+      </p>
+      <div class="math-block">
+        \[d = \int_{t_1}^{t_2} |v(t)|\, dt\]
+        <p class="math-label">Definition — Distance Travelled</p>
+      </div>
+      <p>
+        In plain terms: add up all the metres traveled, counting backtracking as additional distance.
+        Distance is always <strong>non-negative</strong>.
+      </p>
+
+      <!-- Two-leg journey SVG -->
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 560 110" width="560" height="110" xmlns="http://www.w3.org/2000/svg"
+             aria-label="Number line: object goes from 0 to +5 then back to +2">
+          <line x1="40" y1="60" x2="520" y2="60" stroke="#2c2c2c" stroke-width="2"/>
+          <polygon points="520,60 510,55 510,65" fill="#2c2c2c"/>
+          <polygon points="40,60 50,55 50,65" fill="#2c2c2c"/>
+          <g font-family="'Source Sans 3',sans-serif" font-size="13" fill="#2c2c2c" text-anchor="middle">
+            <line x1="120" y1="55" x2="120" y2="65" stroke="#2c2c2c" stroke-width="1.5"/>
+            <text x="120" y="80">0</text>
+            <line x1="210" y1="55" x2="210" y2="65" stroke="#2c2c2c" stroke-width="1.5"/>
+            <text x="210" y="80">2</text>
+            <line x1="390" y1="55" x2="390" y2="65" stroke="#2c2c2c" stroke-width="1.5"/>
+            <text x="390" y="80">5</text>
+          </g>
+          <text x="530" y="64" font-family="'Source Sans 3',sans-serif" font-size="14" font-style="italic" fill="#1a5276">x (m)</text>
+          <!-- leg 1: 0 → +5, offset up -->
+          <line x1="120" y1="48" x2="384" y2="48" stroke="#1a5276" stroke-width="2.5"/>
+          <polygon points="384,48 374,43 374,53" fill="#1a5276"/>
+          <text x="252" y="36" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#1a5276" text-anchor="middle">+5 m</text>
+          <!-- leg 2: +5 → +2, offset down -->
+          <line x1="390" y1="72" x2="216" y2="72" stroke="#c0392b" stroke-width="2.5"/>
+          <polygon points="216,72 226,67 226,77" fill="#c0392b"/>
+          <text x="303" y="92" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#c0392b" text-anchor="middle">−3 m</text>
+          <!-- dots -->
+          <circle cx="120" cy="60" r="5" fill="#2c2c2c"/>
+          <circle cx="390" cy="60" r="5" fill="#1a5276"/>
+          <circle cx="210" cy="60" r="5" fill="#c0392b"/>
+          <!-- labels -->
+          <text x="120" y="20" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#2c2c2c" text-anchor="middle">start</text>
+          <text x="390" y="20" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#1a5276" text-anchor="middle">turns</text>
+          <text x="210" y="108" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#c0392b" text-anchor="middle">end</text>
+        </svg>
+        <p class="diagram-caption">Figure 4.1 — Object travels +5 m then −3 m.
+          Displacement = +2 m; distance = 5 + 3 = 8 m.</p>
+      </div>
+
+      <div class="callout callout-warning">
+        <strong>Displacement ≠ Distance.</strong>
+        Displacement = \(\Delta x = +2\ \text{m}\). Distance = \(d = 8\ \text{m}\).
+        They are equal only when the object never reverses direction.
+        Confusing them is one of the most common errors in introductory physics.
+      </div>
+
+      <div class="example-box">
+        <p class="example-title">Worked Example 4.1 — Distance vs. Displacement</p>
+        <p>A particle moves along the x-axis: \(x(t) = t^3 - 3t\) metres for \(0 \le t \le 3\ \text{s}\).</p>
+        <div class="step">
+          <span class="step-num">1</span>
+          <span>Find the velocity: \(v(t) = x'(t) = 3t^2 - 3 = 3(t-1)(t+1)\). Velocity changes sign at \(t = 1\ \text{s}\).</span>
+        </div>
+        <div class="step">
+          <span class="step-num">2</span>
+          <span>Evaluate positions at key times: \(x(0) = 0\), \(x(1) = 1 - 3 = -2\ \text{m}\), \(x(3) = 27 - 9 = 18\ \text{m}\).</span>
+        </div>
+        <div class="step">
+          <span class="step-num">3</span>
+          <span>Displacement: \(\Delta x = x(3) - x(0) = 18 - 0 = +18\ \text{m}\).</span>
+        </div>
+        <div class="step">
+          <span class="step-num">4</span>
+          <span>Distance: leg 1 \([0,1]\): \(|-2 - 0| = 2\ \text{m}\). Leg 2 \([1,3]\): \(|18 - (-2)| = 20\ \text{m}\). Total: \(d = 22\ \text{m}\).</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="section-avg-velocity">
+      <h2>5 &nbsp; Average Velocity &amp; Average Speed</h2>
+
+      <h3>Average velocity</h3>
+      <p>
+        The <a href="#term-avg-velocity" class="key-term">average velocity</a> over a time interval
+        \([t_1, t_2]\) is the displacement divided by the elapsed time:
+      </p>
+      <div class="math-block">
+        \[\bar{v} = \frac{\Delta x}{\Delta t} = \frac{x_2 - x_1}{t_2 - t_1}\]
+        <p class="math-label">Definition — Average Velocity</p>
+      </div>
+      <p>
+        Average velocity is a <strong>signed scalar</strong> in 1-D, with SI unit <strong>m/s</strong>.
+        A positive \(\bar{v}\) means the net motion was in the positive direction; negative means
+        the opposite.
+      </p>
+
+      <h3>Average speed</h3>
+      <p>
+        <a href="#term-avg-speed" class="key-term">Average speed</a> uses <em>distance</em> rather than displacement:
+      </p>
+      <div class="math-block">
+        \[\bar{s} = \frac{d}{\Delta t} = \frac{\text{total distance travelled}}{\text{elapsed time}}\]
+        <p class="math-label">Definition — Average Speed</p>
+      </div>
+      <p>
+        Average speed is always <strong>non-negative</strong>. It equals \(|\bar{v}|\) only if the
+        object never reverses.
+      </p>
+
+      <table class="lesson-table">
+        <thead>
+          <tr><th>Quantity</th><th>Formula</th><th>Sign</th><th>Value in Fig 4.1</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Displacement \(\Delta x\)</td><td>\(x_2 - x_1\)</td><td>Signed</td><td>+2 m</td></tr>
+          <tr><td>Distance \(d\)</td><td>\(\int|v|\,dt\)</td><td>≥ 0</td><td>8 m</td></tr>
+          <tr><td>Average velocity \(\bar{v}\)</td><td>\(\Delta x/\Delta t\)</td><td>Signed</td><td>depends on \(\Delta t\)</td></tr>
+          <tr><td>Average speed \(\bar{s}\)</td><td>\(d/\Delta t\)</td><td>≥ 0</td><td>depends on \(\Delta t\)</td></tr>
+        </tbody>
+      </table>
+
+      <div class="example-box">
+        <p class="example-title">Worked Example 5.1 — Average Velocity and Speed</p>
+        <p>A car drives 60 km east in 1 h, then 20 km west in 0.5 h. Take east as positive.</p>
+        <div class="step">
+          <span class="step-num">1</span>
+          <span>Displacement: \(\Delta x = +60 + (-20) = +40\ \text{km}\).</span>
+        </div>
+        <div class="step">
+          <span class="step-num">2</span>
+          <span>Distance: \(d = 60 + 20 = 80\ \text{km}\).</span>
+        </div>
+        <div class="step">
+          <span class="step-num">3</span>
+          <span>Total time: \(\Delta t = 1.5\ \text{h}\).</span>
+        </div>
+        <div class="step">
+          <span class="step-num">4</span>
+          <span>Average velocity: \(\bar{v} = 40/1.5 \approx +26.7\ \text{km/h}\) (eastward).</span>
+        </div>
+        <div class="step">
+          <span class="step-num">5</span>
+          <span>Average speed: \(\bar{s} = 80/1.5 \approx 53.3\ \text{km/h}\). Note \(\bar{s} \neq |\bar{v}|\).</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="section-xt-graph">
+      <h2>6 &nbsp; The Position–Time Graph</h2>
+
+      <p>
+        A graph of \(x\) versus \(t\) encodes the entire motion. Learning to read it fluently is one
+        of the most important skills in kinematics.
+      </p>
+
+      <h3>Slope = average velocity</h3>
+      <p>
+        The slope of the <em>secant line</em> joining two points \((t_1, x_1)\) and \((t_2, x_2)\)
+        on the \(x\)–\(t\) graph is exactly the average velocity:
+      </p>
+      <div class="math-block">
+        \[\bar{v} = \frac{\Delta x}{\Delta t} = \text{slope of secant}\]
+      </div>
+
+      <!-- x-t graph SVG: constant velocity (x = 1.5t) and parabolic (x = -t²+4t+1) -->
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 560 320" width="560" height="320" xmlns="http://www.w3.org/2000/svg"
+             aria-label="Two position-time graphs: constant velocity and parabolic">
+
+          <!-- ── Left panel: constant velocity x = 1.5t ── -->
+          <g transform="translate(20, 10)">
+            <text x="120" y="16" font-family="'Source Sans 3',sans-serif" font-size="13" fill="#2c2c2c" text-anchor="middle" font-weight="600">Constant velocity</text>
+            <!-- axes -->
+            <line x1="50" y1="270" x2="50" y2="30" stroke="#2c2c2c" stroke-width="1.5"/>
+            <line x1="50" y1="270" x2="240" y2="270" stroke="#2c2c2c" stroke-width="1.5"/>
+            <!-- arrowheads -->
+            <polygon points="50,30 45,42 55,42" fill="#2c2c2c"/>
+            <polygon points="240,270 228,265 228,275" fill="#2c2c2c"/>
+            <!-- axis labels -->
+            <text x="44" y="26" font-family="'Source Sans 3',sans-serif" font-size="13" font-style="italic" fill="#1a5276" text-anchor="middle">x</text>
+            <text x="245" y="274" font-family="'Source Sans 3',sans-serif" font-size="13" font-style="italic" fill="#2c2c2c">t</text>
+            <!-- tick marks: t=0,1,2,3,4 → x-pixel 50+i*40; x=0,1.5,3,4.5,6 → y-pixel 270-j*40 -->
+            <g font-family="'Source Sans 3',sans-serif" font-size="11" fill="#6b7280" text-anchor="middle">
+              <line x1="90"  y1="268" x2="90"  y2="272" stroke="#6b7280"/>
+              <text x="90"  y="283">1</text>
+              <line x1="130" y1="268" x2="130" y2="272" stroke="#6b7280"/>
+              <text x="130" y="283">2</text>
+              <line x1="170" y1="268" x2="170" y2="272" stroke="#6b7280"/>
+              <text x="170" y="283">3</text>
+              <line x1="210" y1="268" x2="210" y2="272" stroke="#6b7280"/>
+              <text x="210" y="283">4</text>
+              <!-- y-axis ticks: x=1.5 at 240, x=3 at 210, x=4.5 at 180, x=6 at 150 etc -->
+              <line x1="48" y1="230" x2="52" y2="230" stroke="#6b7280"/>
+              <text x="38" y="234" text-anchor="end">1.5</text>
+              <line x1="48" y1="190" x2="52" y2="190" stroke="#6b7280"/>
+              <text x="38" y="194" text-anchor="end">3</text>
+              <line x1="48" y1="150" x2="52" y2="150" stroke="#6b7280"/>
+              <text x="38" y="154" text-anchor="end">4.5</text>
+              <line x1="48" y1="110" x2="52" y2="110" stroke="#6b7280"/>
+              <text x="38" y="114" text-anchor="end">6</text>
+            </g>
+            <!-- axis unit labels -->
+            <text x="130" y="300" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#6b7280" text-anchor="middle">t (s)</text>
+            <text x="14" y="150" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#1a5276" text-anchor="middle" transform="rotate(-90,14,150)">x (m)</text>
+            <!-- x = 1.5t line: (0,270) → (4,110) mapped: t*40+50, 270-x*40 = 270-1.5*t*40 -->
+            <!-- t=0: (50,270); t=4: (210, 270-240=30) wait, 1.5*4=6, y=270-6*40=270-240=30 -->
+            <line x1="50" y1="270" x2="210" y2="30" stroke="#1a5276" stroke-width="2.5"/>
+            <!-- slope triangle at t=1 to t=3 -->
+            <line x1="90"  y1="230" x2="170" y2="230" stroke="#d4ac0d" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <line x1="170" y1="230" x2="170" y2="150" stroke="#d4ac0d" stroke-width="1.5" stroke-dasharray="4,3"/>
+            <text x="130" y="248" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#d4ac0d" text-anchor="middle">Δt = 2 s</text>
+            <text x="188" y="194" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#d4ac0d" text-anchor="start">Δx = 3 m</text>
+            <text x="80" y="130" font-family="'Source Sans 3',sans-serif" font-size="12" fill="#c0392b" font-weight="600">slope = 1.5 m/s</text>
+          </g>
+
+          <!-- ── Right panel: parabolic x = −t²+4t+1, t∈[0,4] ── -->
+          <g transform="translate(300, 10)">
+            <text x="115" y="16" font-family="'Source Sans 3',sans-serif" font-size="13" fill="#2c2c2c" text-anchor="middle" font-weight="600">Parabolic motion</text>
+            <line x1="50" y1="270" x2="50" y2="30" stroke="#2c2c2c" stroke-width="1.5"/>
+            <line x1="50" y1="270" x2="240" y2="270" stroke="#2c2c2c" stroke-width="1.5"/>
+            <polygon points="50,30 45,42 55,42" fill="#2c2c2c"/>
+            <polygon points="240,270 228,265 228,275" fill="#2c2c2c"/>
+            <text x="44" y="26" font-family="'Source Sans 3',sans-serif" font-size="13" font-style="italic" fill="#1a5276" text-anchor="middle">x</text>
+            <text x="245" y="274" font-family="'Source Sans 3',sans-serif" font-size="13" font-style="italic" fill="#2c2c2c">t</text>
+            <g font-family="'Source Sans 3',sans-serif" font-size="11" fill="#6b7280" text-anchor="middle">
+              <line x1="90"  y1="268" x2="90"  y2="272" stroke="#6b7280"/>
+              <text x="90"  y="283">1</text>
+              <line x1="130" y1="268" x2="130" y2="272" stroke="#6b7280"/>
+              <text x="130" y="283">2</text>
+              <line x1="170" y1="268" x2="170" y2="272" stroke="#6b7280"/>
+              <text x="170" y="283">3</text>
+              <line x1="210" y1="268" x2="210" y2="272" stroke="#6b7280"/>
+              <text x="210" y="283">4</text>
+              <!-- y: x(t) = -t²+4t+1; max at t=2, x=5; scale: 50px per unit, origin at y=270 means x=0 → 270 -->
+              <!-- x=1 → 270-1*50=220; x=2 → 170; x=3 → 120; x=4 → 70; x=5 → 20 -->
+              <line x1="48" y1="220" x2="52" y2="220" stroke="#6b7280"/>
+              <text x="38" y="224" text-anchor="end">1</text>
+              <line x1="48" y1="170" x2="52" y2="170" stroke="#6b7280"/>
+              <text x="38" y="174" text-anchor="end">3</text>
+              <line x1="48" y1="120" x2="52" y2="120" stroke="#6b7280"/>
+              <text x="38" y="124" text-anchor="end">4</text>
+              <line x1="48" y1="70"  x2="52" y2="70"  stroke="#6b7280"/>
+              <text x="38" y="74"  text-anchor="end">5</text>
+            </g>
+            <text x="130" y="300" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#6b7280" text-anchor="middle">t (s)</text>
+            <text x="14" y="150" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#1a5276" text-anchor="middle" transform="rotate(-90,14,150)">x (m)</text>
+            <!-- Parabola: x(t) = -t²+4t+1; t in [0,4], pixel: px=50+t*40, py=270-x*50 -->
+            <!-- t=0: (50, 270-50=220); t=0.5:(70,270-2.75*50=132.5); ... -->
+            <!-- Compute key points: t=0,x=1→(50,220); t=1,x=4→(90,70); t=2,x=5→(130,20);
+                 t=3,x=4→(170,70); t=4,x=1→(210,220) -->
+            <polyline points="50,220 70,187.5 90,70 110,20 130,20 150,45 170,70 190,132.5 210,220"
+                      fill="none" stroke="#1a5276" stroke-width="2.5"/>
+            <!-- Actually recalculate: x(t)=-t²+4t+1 -->
+            <!-- t=0: x=1, py=270-50=220 -->
+            <!-- t=0.5: x=-0.25+2+1=2.75, py=270-137.5=132.5 -->
+            <!-- t=1: x=-1+4+1=4, py=270-200=70 -->
+            <!-- t=1.5: x=-2.25+6+1=4.75, py=270-237.5=32.5 -->
+            <!-- t=2: x=-4+8+1=5, py=270-250=20 -->
+            <!-- t=2.5: x=-6.25+10+1=4.75, py=32.5 -->
+            <!-- t=3: x=-9+12+1=4, py=70 -->
+            <!-- t=3.5: x=-12.25+14+1=2.75, py=132.5 -->
+            <!-- t=4: x=-16+16+1=1, py=220 -->
+            <polyline points="50,220 70,132.5 90,70 110,32.5 130,20 150,32.5 170,70 190,132.5 210,220"
+                      fill="none" stroke="#1a5276" stroke-width="2.5"/>
+            <!-- tangent at t=2 (slope=0): horizontal line -->
+            <line x1="100" y1="20" x2="160" y2="20" stroke="#c0392b" stroke-width="2" stroke-dasharray="5,3"/>
+            <text x="130" y="42" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#c0392b" text-anchor="middle">v = 0 at peak</text>
+            <!-- tangent at t=1 -->
+            <!-- v(t)=-2t+4; v(1)=2; line through (90,70) with slope 2*m_x (50px per unit x, 40px per unit t) -->
+            <!-- dy/dx_pixel = slope * (50/40) = 2*1.25 = 2.5 per pixel; from (90,70): at t=0.5: x-pix=70, y=70+0.5*40*2.5=70+50=120? -->
+            <!-- Actually screen slope = (Δy_px/Δt_px) = (-Δx/Δt)*(y_scale/t_scale) = v*(50/40); v(1)=2, ratio=1.25, screen_slope=-2.5 (negative because y increases downward) -->
+            <line x1="55" y1="202.5" x2="125" y2="27.5" stroke="#d4ac0d" stroke-width="2"/>
+            <text x="58" y="140" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#d4ac0d">tangent at t=1</text>
+          </g>
+        </svg>
+        <p class="diagram-caption">Figure 6.1 — Left: constant-velocity motion (\(x = 1.5t\)) — straight line, constant slope.
+          Right: parabolic motion (\(x = -t^2 + 4t + 1\)) — slope (velocity) varies; zero at the peak.</p>
+      </div>
+
+      <h3>Reading the graph</h3>
+      <ul>
+        <li><strong>Steep slope</strong> → large \(|\bar{v}|\); the object is moving fast.</li>
+        <li><strong>Flat (horizontal) segment</strong> → \(\bar{v} = 0\); the object is at rest.</li>
+        <li><strong>Positive slope</strong> → moving in the positive direction.</li>
+        <li><strong>Negative slope</strong> → moving in the negative direction.</li>
+        <li><strong>Slope changes sign</strong> → object reversed direction at that instant.</li>
+      </ul>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="section-inst-velocity">
+      <h2>7 &nbsp; Instantaneous Velocity</h2>
+
+      <p>
+        Average velocity describes an interval. To describe motion <em>at a single moment</em> we
+        must shrink the interval to zero — this is where calculus enters.
+      </p>
+
+      <h3>The limiting process</h3>
+      <p>
+        Fix a time \(t\) and consider a second time \(t + \Delta t\). The average velocity over
+        \([t,\, t+\Delta t]\) is \(\dfrac{x(t+\Delta t) - x(t)}{\Delta t}\). As \(\Delta t \to 0\)
+        the secant line through \((t, x(t))\) and \((t+\Delta t, x(t+\Delta t))\) rotates until it
+        becomes the <strong>tangent line</strong> to the curve at \((t, x(t))\). The slope of that
+        tangent line is the instantaneous velocity:
+      </p>
+      <div class="math-block">
+        \[v(t) = \lim_{\Delta t \to 0} \frac{x(t+\Delta t) - x(t)}{\Delta t} = \frac{dx}{dt}\]
+        <p class="math-label">Definition — Instantaneous Velocity</p>
+      </div>
+
+      <p>
+        Instantaneous velocity is the <strong>derivative of position with respect to time</strong>.
+        It is a signed scalar with SI unit m/s.
+      </p>
+
+      <!-- Secant → tangent convergence SVG -->
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 420 280" width="420" height="280" xmlns="http://www.w3.org/2000/svg"
+             aria-label="Secant lines converging to tangent on a parabola">
+          <!-- axes -->
+          <line x1="50" y1="240" x2="50" y2="20" stroke="#2c2c2c" stroke-width="1.5"/>
+          <line x1="50" y1="240" x2="400" y2="240" stroke="#2c2c2c" stroke-width="1.5"/>
+          <polygon points="50,20 45,32 55,32" fill="#2c2c2c"/>
+          <polygon points="400,240 388,235 388,245" fill="#2c2c2c"/>
+          <text x="42" y="16" font-family="'Source Sans 3',sans-serif" font-size="13" font-style="italic" fill="#1a5276">x</text>
+          <text x="406" y="244" font-family="'Source Sans 3',sans-serif" font-size="13" font-style="italic" fill="#2c2c2c">t</text>
+          <!-- Curve: x(t) = -(t-2)²+4, scale: t px = 60+t*70, x px = 240-x*45 -->
+          <!-- t=0,x=0→(60,240); t=1,x=3→(130,105); t=2,x=4→(200,60); t=3,x=3→(270,105); t=4,x=0→(340,240) -->
+          <path d="M60,240 Q200,−60 340,240" fill="none" stroke="#1a5276" stroke-width="2.5"/>
+          <!-- Actually use polyline with computed points: x(t)=-(t-2)²+4 -->
+          <!-- t=0→(60,240); t=0.5→(90, 240-3.75*45=240-168.75=71.25→(90,71));
+               t=1→(130, 240-3*45=105); t=1.5→(165, 240-3.75*45=71);
+               t=2→(200,240-4*45=60); t=2.5→(235,71); t=3→(270,105); t=3.5→(305,71); t=4→(340,240)
+               Hmm let me just do actual computation:
+               x(0)=-(0-2)²+4 = -4+4 = 0 → py=240-0=240
+               x(0.5)=-(−1.5)²+4=−2.25+4=1.75 → py=240-78.75=161
+               x(1)=-(−1)²+4=3 → py=240-135=105
+               x(1.5)=-(−0.5)²+4=3.75 → py=240-168.75=71
+               x(2)=4 → py=240-180=60
+               x(2.5)=3.75 → py=71
+               x(3)=3 → py=105
+               x(3.5)=1.75 → py=161
+               x(4)=0 → py=240 -->
+          <polyline points="60,240 90,161 130,105 165,71 200,60 235,71 270,105 305,161 340,240"
+                    fill="none" stroke="#1a5276" stroke-width="2.5"/>
+          <!-- Fixed point P at t=1 -->
+          <circle cx="130" cy="105" r="5" fill="#1a5276"/>
+          <text x="118" y="98" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#1a5276">P</text>
+          <!-- Secant to t=4: P(130,105)→Q4(340,240) -->
+          <line x1="80" y1="71" x2="360" y2="258" stroke="#d4ac0d" stroke-width="1.5" stroke-dasharray="6,4" opacity="0.7"/>
+          <text x="346" y="250" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#d4ac0d">Δt=3</text>
+          <!-- Secant to t=2: P(130,105)→(200,60) -->
+          <line x1="60" y1="140" x2="260" y2="36" stroke="#d4ac0d" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.85"/>
+          <text x="210" y="32" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#d4ac0d">Δt=1</text>
+          <!-- Secant to t=1.5: P(130,105)→(165,71); slope (71-105)/(165-130)=-34/35≈-0.97 per px; extend -->
+          <line x1="50" y1="153" x2="230" y2="20" stroke="#d4ac0d" stroke-width="1.5" stroke-dasharray="3,2" opacity="0.95"/>
+          <text x="182" y="16" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#d4ac0d">Δt=0.5</text>
+          <!-- Tangent at P: v(t)=-2(t-2); v(1)=-2(-1)=2 m/s; screen slope = -2*(45/70) = -1.286 per px -->
+          <!-- through (130,105): at t=0: x_screen=60, dy=(60-130)*(-1.286)=70*1.286=90; y=105-90=15... -->
+          <!-- Let me compute: screen_slope = v * (y_scale/t_scale) going negative (y down) = 2*(45/70) = 1.286 upward per right-px -->
+          <!-- at px=60: Δpx=-70, Δpy=70*1.286=90; y=105+90=195 -->
+          <!-- at px=240: Δpx=+110, Δpy=-110*1.286=-141; y=105-141=-36 (clip) use 200: Δpx=70, Δpy=-90; y=15 -->
+          <line x1="60" y1="195" x2="210" y2="12" stroke="#c0392b" stroke-width="2"/>
+          <text x="220" y="26" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#c0392b" font-weight="600">tangent (v at P)</text>
+          <!-- Labels -->
+          <text x="200" y="270" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#6b7280" text-anchor="middle">t (s)</text>
+          <text x="16" y="140" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#1a5276" text-anchor="middle" transform="rotate(-90,16,140)">x (m)</text>
+        </svg>
+        <p class="diagram-caption">Figure 7.1 — As \(\Delta t \to 0\) the secant lines (gold) rotate onto the tangent line (red).
+          The slope of the tangent is the instantaneous velocity at point \(P\).</p>
+      </div>
+
+      <div class="example-box">
+        <p class="example-title">Worked Example 7.1 — Instantaneous Velocity from a Position Function</p>
+        <p>A particle moves as \(x(t) = 3t^2 - 12t + 7\ \text{m}\). Find \(v(t)\) and evaluate at \(t = 1\ \text{s}\) and \(t = 3\ \text{s}\).</p>
+        <div class="step">
+          <span class="step-num">1</span>
+          <span>Differentiate: \(v(t) = \dfrac{dx}{dt} = 6t - 12\ \text{m/s}\).</span>
+        </div>
+        <div class="step">
+          <span class="step-num">2</span>
+          <span>At \(t = 1\ \text{s}\): \(v(1) = 6(1) - 12 = -6\ \text{m/s}\). Moving in the negative direction.</span>
+        </div>
+        <div class="step">
+          <span class="step-num">3</span>
+          <span>At \(t = 3\ \text{s}\): \(v(3) = 6(3) - 12 = +6\ \text{m/s}\). Moving in the positive direction.</span>
+        </div>
+        <div class="step">
+          <span class="step-num">4</span>
+          <span>The object was momentarily at rest when \(v = 0\): \(6t - 12 = 0 \Rightarrow t = 2\ \text{s}\).</span>
+        </div>
+      </div>
+
+      <div class="callout callout-insight">
+        <strong>Velocity as a rate of change.</strong>
+        Velocity is the instantaneous rate at which position changes. Every time you see \(dx/dt\)
+        in physics you are asking: "How fast and in what direction is \(x\) changing right now?"
+        The answer is velocity.
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="section-inst-speed">
+      <h2>8 &nbsp; Instantaneous Speed</h2>
+
+      <p>
+        <a href="#term-inst-speed" class="key-term">Instantaneous speed</a> is the magnitude of
+        instantaneous velocity — it strips the sign and keeps only how fast the object is moving:
+      </p>
+      <div class="math-block">
+        \[\text{speed} = |v(t)| = \left|\frac{dx}{dt}\right|\]
+      </div>
+
+      <p>
+        Speed is always non-negative and has no directional information. A speedometer reads speed,
+        not velocity. In Example 7.1 above:
+      </p>
+      <ul>
+        <li>At \(t = 1\ \text{s}\): speed = \(|-6| = 6\ \text{m/s}\).</li>
+        <li>At \(t = 3\ \text{s}\): speed = \(|+6| = 6\ \text{m/s}\).</li>
+        <li>At \(t = 2\ \text{s}\): speed = \(0\ \text{m/s}\) (momentarily stopped).</li>
+      </ul>
+
+      <div class="callout callout-warning">
+        <strong>Speed &lt; 0 is undefined.</strong>
+        If your calculation gives a negative speed you have computed a signed velocity and must take
+        its absolute value, or there is an error in your work.
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="section-acceleration">
+      <h2>9 &nbsp; Acceleration</h2>
+
+      <p>
+        Velocity can itself change. The rate of change of velocity is <a href="#term-acceleration" class="key-term">acceleration</a>.
+      </p>
+
+      <h3>Average acceleration</h3>
+      <div class="math-block">
+        \[\bar{a} = \frac{\Delta v}{\Delta t} = \frac{v_2 - v_1}{t_2 - t_1}\]
+        <p class="math-label">Average Acceleration</p>
+      </div>
+
+      <h3>Instantaneous acceleration</h3>
+      <div class="math-block">
+        \[a(t) = \lim_{\Delta t \to 0} \frac{v(t+\Delta t) - v(t)}{\Delta t} = \frac{dv}{dt} = \frac{d^2 x}{dt^2}\]
+        <p class="math-label">Instantaneous Acceleration (second derivative of position)</p>
+      </div>
+
+      <p>
+        The SI unit of acceleration is <strong>m/s²</strong> (metres per second per second).
+        Acceleration is signed: positive acceleration in the positive direction; negative acceleration
+        (sometimes called <em>deceleration</em> in everyday speech) in the negative direction.
+      </p>
+
+      <div class="callout callout-warning">
+        <strong>"Deceleration" is ambiguous.</strong>
+        "Decelerating" means slowing down, which happens when velocity and acceleration have
+        <em>opposite</em> signs. An object moving in the negative direction with a positive acceleration
+        is slowing down — yet acceleration is positive. Always use the sign of \(a\) explicitly;
+        avoid "deceleration" in formal work.
+      </div>
+
+      <div class="example-box">
+        <p class="example-title">Worked Example 9.1 — Acceleration from Velocity</p>
+        <p>A particle has velocity \(v(t) = 4t^2 - 8t\ \text{m/s}\). Find the acceleration at \(t = 3\ \text{s}\) and determine whether the particle is speeding up or slowing down.</p>
+        <div class="step">
+          <span class="step-num">1</span>
+          <span>\(a(t) = dv/dt = 8t - 8\ \text{m/s}^2\). At \(t = 3\): \(a = 8(3)-8 = +16\ \text{m/s}^2\).</span>
+        </div>
+        <div class="step">
+          <span class="step-num">2</span>
+          <span>\(v(3) = 4(9) - 8(3) = 36 - 24 = +12\ \text{m/s}\).</span>
+        </div>
+        <div class="step">
+          <span class="step-num">3</span>
+          <span>\(v\) and \(a\) are both positive — same sign — so the particle is <strong>speeding up</strong>.</span>
+        </div>
+      </div>
+
+      <div class="callout callout-insight">
+        <strong>Speeding up vs. slowing down.</strong>
+        An object speeds up when \(v\) and \(a\) have the <em>same sign</em>, and slows down when they
+        have <em>opposite signs</em>. Zero velocity with nonzero acceleration means the object is about
+        to reverse direction.
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="section-hierarchy">
+      <h2>10 &nbsp; The \(x\)–\(v\)–\(a\) Hierarchy</h2>
+
+      <p>
+        Position, velocity, and acceleration are related through differentiation and integration.
+        This is the master diagram of kinematics:
+      </p>
+
+      <div class="math-block">
+        \[x(t)
+          \xrightarrow{\displaystyle\frac{d}{dt}} v(t)
+          \xrightarrow{\displaystyle\frac{d}{dt}} a(t)\]
+        \[a(t)
+          \xrightarrow{\displaystyle\int dt} v(t)
+          \xrightarrow{\displaystyle\int dt} x(t)\]
+      </div>
+
+      <!-- Three-panel stacked x/v/a graph SVG -->
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 480 380" width="480" height="380" xmlns="http://www.w3.org/2000/svg"
+             aria-label="Three stacked panels: x-t, v-t, a-t for constant acceleration a=2">
+          <!-- ── x-t panel: x = t² ── -->
+          <g>
+            <text x="240" y="18" font-family="'Source Sans 3',sans-serif" font-size="12" fill="#2c2c2c" text-anchor="middle" font-weight="600">x(t) = t ²  (parabola)</text>
+            <line x1="60" y1="120" x2="60" y2="25" stroke="#1a5276" stroke-width="1.5"/>
+            <line x1="60" y1="120" x2="420" y2="120" stroke="#1a5276" stroke-width="1.5"/>
+            <polygon points="60,25 55,37 65,37" fill="#1a5276"/>
+            <polygon points="420,120 408,115 408,125" fill="#1a5276"/>
+            <text x="54" y="22" font-family="'Source Sans 3',sans-serif" font-size="12" font-style="italic" fill="#1a5276" text-anchor="end">x</text>
+            <!-- parabola x=t², t in [0,4], t_px=60+t*80, x_px=120-x*6 -->
+            <!-- t=0,x=0→(60,120); t=1,x=1→(140,114); t=2,x=4→(220,96); t=3,x=9→(300,66); t=4,x=16→(380,24) -->
+            <polyline points="60,120 100,119 140,114 180,105 220,96 260,84 300,66 340,46 380,24"
+                      fill="none" stroke="#1a5276" stroke-width="2.5"/>
+            <text x="350" y="42" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#1a5276">x = t²</text>
+            <!-- t-axis ticks -->
+            <g font-family="'Source Sans 3',sans-serif" font-size="10" fill="#6b7280" text-anchor="middle">
+              <line x1="140" y1="118" x2="140" y2="122" stroke="#6b7280"/>
+              <text x="140" y="132">1</text>
+              <line x1="220" y1="118" x2="220" y2="122" stroke="#6b7280"/>
+              <text x="220" y="132">2</text>
+              <line x1="300" y1="118" x2="300" y2="122" stroke="#6b7280"/>
+              <text x="300" y="132">3</text>
+              <line x1="380" y1="118" x2="380" y2="122" stroke="#6b7280"/>
+              <text x="380" y="132">4</text>
+            </g>
+          </g>
+
+          <!-- ── v-t panel: v = 2t ── -->
+          <g transform="translate(0,140)">
+            <text x="240" y="18" font-family="'Source Sans 3',sans-serif" font-size="12" fill="#2c2c2c" text-anchor="middle" font-weight="600">v(t) = 2t  (linear)</text>
+            <line x1="60" y1="100" x2="60" y2="25" stroke="#c0392b" stroke-width="1.5"/>
+            <line x1="60" y1="100" x2="420" y2="100" stroke="#c0392b" stroke-width="1.5"/>
+            <polygon points="60,25 55,37 65,37" fill="#c0392b"/>
+            <polygon points="420,100 408,95 408,105" fill="#c0392b"/>
+            <text x="54" y="22" font-family="'Source Sans 3',sans-serif" font-size="12" font-style="italic" fill="#c0392b" text-anchor="end">v</text>
+            <!-- v=2t, t in [0,4], t_px=60+t*80, v_px=100-v*12 -->
+            <!-- t=0,v=0→(60,100); t=1,v=2→(140,76); t=2,v=4→(220,52); t=3,v=6→(300,28); -->
+            <line x1="60" y1="100" x2="340" y2="28" stroke="#c0392b" stroke-width="2.5"/>
+            <text x="310" y="24" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#c0392b">v = 2t</text>
+            <!-- shaded area under v-t from t=0 to t=3 -->
+            <polygon points="60,100 300,28 300,100" fill="#c0392b" opacity="0.12"/>
+            <text x="175" y="90" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#c0392b" text-anchor="middle">area = Δx</text>
+            <g font-family="'Source Sans 3',sans-serif" font-size="10" fill="#6b7280" text-anchor="middle">
+              <line x1="140" y1="98" x2="140" y2="102" stroke="#6b7280"/>
+              <text x="140" y="112">1</text>
+              <line x1="220" y1="98" x2="220" y2="102" stroke="#6b7280"/>
+              <text x="220" y="112">2</text>
+              <line x1="300" y1="98" x2="300" y2="102" stroke="#6b7280"/>
+              <text x="300" y="112">3</text>
+              <line x1="380" y1="98" x2="380" y2="102" stroke="#6b7280"/>
+              <text x="380" y="112">4</text>
+            </g>
+          </g>
+
+          <!-- ── a-t panel: a = 2 ── -->
+          <g transform="translate(0,280)">
+            <text x="240" y="18" font-family="'Source Sans 3',sans-serif" font-size="12" fill="#2c2c2c" text-anchor="middle" font-weight="600">a(t) = 2  (constant)</text>
+            <line x1="60" y1="80" x2="60" y2="25" stroke="#1e8449" stroke-width="1.5"/>
+            <line x1="60" y1="80" x2="420" y2="80" stroke="#1e8449" stroke-width="1.5"/>
+            <polygon points="60,25 55,37 65,37" fill="#1e8449"/>
+            <polygon points="420,80 408,75 408,85" fill="#1e8449"/>
+            <text x="54" y="22" font-family="'Source Sans 3',sans-serif" font-size="12" font-style="italic" fill="#1e8449" text-anchor="end">a</text>
+            <!-- constant a=2, t_px=60+t*80; a_px=80-2*20=40 -->
+            <line x1="60" y1="40" x2="400" y2="40" stroke="#1e8449" stroke-width="2.5"/>
+            <text x="410" y="44" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#1e8449">a = 2</text>
+            <!-- 0 label on axis -->
+            <text x="48" y="84" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#6b7280" text-anchor="end">0</text>
+            <text x="48" y="44" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#6b7280" text-anchor="end">2</text>
+            <g font-family="'Source Sans 3',sans-serif" font-size="10" fill="#6b7280" text-anchor="middle">
+              <line x1="140" y1="78" x2="140" y2="82" stroke="#6b7280"/>
+              <text x="140" y="92">1</text>
+              <line x1="220" y1="78" x2="220" y2="82" stroke="#6b7280"/>
+              <text x="220" y="92">2</text>
+              <line x1="300" y1="78" x2="300" y2="82" stroke="#6b7280"/>
+              <text x="300" y="92">3</text>
+              <line x1="380" y1="78" x2="380" y2="82" stroke="#6b7280"/>
+              <text x="380" y="92">4</text>
+            </g>
+            <text x="240" y="106" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#6b7280" text-anchor="middle">t (s)</text>
+          </g>
+        </svg>
+        <p class="diagram-caption">Figure 10.1 — The \(x\)–\(v\)–\(a\) hierarchy for \(x = t^2\), \(v = 2t\), \(a = 2\ \text{m/s}^2\).
+          Each panel is the derivative of the one above and the integral of the one below.</p>
+      </div>
+
+      <p>
+        The three panels are linked: the slope of the \(x\)–\(t\) curve at any moment equals the value of
+        \(v\) at that moment; the slope of the \(v\)–\(t\) line equals \(a\). Conversely, the area under
+        the \(a\)–\(t\) curve gives \(\Delta v\), and the area under the \(v\)–\(t\) curve gives \(\Delta x\).
+      </p>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="section-area">
+      <h2>11 &nbsp; Area Under Curves</h2>
+
+      <p>
+        Derivatives move down the hierarchy (\(x \to v \to a\)); integrals move up (\(a \to v \to x\)).
+      </p>
+
+      <h3>Area under \(v\)–\(t\) = displacement</h3>
+      <div class="math-block">
+        \[\Delta x = \int_{t_1}^{t_2} v(t)\, dt\]
+      </div>
+      <p>
+        The signed area between the \(v\)–\(t\) curve and the time axis equals the displacement.
+        Area above the axis (\(v > 0\)) is positive displacement; area below (\(v < 0\)) is negative displacement.
+        The <em>total</em> area (using \(|v|\)) gives distance.
+      </p>
+
+      <h3>Area under \(a\)–\(t\) = change in velocity</h3>
+      <div class="math-block">
+        \[\Delta v = \int_{t_1}^{t_2} a(t)\, dt\]
+      </div>
+
+      <!-- v-t area SVG with mixed positive/negative regions -->
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 480 200" width="480" height="200" xmlns="http://www.w3.org/2000/svg"
+             aria-label="v-t graph with positive area and negative area regions labeled">
+          <!-- axes -->
+          <line x1="50" y1="170" x2="50" y2="20" stroke="#2c2c2c" stroke-width="1.5"/>
+          <line x1="50" y1="100" x2="450" y2="100" stroke="#2c2c2c" stroke-width="1.5"/>
+          <polygon points="50,20 45,32 55,32" fill="#2c2c2c"/>
+          <polygon points="450,100 438,95 438,105" fill="#2c2c2c"/>
+          <text x="44" y="16" font-family="'Source Sans 3',sans-serif" font-size="13" font-style="italic" fill="#c0392b">v</text>
+          <text x="456" y="104" font-family="'Source Sans 3',sans-serif" font-size="13" font-style="italic" fill="#2c2c2c">t</text>
+          <!-- zero line label -->
+          <text x="38" y="104" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#6b7280" text-anchor="end">0</text>
+          <!-- v(t): rises from t=0 (v=+3) to t=2, then drops through zero at t=3, reaches v=-2 at t=5 -->
+          <!-- Use: v = -t + 3; zero at t=3 -->
+          <!-- t_px = 50+t*70; v_px = 100 - v*25 -->
+          <!-- t=0,v=3→(50,25); t=2,v=1→(190,75); t=3,v=0→(260,100); t=4,v=-1→(330,125); t=5,v=-2→(400,150) -->
+          <!-- positive area: t=0 to t=3, polygon: (50,100),(50,25),(260,100) -->
+          <polygon points="50,100 50,25 260,100" fill="#c0392b" opacity="0.15"/>
+          <!-- negative area: t=3 to t=5, polygon: (260,100),(400,150),(400,100) -->
+          <polygon points="260,100 400,150 400,100" fill="#1a5276" opacity="0.15"/>
+          <!-- v-t line -->
+          <line x1="50" y1="25" x2="400" y2="150" stroke="#c0392b" stroke-width="2.5"/>
+          <!-- labels -->
+          <text x="120" y="80" font-family="'Source Sans 3',sans-serif" font-size="12" fill="#c0392b" text-anchor="middle">+Δx</text>
+          <text x="330" y="130" font-family="'Source Sans 3',sans-serif" font-size="12" fill="#1a5276" text-anchor="middle">−Δx</text>
+          <!-- tick marks -->
+          <g font-family="'Source Sans 3',sans-serif" font-size="10" fill="#6b7280" text-anchor="middle">
+            <line x1="120" y1="98" x2="120" y2="102" stroke="#6b7280"/>
+            <text x="120" y="113">1</text>
+            <line x1="190" y1="98" x2="190" y2="102" stroke="#6b7280"/>
+            <text x="190" y="113">2</text>
+            <line x1="260" y1="98" x2="260" y2="102" stroke="#6b7280"/>
+            <text x="260" y="113">3</text>
+            <line x1="330" y1="98" x2="330" y2="102" stroke="#6b7280"/>
+            <text x="330" y="113">4</text>
+            <line x1="400" y1="98" x2="400" y2="102" stroke="#6b7280"/>
+            <text x="400" y="113">5</text>
+          </g>
+          <text x="240" y="186" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#6b7280" text-anchor="middle">t (s)</text>
+          <!-- v-axis labels -->
+          <text x="38" y="29" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#c0392b" text-anchor="end">+3</text>
+          <text x="38" y="154" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#1a5276" text-anchor="end">−2</text>
+        </svg>
+        <p class="diagram-caption">Figure 11.1 — The signed area under the \(v\)–\(t\) curve equals displacement. Red region = positive displacement; blue region = negative displacement.</p>
+      </div>
+
+      <div class="example-box">
+        <p class="example-title">Worked Example 11.1 — Displacement from a v–t Graph</p>
+        <p>From the graph above, \(v(t) = -t + 3\ \text{m/s}\) for \(0 \le t \le 5\ \text{s}\). Find displacement and distance.</p>
+        <div class="step">
+          <span class="step-num">1</span>
+          <span>Velocity is zero at \(t = 3\ \text{s}\).</span>
+        </div>
+        <div class="step">
+          <span class="step-num">2</span>
+          <span>Displacement: \(\Delta x = \int_0^5 (-t+3)\,dt = \left[-\tfrac{t^2}{2}+3t\right]_0^5 = (-12.5+15) = 2.5\ \text{m}\).</span>
+        </div>
+        <div class="step">
+          <span class="step-num">3</span>
+          <span>Distance: \(d = \int_0^3(3-t)\,dt + \int_3^5(t-3)\,dt = 4.5 + 2 = 6.5\ \text{m}\).</span>
+        </div>
+      </div>
+
+      <div class="callout callout-insight">
+        <strong>Where does \(\tfrac{1}{2}at^2\) come from geometrically?</strong>
+        The area of the velocity triangle is exactly \(\tfrac{1}{2}\cdot T\cdot aT = \tfrac{1}{2}aT^2\).
+        This geometric fact — that a uniformly accelerating body covers the same distance as one moving
+        at the mean speed for the same time — was proved in 14th-century Oxford and Paris, three
+        centuries before Newton. Explore the history and the proof in
+        <a href="lesson-02-sq-a-mean-speed.html"><strong>Side Quest A: The Mean Speed Theorem</strong></a>.
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="section-const-accel">
+      <h2>12 &nbsp; Constant Acceleration</h2>
+
+      <p>
+        When acceleration \(a\) is constant, the integrals are elementary and yield the four
+        <a href="#term-kinematic-equations" class="key-term">kinematic equations</a>. These are the
+        workhorses of introductory mechanics.
+      </p>
+
+      <h3>Derivation</h3>
+      <p>
+        Start with \(a(t) = a = \text{const}\). Integrate once:
+      </p>
+      <div class="math-block">
+        \[v(t) = v_0 + at \tag{1}\]
+      </div>
+      <p>
+        Integrate again, with initial position \(x_0 = x(0)\):
+      </p>
+      <div class="math-block">
+        \[x(t) = x_0 + v_0 t + \tfrac{1}{2}at^2 \tag{2}\]
+      </div>
+      <p>
+        Eliminate \(t\) between (1) and (2) (solve (1) for \(t\), substitute):
+      </p>
+      <div class="math-block">
+        \[v^2 = v_0^2 + 2a\,(x - x_0) \tag{3}\]
+      </div>
+      <p>
+        Average (1) at \(t=0\) and \(t\), then integrate:
+      </p>
+      <div class="math-block">
+        \[x = x_0 + \tfrac{1}{2}(v_0 + v)\,t \tag{4}\]
+      </div>
+
+      <h3>Derivation without calculus</h3>
+      <p>
+        The same four equations follow from definitions alone — no integration required. This is how
+        they can be derived by anyone who knows algebra and the mean-speed result.
+      </p>
+      <p>
+        <strong>Step 1 — Equation (1)</strong> from the definition of constant acceleration.
+        If \(a\) is constant, then \(a = \Delta v / \Delta t = (v - v_0)/t\). Multiply both sides
+        by \(t\) and rearrange:
+      </p>
+      <div class="math-block">
+        \[ v = v_0 + at \tag{1} \]
+      </div>
+      <p>
+        <strong>Step 2 — Equation (4)</strong> from the mean-speed theorem (§11). For any linearly
+        changing velocity, the mean velocity equals the average of the initial and final values, and
+        displacement equals mean velocity times time:
+      </p>
+      <div class="math-block">
+        \[ \Delta x = \bar{v}\,t = \tfrac{v_0 + v}{2}\,t \tag{4} \]
+      </div>
+      <p>
+        Equations (1) and (4) are the two primitive results — one from the definition of acceleration,
+        one from the geometry of the \(v\)–\(t\) graph. Equations (2) and (3) follow by substitution.
+      </p>
+      <p>
+        <strong>Step 3 — Equation (2)</strong> by substituting (1) into (4). Replace \(v\) in (4)
+        with \(v_0 + at\):
+      </p>
+      <div class="math-block">
+        \[ \Delta x = \tfrac{v_0 + (v_0 + at)}{2}\,t = \tfrac{2v_0 + at}{2}\,t = v_0 t + \tfrac{1}{2}at^2 \tag{2} \]
+      </div>
+      <p>
+        <strong>Step 4 — Equation (3)</strong> by eliminating \(t\) between (1) and (4). From (1):
+        \(t = (v - v_0)/a\). Substitute into (4):
+      </p>
+      <div class="math-block">
+        \[ \Delta x = \tfrac{v_0 + v}{2} \cdot \tfrac{v - v_0}{a} = \tfrac{v^2 - v_0^2}{2a} \]
+      </div>
+      <p>Rearrange:</p>
+      <div class="math-block">
+        \[ v^2 = v_0^2 + 2a\,\Delta x \tag{3} \]
+      </div>
+      <div class="callout callout-insight">
+        <strong>The ½ is not a coincidence.</strong> It appears in equations (2) and (4) because the
+        mean of a linearly varying quantity is exactly halfway between its endpoints — which is the
+        area of a triangle being half the enclosing rectangle. See
+        <a href="lesson-02-sq-a-mean-speed.html">Side Quest A: The Mean Speed Theorem</a> for the
+        full geometric proof.
+      </div>
+
+      <table class="lesson-table">
+        <thead>
+          <tr><th>#</th><th>Equation</th><th>Missing variable</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>(1)</td><td>\(v = v_0 + at\)</td><td>\(x\)</td></tr>
+          <tr><td>(2)</td><td>\(x = x_0 + v_0 t + \tfrac{1}{2}at^2\)</td><td>\(v\)</td></tr>
+          <tr><td>(3)</td><td>\(v^2 = v_0^2 + 2a\,(x-x_0)\)</td><td>\(t\)</td></tr>
+          <tr><td>(4)</td><td>\(x = x_0 + \tfrac{1}{2}(v_0+v)\,t\)</td><td>\(a\)</td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-tip">
+        <strong>Strategy for constant-acceleration problems:</strong>
+        List the five variables (\(x_0, x, v_0, v, a, t\) — only five independent ones since \(x_0\)
+        is usually set to zero). Identify three known quantities and one unknown. Choose the equation
+        that contains exactly those four variables.
+      </div>
+
+      <div class="example-box">
+        <p class="example-title">Worked Example 12.1 — Braking Car</p>
+        <p>A car traveling at \(v_0 = 30\ \text{m/s}\) brakes uniformly to rest. It covers \(d = 90\ \text{m}\) while stopping. Find the braking acceleration and the time to stop.</p>
+        <div class="step">
+          <span class="step-num">1</span>
+          <span>Known: \(v_0 = 30\ \text{m/s}\), \(v = 0\), \(\Delta x = 90\ \text{m}\). Unknown: \(a\). Missing: \(t\). Use (3).</span>
+        </div>
+        <div class="step">
+          <span class="step-num">2</span>
+          <span>\(0 = (30)^2 + 2a(90) \Rightarrow a = -\dfrac{900}{180} = -5\ \text{m/s}^2\).</span>
+        </div>
+        <div class="step">
+          <span class="step-num">3</span>
+          <span>Now find \(t\). Use (1): \(0 = 30 + (-5)t \Rightarrow t = 6\ \text{s}\).</span>
+        </div>
+        <div class="step">
+          <span class="step-num">4</span>
+          <span>The braking acceleration is \(-5\ \text{m/s}^2\) (opposing the motion) and stopping takes 6 s.</span>
+        </div>
+      </div>
+
+      <div class="example-box">
+        <p class="example-title">Worked Example 12.2 — Free Fall</p>
+        <p>Near Earth's surface, a freely-falling object has constant downward acceleration
+          \(g = 9.8\ \text{m/s}^2\). A ball is dropped from rest at height \(h = 45\ \text{m}\).
+          Take upward as positive, so \(a = -g = -9.8\ \text{m/s}^2\), \(x_0 = 45\ \text{m}\), \(v_0 = 0\).
+          Find the time and speed at impact.</p>
+        <div class="step">
+          <span class="step-num">1</span>
+          <span>At impact: \(x = 0\). Use (2): \(0 = 45 + 0 \cdot t + \tfrac{1}{2}(-9.8)t^2\).</span>
+        </div>
+        <div class="step">
+          <span class="step-num">2</span>
+          <span>\(4.9t^2 = 45 \Rightarrow t = \sqrt{45/4.9} \approx 3.03\ \text{s}\).</span>
+        </div>
+        <div class="step">
+          <span class="step-num">3</span>
+          <span>Speed at impact: \(|v| = |v_0 + at| = |0 + (-9.8)(3.03)| \approx 29.7\ \text{m/s}\).</span>
+        </div>
+      </div>
+
+      <div class="example-box">
+        <p class="example-title">Worked Example 12.3 — Ball Thrown Upward</p>
+        <p>A ball is thrown straight up at \(v_0 = 20\ \text{m/s}\) from \(x_0 = 0\), \(a = -9.8\ \text{m/s}^2\).
+          Find (a) the maximum height, (b) the time to reach it, and (c) the speed when it returns to \(x = 0\).</p>
+        <div class="step">
+          <span class="step-num">1</span>
+          <span>(a) Max height: \(v = 0\) there. Use (3): \(0 = 400 + 2(-9.8)x_{\max} \Rightarrow x_{\max} = 400/19.6 \approx 20.4\ \text{m}\).</span>
+        </div>
+        <div class="step">
+          <span class="step-num">2</span>
+          <span>(b) Time to peak: \(0 = 20 - 9.8t \Rightarrow t = 20/9.8 \approx 2.04\ \text{s}\).</span>
+        </div>
+        <div class="step">
+          <span class="step-num">3</span>
+          <span>(c) Returns to \(x = 0\): by symmetry or use (3) with \(x = 0\): \(v^2 = 400 \Rightarrow |v| = 20\ \text{m/s}\). Speed equals launch speed — no energy lost.</span>
+        </div>
+      </div>
+
+      <div class="example-box">
+        <p class="example-title">Worked Example 12.4 — Using Equation (4) when <em>a</em> is unknown</p>
+        <p>A cyclist speeds up uniformly from \(v_0 = 4\ \text{m/s}\) to \(v = 12\ \text{m/s}\) in
+          \(t = 5\ \text{s}\). Find the displacement. The acceleration is not given and is not needed.</p>
+        <div class="step">
+          <span class="step-num">1</span>
+          <span>Known: \(v_0 = 4\ \text{m/s}\), \(v = 12\ \text{m/s}\), \(t = 5\ \text{s}\).
+            Unknown: \(\Delta x\). Missing variable: \(a\). Choose equation (4).</span>
+        </div>
+        <div class="step">
+          <span class="step-num">2</span>
+          <span>\(\Delta x = \tfrac{1}{2}(v_0 + v)\,t = \tfrac{1}{2}(4 + 12)(5) = \tfrac{1}{2}(16)(5) = 40\ \text{m}\).</span>
+        </div>
+        <div class="step">
+          <span class="step-num">3</span>
+          <span><em>Check via (1) and (2):</em> \(a = (v-v_0)/t = 8/5 = 1.6\ \text{m/s}^2\).
+            Then \(\Delta x = v_0 t + \tfrac{1}{2}at^2 = 4(5) + \tfrac{1}{2}(1.6)(25) = 20 + 20 = 40\ \text{m}\ \checkmark\)</span>
+        </div>
+      </div>
+
+      <div class="callout callout-insight">
+        <strong>Did Galileo discover these equations?</strong>
+        The kinematic equations describe the mathematics of constant acceleration. Galileo's great
+        achievement was to establish experimentally — using inclined planes and careful timing — that
+        freely falling bodies actually undergo this kind of motion. He did it by confirming the
+        <em>law of odd numbers</em> (\(1:3:5:7:\ldots\)) and the <em>law of squares</em>
+        (\(x \propto t^2\)). Explore the history in
+        <a href="lesson-02-sq-b-galileo.html"><strong>Side Quest B: Galileo and Falling Bodies</strong></a>.
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="section-summary">
+      <h2>13 &nbsp; Summary</h2>
+
+      <p>
+        Here is the complete conceptual map of 1-D kinematics in one place.
+      </p>
+
+      <table class="lesson-table">
+        <thead>
+          <tr><th>Quantity</th><th>Symbol</th><th>Definition</th><th>Unit</th><th>Signed?</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Position</td><td>\(x\)</td><td>Signed distance from origin</td><td>m</td><td>Yes</td></tr>
+          <tr><td>Displacement</td><td>\(\Delta x\)</td><td>\(x_2 - x_1\)</td><td>m</td><td>Yes</td></tr>
+          <tr><td>Distance</td><td>\(d\)</td><td>\(\int |v|\,dt\)</td><td>m</td><td>No (≥0)</td></tr>
+          <tr><td>Avg velocity</td><td>\(\bar{v}\)</td><td>\(\Delta x / \Delta t\)</td><td>m/s</td><td>Yes</td></tr>
+          <tr><td>Avg speed</td><td>\(\bar{s}\)</td><td>\(d / \Delta t\)</td><td>m/s</td><td>No (≥0)</td></tr>
+          <tr><td>Inst. velocity</td><td>\(v\)</td><td>\(dx/dt\)</td><td>m/s</td><td>Yes</td></tr>
+          <tr><td>Inst. speed</td><td>—</td><td>\(|v|\)</td><td>m/s</td><td>No (≥0)</td></tr>
+          <tr><td>Acceleration</td><td>\(a\)</td><td>\(dv/dt = d^2x/dt^2\)</td><td>m/s²</td><td>Yes</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Key relationships</h3>
+      <ul>
+        <li>\(v(t) = dx/dt\) — velocity is the derivative of position.</li>
+        <li>\(a(t) = dv/dt\) — acceleration is the derivative of velocity.</li>
+        <li>\(\Delta x = \int_{t_1}^{t_2} v\,dt\) — area under \(v\)–\(t\) is displacement.</li>
+        <li>\(\Delta v = \int_{t_1}^{t_2} a\,dt\) — area under \(a\)–\(t\) is change in velocity.</li>
+        <li>Slope of \(x\)–\(t\) = \(v\); slope of \(v\)–\(t\) = \(a\).</li>
+        <li>Object speeds up when \(v\) and \(a\) have the same sign; slows down when opposite.</li>
+      </ul>
+
+      <h3>Four kinematic equations (constant \(a\) only)</h3>
+      <div class="math-block">
+        \[\begin{aligned}
+          v &= v_0 + at \\
+          x &= x_0 + v_0 t + \tfrac{1}{2}at^2 \\
+          v^2 &= v_0^2 + 2a(x-x_0) \\
+          x &= x_0 + \tfrac{1}{2}(v_0+v)t
+        \end{aligned}\]
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════════════ -->
+    <section id="glossary" class="glossary-section">
+      <h2>Glossary</h2>
+      <dl>
+
+        <dt id="term-position">Position, \(x\)</dt>
+        <dd>The signed distance of an object from the chosen origin along the coordinate axis.
+            A function of time: \(x = x(t)\). SI unit: metre (m).</dd>
+
+        <dt id="term-position-function">Position function</dt>
+        <dd>The complete function \(x(t)\) describing an object's location at every instant.
+            Also called the equation of motion.</dd>
+
+        <dt id="term-displacement">Displacement, \(\Delta x\)</dt>
+        <dd>The signed change in position: \(\Delta x = x_2 - x_1\). Positive if the final position
+            is further in the positive direction than the initial; negative otherwise. SI unit: m.</dd>
+
+        <dt id="term-distance">Distance travelled, \(d\)</dt>
+        <dd>The total path length traversed by the object, regardless of direction: \(d = \int|v|\,dt\).
+            Always non-negative. Equal to \(|\Delta x|\) only if the object never reverses. SI unit: m.</dd>
+
+        <dt id="term-avg-velocity">Average velocity, \(\bar{v}\)</dt>
+        <dd>Displacement divided by elapsed time: \(\bar{v} = \Delta x / \Delta t\). Signed; equal to the slope
+            of the secant line on the \(x\)–\(t\) graph. SI unit: m/s.</dd>
+
+        <dt id="term-avg-speed">Average speed, \(\bar{s}\)</dt>
+        <dd>Distance travelled divided by elapsed time: \(\bar{s} = d / \Delta t\). Always non-negative.
+            Equal to \(|\bar{v}|\) only if the object never reverses. SI unit: m/s.</dd>
+
+        <dt id="term-inst-velocity">Instantaneous velocity, \(v(t)\)</dt>
+        <dd>The limit of average velocity as the time interval shrinks to zero: \(v = dx/dt\).
+            Equals the slope of the tangent to the \(x\)–\(t\) graph. Signed. SI unit: m/s.</dd>
+
+        <dt id="term-inst-speed">Instantaneous speed</dt>
+        <dd>The magnitude of instantaneous velocity: \(|v(t)|\). Always non-negative; carries no
+            directional information. SI unit: m/s.</dd>
+
+        <dt id="term-acceleration">Acceleration, \(a(t)\)</dt>
+        <dd>The instantaneous rate of change of velocity: \(a = dv/dt = d^2x/dt^2\). Signed;
+            equals the slope of the tangent to the \(v\)–\(t\) graph. SI unit: m/s².</dd>
+
+        <dt id="term-kinematic-equations">Kinematic equations</dt>
+        <dd>Four algebraic relations among \(x_0, x, v_0, v, a, t\) that are valid only when
+            acceleration is constant: \(v = v_0+at\), \(x = x_0+v_0t+\tfrac{1}{2}at^2\),
+            \(v^2 = v_0^2+2a\Delta x\), \(x = x_0+\tfrac{1}{2}(v_0+v)t\).</dd>
+
+        <dt id="term-secant">Secant line</dt>
+        <dd>A straight line that passes through two points on a curve. The slope of the secant on the
+            \(x\)–\(t\) graph equals average velocity over the corresponding time interval.</dd>
+
+        <dt id="term-tangent">Tangent line</dt>
+        <dd>The limiting secant as the two points merge. Its slope at any point on the \(x\)–\(t\)
+            graph equals the instantaneous velocity at that moment.</dd>
+
+        <dt id="term-free-fall">Free fall</dt>
+        <dd>Motion under gravity alone, with constant downward acceleration \(g \approx 9.8\ \text{m/s}^2\)
+            near Earth's surface. Air resistance is neglected.</dd>
+
+      </dl>
+    </section>
+
+  </main>
+</div>
+
+<footer class="lesson-footer">
+  <a class="btn-prev" href="lesson-01-dot-product.html">&larr; Lesson 1 — The Dot Product</a>
+  <a class="btn-exercises" href="lesson-02-motion-on-a-line-exercises.html">Practice Exercises &rarr;</a>
+  <a class="btn-next" href="#">Lesson 3 — Vectors in 2-D &rarr;</a>
+</footer>
+
+<script>
+  const panel  = document.getElementById('toc-panel');
+  const toggle = document.getElementById('toc-toggle');
+  const STORAGE_KEY = 'physics-toc-collapsed';
+
+  function applyState(collapsed) {
+    panel.classList.toggle('collapsed', collapsed);
+    toggle.setAttribute('aria-expanded', String(!collapsed));
+    toggle.querySelector('.toc-label').textContent = collapsed ? '' : 'Contents';
+    try { localStorage.setItem(STORAGE_KEY, collapsed ? '1' : '0'); } catch(e) {}
+  }
+
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved === '1') applyState(true);
+  } catch(e) {}
+
+  toggle.addEventListener('click', () => {
+    applyState(!panel.classList.contains('collapsed'));
+  });
+
+  if (window.innerWidth <= 768) {
+    panel.classList.add('collapsed');
+    toggle.addEventListener('click', () => {
+      panel.classList.toggle('mobile-open');
+    });
+  }
+
+  const sections = document.querySelectorAll('section[id]');
+  const tocLinks = document.querySelectorAll('.toc-list a');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        tocLinks.forEach(a => a.classList.remove('active'));
+        const active = document.querySelector(`.toc-list a[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-100px 0px -60% 0px', threshold: 0 });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>

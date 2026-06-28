@@ -1,0 +1,1084 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Side Quest B — Galileo and Falling Bodies | Physics Lessons</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Source+Sans+3:wght@400;600;700&display=swap" />
+
+  <script>
+    MathJax = {
+      tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+      options: { skipHtmlTags: ['script','noscript','style','textarea','pre'] }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+
+  <style>
+    :root {
+      --color-bg:             #f9f9f7;
+      --color-surface:        #ffffff;
+      --color-primary:        #1a5276;
+      --color-primary-light:  #2471a3;
+      --color-accent:         #d4ac0d;
+      --color-text:           #2c2c2c;
+      --color-muted:          #6b7280;
+      --color-border:         #d1d5db;
+      --color-callout-tip-bg:     #eaf4fb;
+      --color-callout-tip-border: #2e86c1;
+      --color-callout-warn-bg:    #fef9e7;
+      --color-callout-warn-border:#d4ac0d;
+      --color-callout-insight-bg: #eafaf1;
+      --color-callout-insight-border: #1e8449;
+      --color-callout-sq-bg:   #f5eef8;
+      --color-callout-sq-border: #7d3c98;
+      --font-body:  'Playfair Display', Georgia, serif;
+      --font-ui:    'Source Sans 3', system-ui, sans-serif;
+      --toc-width:  260px;
+      --content-max-width: 760px;
+      --border-radius: 6px;
+      --transition: 0.25s ease;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      font-size: 17px;
+      line-height: 1.75;
+      color: var(--color-text);
+      background: var(--color-bg);
+    }
+
+    .lesson-header {
+      background: var(--color-primary);
+      color: #fff;
+      padding: 1.25rem 2rem;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
+    .breadcrumb { font-family: var(--font-ui); font-size: 0.8rem; opacity: 0.75; margin-bottom: 0.3rem; }
+    .breadcrumb a { color: rgba(255,255,255,0.85); text-decoration: none; }
+    .breadcrumb a:hover { text-decoration: underline; }
+    .lesson-header h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.01em; }
+    .lesson-meta { font-family: var(--font-ui); font-size: 0.82rem; opacity: 0.7; margin-top: 0.2rem; }
+    .sq-badge {
+      display: inline-block;
+      font-family: var(--font-ui);
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      background: rgba(125, 60, 152, 0.75);
+      color: #fff;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      vertical-align: middle;
+      margin-right: 0.45rem;
+    }
+
+    .lesson-layout { display: flex; align-items: flex-start; min-height: calc(100vh - 80px); }
+
+    .toc-panel {
+      width: var(--toc-width);
+      flex-shrink: 0;
+      position: sticky;
+      top: 80px;
+      height: calc(100vh - 80px);
+      overflow-y: auto;
+      background: var(--color-surface);
+      border-right: 1px solid var(--color-border);
+      padding: 1rem 0;
+      transition: width var(--transition), transform var(--transition);
+      z-index: 50;
+    }
+    .toc-panel.collapsed { width: 44px; overflow: hidden; }
+    .toc-panel.collapsed .toc-inner { display: none; }
+    #toc-toggle {
+      display: flex; align-items: center; gap: 0.4rem;
+      background: none; border: none; cursor: pointer;
+      padding: 0.4rem 0.85rem; font-family: var(--font-ui); font-size: 0.85rem;
+      color: var(--color-primary); width: 100%;
+    }
+    #toc-toggle:hover { background: var(--color-callout-tip-bg); }
+    .toc-icon { font-size: 1.1rem; flex-shrink: 0; }
+    .toc-inner { padding: 0.5rem 1rem 1rem; }
+    .toc-heading { font-family: var(--font-ui); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-muted); margin-bottom: 0.6rem; font-weight: 600; }
+    .toc-list { list-style: none; padding: 0; }
+    .toc-list li { margin: 0; }
+    .toc-list a {
+      display: block; font-family: var(--font-ui); font-size: 0.82rem;
+      color: var(--color-text); text-decoration: none; padding: 0.3rem 0.5rem;
+      border-radius: 4px; line-height: 1.35;
+      transition: background var(--transition), color var(--transition);
+    }
+    .toc-list a:hover, .toc-list a.active { background: var(--color-callout-tip-bg); color: var(--color-primary); }
+    .toc-list .toc-num { font-size: 0.72rem; color: var(--color-muted); margin-right: 0.3em; }
+    .toc-sep { border: none; border-top: 1px solid var(--color-border); margin: 0.5rem 0; }
+
+    .lesson-content {
+      flex: 1; max-width: var(--content-max-width);
+      padding: 2.5rem 2.5rem 3rem; margin: 0 auto;
+    }
+    .lesson-content section { margin-bottom: 3.5rem; scroll-margin-top: 100px; }
+    .lesson-content h2 { font-size: 1.55rem; color: var(--color-primary); border-bottom: 2px solid var(--color-border); padding-bottom: 0.4rem; margin-bottom: 1.1rem; }
+    .lesson-content h3 { font-size: 1.15rem; color: var(--color-primary-light); margin: 1.5rem 0 0.6rem; }
+    .lesson-content p { margin-bottom: 1rem; }
+    .lesson-content ul, .lesson-content ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+    .lesson-content li { margin-bottom: 0.35rem; }
+
+    a.key-term { color: var(--color-text); text-decoration-line: underline; text-decoration-style: dashed; text-decoration-color: var(--color-accent); text-underline-offset: 3px; cursor: help; }
+    a.key-term:hover { color: var(--color-primary); }
+
+    .callout { border-left: 4px solid; border-radius: 0 var(--border-radius) var(--border-radius) 0; padding: 0.85rem 1.1rem; margin: 1.4rem 0; font-size: 0.95rem; }
+    .callout-tip    { background: var(--color-callout-tip-bg);     border-color: var(--color-callout-tip-border); }
+    .callout-warning { background: var(--color-callout-warn-bg);   border-color: var(--color-callout-warn-border); }
+    .callout-insight { background: var(--color-callout-insight-bg); border-color: var(--color-callout-insight-border); }
+    .callout-sidequest { background: var(--color-callout-sq-bg);   border-color: var(--color-callout-sq-border); }
+    .callout strong { display: block; margin-bottom: 0.25rem; }
+
+    .math-block { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--border-radius); padding: 1rem 1.5rem; margin: 1.2rem 0; overflow-x: auto; font-size: 1.05rem; text-align: center; }
+
+    .example-box { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--border-radius); padding: 1.2rem 1.5rem; margin: 1.4rem 0; }
+    .example-box .example-title { font-family: var(--font-ui); font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--color-primary); margin-bottom: 0.7rem; }
+    .example-box .step { display: grid; grid-template-columns: 2rem 1fr; gap: 0 0.6rem; margin-bottom: 0.4rem; font-size: 0.95rem; }
+    .step-num { font-family: var(--font-ui); font-weight: 700; color: var(--color-primary); padding-top: 2px; }
+
+    .lesson-table { width: 100%; border-collapse: collapse; margin: 1.2rem 0; font-size: 0.92rem; }
+    .lesson-table th { background: var(--color-primary); color: #fff; font-family: var(--font-ui); font-weight: 600; padding: 0.6rem 0.9rem; text-align: left; }
+    .lesson-table td { padding: 0.55rem 0.9rem; border-bottom: 1px solid var(--color-border); font-size: 0.91rem; }
+    .lesson-table tr:last-child td { border-bottom: none; }
+    .lesson-table tr:nth-child(even) td { background: #f8f8f6; }
+
+    blockquote.historical { border-left: 4px solid var(--color-accent); padding: 0.7rem 1.1rem; margin: 1rem 0; font-style: italic; color: var(--color-text); background: var(--color-callout-warn-bg); border-radius: 0 var(--border-radius) var(--border-radius) 0; font-size: 0.95rem; }
+
+    .diagram-wrap { margin: 1.6rem 0; text-align: center; }
+    .diagram-wrap svg { max-width: 100%; height: auto; }
+
+    .portrait-float {
+      float: right;
+      margin: 0 0 1.2rem 2rem;
+      max-width: 220px;
+      width: 35%;
+    }
+    .portrait-float img {
+      width: 100%;
+      border-radius: 4px;
+      display: block;
+      border: 1px solid var(--color-border);
+    }
+    .portrait-float figcaption {
+      font-family: var(--font-ui);
+      font-size: 0.75rem;
+      color: var(--color-muted);
+      text-align: center;
+      margin-top: 0.4rem;
+      line-height: 1.4;
+    }
+    @media (max-width: 540px) {
+      .portrait-float {
+        float: none;
+        margin: 0 auto 1.2rem;
+        max-width: 180px;
+        width: 60%;
+        display: block;
+      }
+    }
+    .diagram-caption { font-family: var(--font-ui); font-size: 0.82rem; color: var(--color-muted); margin-top: 0.6rem; line-height: 1.4; }
+
+    #glossary { scroll-margin-top: 100px; margin-bottom: 3.5rem; }
+    .glossary-list { list-style: none; padding: 0; }
+    .glossary-list dt { font-weight: 600; color: var(--color-primary-light); margin-top: 1rem; font-size: 0.98rem; }
+    .glossary-list dd { font-family: var(--font-ui); font-size: 0.9rem; color: var(--color-text); padding-left: 1rem; line-height: 1.55; }
+
+    .lesson-footer { display: flex; justify-content: space-between; align-items: center; padding: 1.4rem 2.5rem; border-top: 1px solid var(--color-border); background: var(--color-surface); flex-wrap: wrap; gap: 0.75rem; }
+    .lesson-footer a { font-family: var(--font-ui); font-size: 0.9rem; font-weight: 600; padding: 0.5rem 1.1rem; border-radius: var(--border-radius); text-decoration: none; transition: background var(--transition); }
+    .btn-prev { border: 1px solid var(--color-border); color: var(--color-text); }
+    .btn-prev:hover { background: var(--color-border); }
+    .btn-next { border: 1px solid var(--color-primary); color: var(--color-primary); }
+    .btn-next:hover { background: var(--color-callout-tip-bg); }
+
+    @media (max-width: 768px) {
+      .toc-panel { position: fixed; top: 0; left: 0; height: 100vh; transform: translateX(-100%); box-shadow: 4px 0 16px rgba(0,0,0,0.15); }
+      .toc-panel.mobile-open { transform: translateX(0); width: var(--toc-width); }
+      .toc-panel.mobile-open .toc-inner { display: block; }
+      .lesson-content { padding: 1.5rem 1.25rem 2.5rem; }
+      .lesson-footer { padding: 1rem 1.25rem; }
+      .lesson-header { padding: 0.9rem 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="lesson-header">
+  <nav class="breadcrumb">
+    <a href="../landing-page.html">Physics Lessons</a> &rsaquo;
+    <a href="lesson-02-motion-on-a-line.html">Lesson 2</a> &rsaquo;
+    Side Quest B
+  </nav>
+  <h1><span class="sq-badge">Side Quest</span>B &mdash; Galileo and Falling Bodies</h1>
+  <p class="lesson-meta">Aristotle vs. Galileo &bull; The Inclined Plane &bull; Padua, c.&thinsp;1604 &bull; Estimated reading time: ~22 min</p>
+</header>
+
+<div class="lesson-layout">
+
+  <aside id="toc-panel" class="toc-panel" aria-label="Table of contents">
+    <button id="toc-toggle" aria-expanded="true" aria-controls="toc-inner">
+      <span class="toc-icon">&#9776;</span>
+      <span class="toc-label">Contents</span>
+    </button>
+    <div class="toc-inner" id="toc-inner">
+      <p class="toc-heading">In this side quest</p>
+      <ol class="toc-list">
+        <li><a href="#section-overview"><span class="toc-num">B1</span>Overview</a></li>
+        <li><a href="#section-aristotle"><span class="toc-num">B2</span>Aristotle's Theory of Fall</a></li>
+        <li><a href="#section-galileo-challenge"><span class="toc-num">B3</span>Galileo Challenges the Tradition</a></li>
+        <li><a href="#section-inclined-plane"><span class="toc-num">B4</span>The Inclined Plane Experiment</a></li>
+        <li><a href="#section-odd-numbers"><span class="toc-num">B5</span>The Law of Odd Numbers</a></li>
+        <li><a href="#section-law-of-squares"><span class="toc-num">B6</span>The Law of Squares</a></li>
+        <li><a href="#section-derivation"><span class="toc-num">B7</span>Deriving Both Laws</a></li>
+        <li><a href="#section-kinematic"><span class="toc-num">B8</span>The Kinematic Equations</a></li>
+        <li><a href="#section-legacy"><span class="toc-num">B9</span>Historical Legacy</a></li>
+      </ol>
+      <hr class="toc-sep"/>
+      <ol class="toc-list">
+        <li><a href="#glossary"><span class="toc-num">G</span>Glossary</a></li>
+      </ol>
+    </div>
+  </aside>
+
+  <main class="lesson-content">
+
+    <!-- ══ B1 OVERVIEW ══════════════════════════════════════ -->
+    <section id="section-overview">
+      <h2>B1 &nbsp; Overview</h2>
+
+      <p>
+        You have now seen the kinematic equations: \(v = v_0 + at\),
+        \(x = x_0 + v_0 t + \tfrac{1}{2}at^2\), and the rest. They are powerful tools.
+        But where do they come from? The <em>mathematics</em> was established in medieval Oxford
+        (see <a href="lesson-02-sq-a-mean-speed.html">Side Quest A</a>). The question that
+        occupied Galileo Galilei (1564–1642) was different: <em>Does any real physical motion actually
+        follow these equations?</em>
+      </p>
+
+      <p>
+        Galileo's great discovery — made experimentally on inclined planes in Padua around
+        1604 — was that freely falling bodies do precisely that. He confirmed it not by dropping
+        weights from towers (the famous story is almost certainly apocryphal) but through a careful
+        series of quantitative experiments that produced two striking regularities: the
+        <a href="#term-law-of-odd-numbers" class="key-term">law of odd numbers</a> and the
+        <a href="#term-law-of-squares" class="key-term">law of squares</a>. Both are direct
+        consequences of constant acceleration, and together they are equivalent to the kinematic
+        equations.
+      </p>
+
+      <div class="callout callout-sidequest">
+        <strong>Prerequisites.</strong>
+        Lesson&nbsp;2 covers displacement, velocity, and constant-acceleration kinematics.
+        Side Quest A explains the mean speed theorem and where \(x = \tfrac{1}{2}at^2\) comes from
+        geometrically. Neither is required here — everything is derived from scratch — but both
+        provide useful background.
+      </div>
+
+      <div class="callout callout-tip">
+        <strong>What you will see.</strong>
+        Aristotle's theory of fall and why it held for 1900 years; Galileo's methodological
+        innovations; how the inclined plane slows free fall enough to measure; the law of odd numbers
+        (gaps between successive distances are \(1:3:5:7:\ldots\)); the law of squares (total
+        distance grows as \(t^2\)); why both laws follow from \(a = \text{const}\); and how Galileo's
+        work bridged medieval kinematics and Newtonian dynamics.
+      </div>
+    </section>
+
+    <!-- ══ B2 ARISTOTLE ══════════════════════════════════════ -->
+    <section id="section-aristotle">
+      <h2>B2 &nbsp; Aristotle's Theory of Fall</h2>
+
+      <figure class="portrait-float">
+        <img src="aristotle-portrait.jpg"
+             alt="Marble bust of Aristotle, a Roman copy of a lost Greek original, showing the philosopher with a broad forehead and trimmed beard.">
+        <figcaption>Aristotle (384–322 BC)<br>Roman copy of Greek original<br><em>National Museum, Rome. Public domain.</em></figcaption>
+      </figure>
+
+      <p>
+        For nearly two thousand years, the authoritative account of why objects fall was Aristotle's.
+        In his <em>Physics</em> and <em>De Caelo</em> (4th century BC), Aristotle argued:
+      </p>
+
+      <ul>
+        <li>
+          <strong>Natural motion.</strong> Each of the four elements — earth, water, air, fire — has a
+          natural place in the cosmos. Earth is heaviest and seeks the center; fire is lightest and rises.
+          Falling is "natural motion" for earthly objects: they fall because their nature draws them
+          toward their natural place.
+        </li>
+        <li>
+          <strong>Speed proportional to weight.</strong> A heavier body (more "earth") has a stronger
+          pull toward its natural place and therefore falls faster. Aristotle claimed that the speed of
+          fall is proportional to the weight of the body.
+        </li>
+        <li>
+          <strong>Speed inversely proportional to medium resistance.</strong> In a denser medium (water
+          vs. air), fall is slower; in a vacuum it would be instantaneous — which Aristotle considered
+          absurd, and therefore used as an argument against the existence of a vacuum.
+        </li>
+      </ul>
+
+      <p>
+        In mathematical form, Aristotle's law of fall can be written \(v \propto W/R\), where \(W\)
+        is weight and \(R\) is the resistance of the medium. This is not a constant-acceleration
+        model; it is a constant-velocity model — each object falls at a fixed terminal speed
+        determined by its weight.
+      </p>
+
+      <div class="callout callout-warning">
+        <strong>Why this was not obviously wrong.</strong>
+        In everyday experience, a stone really does fall faster than a feather. Air resistance is
+        real, and for objects with very different drag characteristics it dominates. Aristotle's law
+        captures the qualitative behavior of highly resistive fall. Without controlled experiments,
+        it was very difficult to isolate gravity from air resistance.
+      </div>
+
+      <p>
+        Despite occasional critics — John Philoponus (6th century AD) noted that objects of very
+        different weights fall at nearly the same speed — Aristotle's account remained standard
+        teaching in European universities until Galileo's work.
+      </p>
+      <div style="clear:both;"></div>
+    </section>
+
+    <!-- ══ B3 GALILEO CHALLENGES ═════════════════════════════ -->
+    <section id="section-galileo-challenge">
+      <h2>B3 &nbsp; Galileo Challenges the Tradition</h2>
+
+      <figure class="portrait-float">
+        <img src="galileo-portrait-sustermans-1636.jpg"
+             alt="Portrait of Galileo Galilei painted by Justus Sustermans in 1636, showing Galileo as an older man in dark clothing against a dark background.">
+        <figcaption>Galileo Galilei (1564–1642)<br>Justus Sustermans, 1636<br><em>Uffizi Gallery, Florence. Public domain.</em></figcaption>
+      </figure>
+
+      <p>
+        Galileo Galilei was born in Pisa in 1564 and died in Arcetri in 1642 — the year Isaac Newton
+        was born. He taught mathematics in Padua from 1592 to 1610, and it was during this period
+        that he carried out his fundamental work on motion.
+      </p>
+
+      <h3>The methodological shift</h3>
+      <p>
+        Galileo's most important innovation was not a single discovery but a method. He insisted on
+        treating physical questions mathematically and then checking the mathematics experimentally.
+        This seems obvious now; in 1600 it was a departure from Aristotelian natural philosophy, in
+        which mathematics was a tool for astronomy but not for physics.
+      </p>
+      <p>
+        Galileo argued in his <em>Two New Sciences</em> (1638) that the correct question was not
+        "why does this body fall?" (a metaphysical question about causes) but "how does it fall?" —
+        a mathematical question about the relationship between distance and time.
+      </p>
+
+      <h3>Challenging the weight argument</h3>
+      <p>
+        Galileo attacked Aristotle's weight-proportionality claim with a thought experiment:
+      </p>
+
+      <blockquote class="historical">
+        "If we take two bodies whose natural speeds are different, it is clear that on uniting the
+        two, the more rapid one will be partly retarded by the slower, and the slower will be somewhat
+        hastened by the swifter. … [But] the combination of two bodies is heavier than either alone,
+        and should therefore fall faster — a contradiction."
+        <br/><br/>
+        — Galileo, <em>Two New Sciences</em>, First Day
+      </blockquote>
+
+      <p>
+        The argument: tie a heavy stone to a light one. By Aristotle, the combination is heavier,
+        so it should fall <em>faster</em> than the heavy stone alone. But the light stone is a
+        retarder, so the combination should also fall <em>slower</em>. The contradiction implies
+        that Aristotle's proportionality must be wrong. The simplest resolution is that all bodies
+        (in the absence of air resistance) fall at the same speed.
+      </p>
+
+      <div class="callout callout-insight">
+        <strong>The Tower of Pisa story.</strong>
+        Legend says Galileo dropped two cannon balls of different weights from the Tower of Pisa,
+        demonstrating they hit the ground simultaneously. This story was first told by Galileo's
+        student Vincenzo Viviani, decades after the event and after Galileo's death. Most historians
+        regard it as probably apocryphal — or at best a demonstration for students rather than a
+        research experiment. Galileo's actual research used inclined planes.
+      </div>
+
+      <h3>The rival that came before: Leonardo da Vinci</h3>
+      <p>
+        Aristotle was not Galileo's only predecessor. About a century before Galileo, Leonardo da
+        Vinci also studied falling bodies and asked exactly the right question: how far does a body
+        fall in successive equal intervals of time? His answer was almost right.
+      </p>
+      <p>
+        Da Vinci proposed that the distances follow the <em>integers</em> — 1 unit in the first
+        interval, 2 in the second, 3 in the third, and so on:
+      </p>
+      <div class="math-block">
+        \[ \text{da Vinci: } \quad d_1 : d_2 : d_3 : d_4 = 1 : 2 : 3 : 4 \]
+      </div>
+      <p>
+        Galileo's result — confirmed by experiment — was the <em>odd numbers</em>:
+      </p>
+      <div class="math-block">
+        \[ \text{Galileo: } \quad d_1 : d_2 : d_3 : d_4 = 1 : 3 : 5 : 7 \]
+      </div>
+      <p>
+        Both theories agree that later intervals cover more distance than earlier ones, so neither
+        matches Aristotle's picture of constant speed. But only Galileo's is consistent with constant
+        acceleration. Da Vinci's integer rule implies that the total distance after \(n\) intervals
+        is \(\tfrac{n(n+1)}{2}\) — not proportional to \(n^2\). Galileo's odd-number rule gives a
+        total of \(n^2\), which is the law of squares and the fingerprint of constant acceleration.
+        The distinction is subtle enough that a brilliant observer without rigorous timing could easily
+        miss it.
+      </p>
+      <div class="callout callout-tip">
+        <strong>Why da Vinci got it wrong.</strong>
+        Da Vinci's rule can be derived from a plausible — but incorrect — assumption: that speed
+        increases in proportion to distance fallen, not in proportion to time elapsed.
+        Galileo refuted this in <em>Two New Sciences</em>. Speed proportional to distance leads
+        to an inconsistency (the body would never start moving from rest), while speed proportional
+        to time leads to the correct odd-number distances.
+      </div>
+      <div style="clear:both;"></div>
+    </section>
+
+    <!-- ══ B4 INCLINED PLANE ══════════════════════════════════ -->
+    <section id="section-inclined-plane">
+      <h2>B4 &nbsp; The Inclined Plane Experiment</h2>
+
+      <p>
+        Free fall is fast. A ball dropped from 2 metres takes only 0.64 seconds to hit the ground.
+        With the timekeeping available to Galileo (water clocks, music beats, pulse), accurately
+        measuring intervals shorter than about half a second was nearly impossible for vertical fall.
+        Galileo's solution was to slow the motion down while preserving its essential character.
+      </p>
+
+      <h3>The setup</h3>
+      <p>
+        Galileo constructed a long, smooth wooden groove on an inclined board. He released a hard
+        bronze ball from rest at the top and measured the distance traveled in successive equal time
+        intervals. By inclining the plane at a small angle \(\theta\), the effective acceleration
+        along the plane is:
+      </p>
+      <div class="math-block">
+        \[a_{\text{plane}} = g\sin\theta\]
+      </div>
+      <p>
+        For a gentle incline (\(\theta \approx 3^\circ\)), \(\sin 3° \approx 0.052\) and
+        \(a_{\text{plane}} \approx 0.51\ \mathrm{m/s^2}\) — about \(g/19\). The motion is slow
+        enough to time accurately, but the <em>form</em> of the motion (constant acceleration)
+        is identical to free fall.
+      </p>
+
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 480 180" width="480" height="180" xmlns="http://www.w3.org/2000/svg"
+             aria-label="Inclined plane diagram showing ball positions at equal time intervals, with successive distances growing as 1, 3, 5, 7">
+
+          <!-- Board (inclined plane) -->
+          <polygon points="30,155 450,155 450,165 30,165" fill="#c8b89a" stroke="#8b6f47" stroke-width="1.5"/>
+          <polygon points="30,60 450,155 450,165 30,165" fill="#d4c4a8" stroke="#8b6f47" stroke-width="1.5"/>
+
+          <!-- Ball positions at t=0,1,2,3,4 (equal time intervals) -->
+          <!-- Using a=const: distances are 0, 1d, 4d, 9d, 16d from start -->
+          <!-- Let unit d=20px along the plane. Plane slope from (60,142) to (435,158) -->
+          <!-- Actually let me just place them at x positions 60, 80, 120, 180, 260 along the slope, y = 142 - (x-60)*0.04 -->
+          <!-- Plane direction: from upper-left (60, 125) to lower-right (435, 150) -->
+          <!-- slope: dy/dx = (150-125)/(435-60) = 25/375 = 0.067 -->
+          <!-- Ball at t=0: (65, 122) -->
+          <!-- d=20 along plane: dx=20/sqrt(1+0.067²)≈20, dy=20*0.067≈1.3 -->
+          <!-- Positions: t=0: 0; t=1: 1d; t=2: 4d; t=3: 9d; t=4: 16d -->
+          <!-- Let d=23px. x positions: 65, 65+23=88, 65+92=157, 65+207=272, 65+368=433 -->
+          <!-- But 433 is near the end, that's too spread. Let d=17px: 65,82,133,218,337 -->
+
+          <!-- Let me just use predefined positions at t=0,1,2,3,4 -->
+          <!-- distances from start (in px along x): 0, 17, 68, 153, 272 — so x: 65, 82, 133, 218, 337 -->
+          <!-- y = 122 + (x-65)*0.067 -->
+
+          <!-- Ball at t=0: x=65, y=122 -->
+          <circle cx="65" cy="122" r="7" fill="#8b6f47" stroke="#5a4020" stroke-width="1"/>
+          <!-- Ball at t=1: x=82, y=123 -->
+          <circle cx="82" cy="123" r="7" fill="#8b6f47" stroke="#5a4020" stroke-width="1"/>
+          <!-- Ball at t=2: x=133, y=127" -->
+          <circle cx="133" cy="127" r="7" fill="#8b6f47" stroke="#5a4020" stroke-width="1"/>
+          <!-- Ball at t=3: x=218, y=133 -->
+          <circle cx="218" cy="133" r="7" fill="#8b6f47" stroke="#5a4020" stroke-width="1"/>
+          <!-- Ball at t=4: x=337, y=141 -->
+          <circle cx="337" cy="141" r="7" fill="#8b6f47" stroke="#5a4020" stroke-width="1"/>
+
+          <!-- Distance markers below the plane -->
+          <!-- Interval 1: 65→82 = 17px -->
+          <line x1="65" y1="158" x2="82" y2="159" stroke="#1a5276" stroke-width="1.5"/>
+          <line x1="65" y1="155" x2="65" y2="161" stroke="#1a5276" stroke-width="1.5"/>
+          <line x1="82" y1="156" x2="82" y2="162" stroke="#1a5276" stroke-width="1.5"/>
+          <text x="73" y="172" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#1a5276" text-anchor="middle" font-weight="600">1</text>
+
+          <!-- Interval 2: 82→133 = 51px = 3×17 -->
+          <line x1="82" y1="159" x2="133" y2="161" stroke="#c0392b" stroke-width="1.5"/>
+          <line x1="133" y1="158" x2="133" y2="164" stroke="#c0392b" stroke-width="1.5"/>
+          <text x="107" y="172" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#c0392b" text-anchor="middle" font-weight="600">3</text>
+
+          <!-- Interval 3: 133→218 = 85px = 5×17 -->
+          <line x1="133" y1="161" x2="218" y2="165" stroke="#1e8449" stroke-width="1.5"/>
+          <line x1="218" y1="162" x2="218" y2="168" stroke="#1e8449" stroke-width="1.5"/>
+          <text x="175" y="175" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#1e8449" text-anchor="middle" font-weight="600">5</text>
+
+          <!-- Interval 4: 218→337 = 119px = 7×17 -->
+          <line x1="218" y1="165" x2="337" y2="170" stroke="#d4ac0d" stroke-width="1.5"/>
+          <line x1="337" y1="168" x2="337" y2="174" stroke="#d4ac0d" stroke-width="1.5"/>
+          <text x="277" y="178" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#d4ac0d" text-anchor="middle" font-weight="600">7</text>
+
+          <!-- Time labels above balls -->
+          <text x="65" y="112" font-family="'Source Sans 3',sans-serif" font-size="9" fill="#6b7280" text-anchor="middle">t=0</text>
+          <text x="82" y="112" font-family="'Source Sans 3',sans-serif" font-size="9" fill="#6b7280" text-anchor="middle">t=1</text>
+          <text x="133" y="115" font-family="'Source Sans 3',sans-serif" font-size="9" fill="#6b7280" text-anchor="middle">t=2</text>
+          <text x="218" y="120" font-family="'Source Sans 3',sans-serif" font-size="9" fill="#6b7280" text-anchor="middle">t=3</text>
+          <text x="337" y="130" font-family="'Source Sans 3',sans-serif" font-size="9" fill="#6b7280" text-anchor="middle">t=4</text>
+
+          <!-- angle label -->
+          <path d="M 430,155 A 20,20 0 0,0 424,140" fill="none" stroke="#6b7280" stroke-width="1"/>
+          <text x="436" y="148" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#6b7280" font-style="italic">θ</text>
+        </svg>
+        <p class="diagram-caption">
+          Figure B4.1 &mdash; Ball positions on an inclined plane at equal time intervals.
+          The gaps between successive positions grow as \(1:3:5:7:\ldots\) — the law of odd numbers.
+          Total distances from the start grow as \(1:4:9:16:\ldots\) — the law of squares.
+        </p>
+      </div>
+
+      <h3>Galileo's timing method</h3>
+      <p>
+        Galileo used a water clock: a large vessel with a hole, collecting the outflow in a cup.
+        The mass of water collected was proportional to time elapsed. He also used musical pulse —
+        tapping out equal beats while the ball rolled, then adjusting the positions of small gut
+        strings across the groove so the ball would click against them at each beat. If the clicks
+        were perfectly even, the positions marked equal time intervals.
+      </p>
+
+      <p>
+        Both methods were ingenious and, for their era, surprisingly precise. Galileo reported
+        experimental agreement with the theoretical ratios to within about 1&nbsp;part in 10.
+      </p>
+    </section>
+
+    <!-- ══ B5 ODD NUMBERS ════════════════════════════════════ -->
+    <section id="section-odd-numbers">
+      <h2>B5 &nbsp; The Law of Odd Numbers</h2>
+
+      <p>
+        Galileo's key experimental finding was this: when a ball rolls from rest on an inclined
+        plane, the distances covered in successive equal time intervals are in the ratio
+        \(1 : 3 : 5 : 7 : \ldots\)
+      </p>
+
+      <p>
+        Call the distance covered in the first interval \(d\). Then:
+      </p>
+
+      <table class="lesson-table">
+        <thead>
+          <tr>
+            <th>Time interval</th>
+            <th>Distance covered in that interval</th>
+            <th>Odd number</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>1st interval (0 → \(\tau\))</td><td>\(d\)</td><td>1</td></tr>
+          <tr><td>2nd interval (\(\tau\) → \(2\tau\))</td><td>\(3d\)</td><td>3</td></tr>
+          <tr><td>3rd interval (\(2\tau\) → \(3\tau\))</td><td>\(5d\)</td><td>5</td></tr>
+          <tr><td>4th interval (\(3\tau\) → \(4\tau\))</td><td>\(7d\)</td><td>7</td></tr>
+          <tr><td>\(n\)-th interval</td><td>\((2n-1)d\)</td><td>\(2n-1\)</td></tr>
+        </tbody>
+      </table>
+
+      <p>
+        The gap distances are the odd numbers multiplied by \(d\). Galileo documented this result
+        in <em>Two New Sciences</em> (1638) and considered it the decisive experimental signature of
+        constant acceleration.
+      </p>
+
+      <div class="callout callout-tip">
+        <strong>Why "law of odd numbers"?</strong>
+        The sequence \(1, 3, 5, 7, \ldots\) consists of the odd positive integers. The key algebraic
+        fact is that the sum of the first \(n\) odd integers equals \(n^2\):
+        \(1 + 3 + 5 + \cdots + (2n-1) = n^2\). This connects the law of odd numbers directly to
+        the law of squares, as we will see in §B6.
+      </div>
+    </section>
+
+    <!-- ══ B6 LAW OF SQUARES ══════════════════════════════════ -->
+    <section id="section-law-of-squares">
+      <h2>B6 &nbsp; The Law of Squares</h2>
+
+      <p>
+        If you add up the distances in the law of odd numbers, you find the total distance traveled
+        from the starting point after \(n\) intervals:
+      </p>
+
+      <div class="math-block">
+        \[
+          x_n = d + 3d + 5d + \cdots + (2n-1)d = d\cdot n^2
+        \]
+      </div>
+
+      <p>
+        Since \(t = n\tau\), we have \(n = t/\tau\), and therefore:
+      </p>
+
+      <div class="math-block">
+        \[
+          x = d\cdot\left(\frac{t}{\tau}\right)^2 \propto t^2
+        \]
+      </div>
+
+      <p>
+        The distance from the starting point grows as the <em>square</em> of the elapsed time.
+        This is the <a href="#term-law-of-squares" class="key-term">law of squares</a> — the most
+        compact statement of Galileo's discovery about free fall.
+      </p>
+
+      <table class="lesson-table">
+        <thead>
+          <tr>
+            <th>Time elapsed (\(n\) intervals)</th>
+            <th>Total distance from start</th>
+            <th>Ratio to first-interval distance</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>\(t = \tau\)</td><td>\(d\)</td><td>\(1 = 1^2\)</td></tr>
+          <tr><td>\(t = 2\tau\)</td><td>\(4d\)</td><td>\(4 = 2^2\)</td></tr>
+          <tr><td>\(t = 3\tau\)</td><td>\(9d\)</td><td>\(9 = 3^2\)</td></tr>
+          <tr><td>\(t = 4\tau\)</td><td>\(16d\)</td><td>\(16 = 4^2\)</td></tr>
+          <tr><td>\(t = n\tau\)</td><td>\(n^2 d\)</td><td>\(n^2\)</td></tr>
+        </tbody>
+      </table>
+
+      <p>
+        Galileo stated this as a theorem in <em>Two New Sciences</em>: "The spaces described by a
+        body falling from rest with a uniformly accelerated motion are to each other as the squares
+        of the time-intervals employed in traversing these distances."
+      </p>
+
+      <div class="callout callout-insight">
+        <strong>The sum-of-odds identity.</strong>
+        The law of odd numbers and the law of squares are equivalent. The arithmetic fact tying them
+        together is \(1 + 3 + 5 + \cdots + (2n-1) = n^2\). You can prove this algebraically
+        (telescoping), geometrically (staircase of unit squares building an \(n\times n\) square),
+        or by induction. Either way, Galileo's two empirical laws are two faces of a single
+        mathematical truth.
+      </div>
+    </section>
+
+    <!-- ══ B7 DERIVING BOTH LAWS ══════════════════════════════ -->
+    <section id="section-derivation">
+      <h2>B7 &nbsp; Deriving Both Laws from \(a = \text{const}\)</h2>
+
+      <p>
+        Both Galileo's experimental results follow logically and inevitably from the single
+        assumption \(a = \text{const}\). Here is the derivation.
+      </p>
+
+      <h3>Setup</h3>
+      <p>
+        Let the ball start from rest at \(t = 0\): \(v_0 = 0\), \(x_0 = 0\). The acceleration
+        is a constant \(a\) along the plane.
+      </p>
+
+      <h3>Position at any time</h3>
+      <div class="math-block">
+        \[x(t) = \tfrac{1}{2}at^2\]
+      </div>
+
+      <h3>Deriving the law of squares</h3>
+      <p>
+        After \(n\) equal time intervals of duration \(\tau\), the total elapsed time is \(t = n\tau\):
+      </p>
+      <div class="math-block">
+        \[x(n\tau) = \tfrac{1}{2}a(n\tau)^2 = \tfrac{1}{2}a\tau^2 \cdot n^2\]
+      </div>
+      <p>
+        Calling \(d = \tfrac{1}{2}a\tau^2\) (the distance in the first interval, as we will show),
+        we get \(x(n\tau) = d\cdot n^2\). Distance from start is proportional to \(n^2\) — the
+        law of squares. &#10003;
+      </p>
+
+      <h3>Deriving the law of odd numbers</h3>
+      <p>
+        The distance covered in the \(n\)-th interval (from \(t = (n-1)\tau\) to \(t = n\tau\)):
+      </p>
+      <div class="math-block">
+        \[
+          \Delta x_n = x(n\tau) - x((n-1)\tau)
+          = \tfrac{1}{2}a\tau^2 n^2 - \tfrac{1}{2}a\tau^2(n-1)^2
+          = \tfrac{1}{2}a\tau^2 \bigl[n^2 - (n-1)^2\bigr]
+        \]
+      </div>
+      <p>
+        Expanding: \(n^2 - (n-1)^2 = n^2 - n^2 + 2n - 1 = 2n - 1\). Therefore:
+      </p>
+      <div class="math-block">
+        \[
+          \Delta x_n = \tfrac{1}{2}a\tau^2(2n-1) = d\cdot(2n-1)
+          \qquad\text{where } d = \tfrac{1}{2}a\tau^2
+        \]
+      </div>
+      <p>
+        For \(n = 1, 2, 3, 4, \ldots\), the intervals are \(d, 3d, 5d, 7d, \ldots\) — the odd
+        multiples of \(d\). The law of odd numbers. &#10003;
+      </p>
+
+      <div class="example-box">
+        <p class="example-title">Worked Example B7.1 — Reading Galileo's Experiment</p>
+        <p>
+          Suppose Galileo observes that in the first 1-second interval his ball travels
+          \(d = 0.08\ \mathrm{m}\) on his inclined plane. What is the acceleration? Where is the
+          ball after 4 intervals? What is the 4th-interval gap?
+        </p>
+        <div class="step">
+          <span class="step-num">1</span>
+          <span>
+            <strong>Acceleration:</strong> \(d = \tfrac{1}{2}a\tau^2\) with \(\tau = 1\ \mathrm{s}\),
+            so \(a = 2d = 0.16\ \mathrm{m/s^2}\).
+          </span>
+        </div>
+        <div class="step">
+          <span class="step-num">2</span>
+          <span>
+            <strong>Position after 4 intervals:</strong>
+            \(x_4 = d\cdot 4^2 = 0.08 \times 16 = 1.28\ \mathrm{m}\).
+          </span>
+        </div>
+        <div class="step">
+          <span class="step-num">3</span>
+          <span>
+            <strong>4th-interval gap:</strong>
+            \(\Delta x_4 = (2\cdot 4 - 1)d = 7 \times 0.08 = 0.56\ \mathrm{m}\).
+          </span>
+        </div>
+        <div class="step">
+          <span class="step-num">4</span>
+          <span>
+            <strong>Check:</strong> \(x_4 - x_3 = 16d - 9d = 7d\). &#10003;
+          </span>
+        </div>
+      </div>
+
+      <!-- SVG: Distance vs time² showing the linear relationship -->
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 460 210" width="460" height="210" xmlns="http://www.w3.org/2000/svg"
+             aria-label="Graph of distance x versus t-squared showing a straight line through the origin, confirming the law of squares">
+
+          <!-- Axes -->
+          <line x1="55" y1="175" x2="55" y2="20" stroke="#2c2c2c" stroke-width="1.5"/>
+          <line x1="55" y1="175" x2="430" y2="175" stroke="#2c2c2c" stroke-width="1.5"/>
+          <polygon points="55,20 50,32 60,32" fill="#2c2c2c"/>
+          <polygon points="430,175 418,170 418,180" fill="#2c2c2c"/>
+
+          <!-- Data points: (n²d, n) with d=0.08 m, plotted as (n², x) -->
+          <!-- n=1: (1, 0.08); n=2: (4, 0.32); n=3: (9, 0.72); n=4: (16, 1.28) -->
+          <!-- Scale: x_px = 55 + n²*(350/16); y_px = 175 - x*(155/1.28) -->
+          <!-- n=1: x_px=55+22=77, y_px=175-10=165 -->
+          <!-- n=2: x_px=55+88=143, y_px=175-39=136 -->
+          <!-- n=3: x_px=55+197=252, y_px=175-87=88 -->
+          <!-- n=4: x_px=55+350=405, y_px=175-155=20 -->
+
+          <!-- Best-fit line through origin: from (55,175) to (405,20) -->
+          <line x1="55" y1="175" x2="405" y2="20" stroke="#1a5276" stroke-width="2" stroke-dasharray="6,3"/>
+
+          <!-- Data points (solid circles) -->
+          <circle cx="77"  cy="165" r="5" fill="#c0392b" stroke="#fff" stroke-width="1.5"/>
+          <circle cx="143" cy="136" r="5" fill="#c0392b" stroke="#fff" stroke-width="1.5"/>
+          <circle cx="252" cy="88"  r="5" fill="#c0392b" stroke="#fff" stroke-width="1.5"/>
+          <circle cx="405" cy="20"  r="5" fill="#c0392b" stroke="#fff" stroke-width="1.5"/>
+
+          <!-- Axis labels -->
+          <text x="47" y="17" font-family="'Source Sans 3',sans-serif" font-size="13" font-style="italic" fill="#1a5276" text-anchor="end">x</text>
+          <text x="432" y="179" font-family="'Source Sans 3',sans-serif" font-size="12" fill="#2c2c2c">t&#x00B2;</text>
+
+          <!-- x-axis ticks: n²=1,4,9,16 -->
+          <line x1="77"  y1="173" x2="77"  y2="177" stroke="#6b7280"/>
+          <text x="77"  y="190" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#6b7280" text-anchor="middle">τ²</text>
+          <line x1="143" y1="173" x2="143" y2="177" stroke="#6b7280"/>
+          <text x="143" y="190" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#6b7280" text-anchor="middle">4τ²</text>
+          <line x1="252" y1="173" x2="252" y2="177" stroke="#6b7280"/>
+          <text x="252" y="190" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#6b7280" text-anchor="middle">9τ²</text>
+          <line x1="405" y1="173" x2="405" y2="177" stroke="#6b7280"/>
+          <text x="405" y="190" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#6b7280" text-anchor="middle">16τ²</text>
+
+          <!-- y-axis ticks -->
+          <line x1="53" y1="165" x2="57" y2="165" stroke="#6b7280"/>
+          <text x="50" y="169" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#6b7280" text-anchor="end">d</text>
+          <line x1="53" y1="136" x2="57" y2="136" stroke="#6b7280"/>
+          <text x="50" y="140" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#6b7280" text-anchor="end">4d</text>
+          <line x1="53" y1="88" x2="57" y2="88" stroke="#6b7280"/>
+          <text x="50" y="92" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#6b7280" text-anchor="end">9d</text>
+          <line x1="53" y1="20" x2="57" y2="20" stroke="#6b7280"/>
+          <text x="50" y="24" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#6b7280" text-anchor="end">16d</text>
+
+          <!-- Line label -->
+          <text x="310" y="65" font-family="'Source Sans 3',sans-serif" font-size="11" fill="#1a5276" text-anchor="middle">x = d·(t/τ)²</text>
+          <text x="310" y="78" font-family="'Source Sans 3',sans-serif" font-size="10" fill="#6b7280" text-anchor="middle">(linear in t²)</text>
+        </svg>
+        <p class="diagram-caption">
+          Figure B7.1 &mdash; Plotting distance \(x\) against \(t^2\) gives a straight line through
+          the origin. This linearity is the experimental signature of constant acceleration:
+          if \(x \propto t^2\), then \(a = \text{const}\).
+        </p>
+      </div>
+    </section>
+
+    <!-- ══ B8 KINEMATIC EQUATIONS ════════════════════════════ -->
+    <section id="section-kinematic">
+      <h2>B8 &nbsp; From Galileo's Laws to the Kinematic Equations</h2>
+
+      <p>
+        Galileo's law of squares is the equation \(x = \tfrac{1}{2}at^2\) (for \(v_0 = 0\)).
+        Together with the definition \(v = at\), this gives us two of the four kinematic equations
+        of Lesson&nbsp;2. The other two follow by elimination — no new physics required.
+      </p>
+
+      <table class="lesson-table">
+        <thead>
+          <tr>
+            <th>Equation</th>
+            <th>Modern form</th>
+            <th>Galilean origin</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>(1)</td>
+            <td>\(v = v_0 + at\)</td>
+            <td>Definition of constant acceleration; velocity grows linearly with time.</td>
+          </tr>
+          <tr>
+            <td>(2)</td>
+            <td>\(x = x_0 + v_0 t + \tfrac{1}{2}at^2\)</td>
+            <td>Law of squares (for \(v_0=0\): \(x \propto t^2\)); mean speed theorem for general case.</td>
+          </tr>
+          <tr>
+            <td>(3)</td>
+            <td>\(v^2 = v_0^2 + 2a\Delta x\)</td>
+            <td>Eliminate \(t\) between (1) and (2); also Galileo's result connecting speed to distance.</td>
+          </tr>
+          <tr>
+            <td>(4)</td>
+            <td>\(x = x_0 + \tfrac{1}{2}(v_0+v)t\)</td>
+            <td>Mean speed theorem: displacement = mean speed × time (Merton, c.&thinsp;1335).</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p>
+        Galileo did not write these equations in modern algebraic notation — he worked with
+        proportions and geometric ratios, in the Euclidean tradition. The compact algebraic forms
+        were systematized by Newton and his contemporaries in the latter half of the 17th century.
+      </p>
+
+      <div class="callout callout-warning">
+        <strong>What Galileo could not explain.</strong>
+        Galileo showed that freely falling bodies <em>behave</em> as if \(a = \text{const}\).
+        He was careful to bracket the question of <em>why</em>. In <em>Two New Sciences</em> he
+        writes: "The present does not seem to be the proper time to investigate the cause of the
+        acceleration of natural motion concerning which various opinions have been expressed."
+        That causal question — answered by the concept of gravitational force — had to wait for
+        Newton's <em>Principia</em> (1687).
+      </div>
+    </section>
+
+    <!-- ══ B9 LEGACY ══════════════════════════════════════════ -->
+    <section id="section-legacy">
+      <h2>B9 &nbsp; Historical Legacy</h2>
+
+      <h3>The long chain</h3>
+      <p>
+        The following chain led from Aristotle's theory of fall to the modern kinematic equations:
+      </p>
+      <ul>
+        <li><strong>4th c. BC:</strong> Aristotle — speed proportional to weight; velocity constant during fall.</li>
+        <li><strong>c.&thinsp;1335:</strong> Heytesbury (Merton College) — mean speed theorem; mathematics of uniform acceleration.</li>
+        <li><strong>c.&thinsp;1350:</strong> Oresme (Paris) — geometric proof; \(v\)–\(t\) diagram; area = displacement.</li>
+        <li><strong>1555:</strong> Domingo de Soto — suggests free fall is uniformly accelerated.</li>
+        <li><strong>c.&thinsp;1604:</strong> Galileo — inclined-plane experiments; law of odd numbers and law of squares confirmed.</li>
+        <li><strong>1638:</strong> Galileo publishes <em>Two New Sciences</em> — the first modern textbook of mechanics.</li>
+        <li><strong>1687:</strong> Newton — explains <em>why</em> objects fall with constant acceleration: gravitational force and \(F = ma\).</li>
+      </ul>
+
+      <h3>Confirmed on the Moon: Apollo 15 (1971)</h3>
+      <p>
+        On 2 August 1971, astronaut David Scott stood on the surface of the Moon and held a geologic
+        hammer in one hand and a falcon feather in the other. The Moon has no atmosphere, so there is
+        no air resistance — exactly the vacuum condition Galileo could imagine but never produce.
+        Scott released both objects simultaneously and both hit the lunar surface at the same instant.
+      </p>
+      <blockquote class="historical">
+        "Well, in my left hand I have a feather; in my right hand, a hammer. And I guess one of the
+        reasons we got here today was because of a gentleman named Galileo, a long time ago, who made
+        a rather significant discovery about falling objects in gravity fields. … How about that!
+        Well, I'll be darned. It looks as if Mr. Galileo was correct in his findings."
+        <br/><br/>
+        — David Scott, Apollo 15 commander, lunar surface, 2 August 1971
+      </blockquote>
+      <div class="diagram-wrap" style="max-width:520px;">
+        <img src="apollo15-hammer-feather.gif"
+             alt="Animated footage of Apollo 15 astronaut David Scott dropping a hammer and a feather simultaneously on the lunar surface. Both objects fall at the same rate and strike the ground together."
+             style="width:100%;border-radius:6px;display:block;">
+        <p class="diagram-caption">
+          Apollo 15, 2 August 1971. Astronaut David Scott releases a geologic hammer (right hand)
+          and a falcon feather (left hand) on the airless lunar surface. Both strike the ground
+          simultaneously. <em>Credit: NASA / public domain.</em>
+        </p>
+      </div>
+      <p>
+        The experiment was broadcast live on Earth. It is the only physics demonstration ever
+        performed on another world, and it confirmed a result first proved by logical argument in
+        medieval Oxford and by inclined-plane experiment in Galileo's Padua.
+      </p>
+
+      <h3>Galileo's methodological legacy</h3>
+      <p>
+        Perhaps more important than any specific result was Galileo's method:
+      </p>
+      <ul>
+        <li><strong>Idealization.</strong> Ignore air resistance, friction, and other complicating factors to find the idealized mathematical law. Real experiments are approximations to an ideal.</li>
+        <li><strong>Quantification.</strong> Measure everything. The ratio \(1:3:5:7\) is meaningful; "the ball goes faster" is not.</li>
+        <li><strong>Mathematical prediction followed by experimental test.</strong> Derive a consequence, measure it, compare. This is still how experimental physics works.</li>
+      </ul>
+
+      <div class="callout callout-insight">
+        <strong>The bridge between medieval and modern.</strong>
+        Galileo did not work in a vacuum. He inherited the Merton–Oresme mathematical framework
+        (see <a href="lesson-02-sq-a-mean-speed.html">Side Quest A</a>) and the Archimedean
+        tradition of applying mathematics to physical problems. His genius was to combine these with
+        a new insistence on experimental verification — and thereby transform natural philosophy into
+        physics as we practice it today.
+      </div>
+
+      <h3>A simple calculation with a long history</h3>
+      <p>
+        The next time you solve a free-fall problem — a ball dropped from a building, a rock thrown
+        upward, a car braking to a stop — you are completing a chain of reasoning that runs from
+        Merton College in the 1330s through Galileo's Padua laboratory in 1604 to Newton's
+        <em>Principia</em> in 1687 and your textbook today. The equation \(x = \tfrac{1}{2}gt^2\)
+        is not just a formula. It is seven centuries of human thought made compact.
+      </p>
+    </section>
+
+    <!-- ══ GLOSSARY ════════════════════════════════════════════ -->
+    <section id="glossary">
+      <h2>Glossary</h2>
+      <dl class="glossary-list">
+
+        <dt id="term-law-of-odd-numbers">Law of Odd Numbers</dt>
+        <dd>
+          The empirical observation (Galileo, c.&thinsp;1604) that the distances covered by a body
+          accelerating uniformly from rest in successive equal time intervals are in the ratio
+          \(1:3:5:7:\ldots\). Equivalent to the law of squares and to constant acceleration.
+        </dd>
+
+        <dt id="term-law-of-squares">Law of Squares</dt>
+        <dd>
+          The empirical observation (Galileo, c.&thinsp;1604) that the total distance from the
+          starting point grows as the square of the elapsed time: \(x \propto t^2\). Equivalent to
+          the law of odd numbers and to \(x = \tfrac{1}{2}at^2\).
+        </dd>
+
+        <dt id="term-inclined-plane">Inclined plane experiment</dt>
+        <dd>
+          Galileo's experimental apparatus: a long smooth groove on an inclined board. By choosing
+          a small angle of inclination, the effective acceleration \(a = g\sin\theta\) is small
+          enough to time accurately while preserving the constant-acceleration character of free fall.
+        </dd>
+
+        <dt id="term-natural-motion">Natural motion (Aristotle)</dt>
+        <dd>
+          In Aristotelian physics, the spontaneous motion of an object toward its natural place in
+          the cosmos (earth downward, fire upward). Contrasted with violent motion (motion produced
+          by an external force). The framework within which Aristotle's speed-proportional-to-weight
+          rule was embedded.
+        </dd>
+
+        <dt id="term-galileo-method">Galileo's method</dt>
+        <dd>
+          The combination of mathematical idealization, quantitative measurement, and experimental
+          testing of mathematical predictions. Distinguished from both pure Aristotelian reasoning
+          (observation without measurement) and pure Platonic mathematics (mathematics without
+          experimental check).
+        </dd>
+
+        <dt id="term-two-new-sciences">Two New Sciences</dt>
+        <dd>
+          Galileo's 1638 book (<em>Discorsi e Dimostrazioni Matematiche intorno a due nuove scienze</em>),
+          published in Leiden after his condemnation by the Inquisition. The "two sciences" are the
+          science of materials (strength of structures) and the science of local motion (kinematics).
+          The latter contains the laws of odd numbers, the law of squares, and the projectile parabola.
+        </dd>
+
+      </dl>
+    </section>
+
+  </main>
+</div>
+
+<footer class="lesson-footer">
+  <a class="btn-prev" href="lesson-02-sq-a-mean-speed.html">&larr; Side Quest A &mdash; The Mean Speed Theorem</a>
+  <a class="btn-next" href="lesson-02-motion-on-a-line.html">&larr; Back to Lesson 2 &mdash; Motion in a Straight Line</a>
+</footer>
+
+<script>
+  const panel  = document.getElementById('toc-panel');
+  const toggle = document.getElementById('toc-toggle');
+  const STORAGE_KEY = 'physics-toc-sq-b-collapsed';
+
+  function applyState(collapsed) {
+    panel.classList.toggle('collapsed', collapsed);
+    toggle.setAttribute('aria-expanded', String(!collapsed));
+    toggle.querySelector('.toc-label').textContent = collapsed ? '' : 'Contents';
+    try { localStorage.setItem(STORAGE_KEY, collapsed ? '1' : '0'); } catch(e) {}
+  }
+
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved === '1') applyState(true);
+  } catch(e) {}
+
+  toggle.addEventListener('click', () => {
+    applyState(!panel.classList.contains('collapsed'));
+  });
+
+  if (window.innerWidth <= 768) {
+    panel.classList.add('collapsed');
+    toggle.addEventListener('click', () => {
+      panel.classList.toggle('mobile-open');
+    });
+  }
+
+  const sections = document.querySelectorAll('section[id]');
+  const tocLinks = document.querySelectorAll('.toc-list a');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        tocLinks.forEach(a => a.classList.remove('active'));
+        const active = document.querySelector(`.toc-list a[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-100px 0px -60% 0px', threshold: 0 });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
